@@ -1,0 +1,37 @@
+# Dependencias (nunca se versionan)
+node_modules/
+.pnpm-store/
+
+# Variables de entorno y secretos (nunca se commitean)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo
+
+# Tooling local (estado del harness de agentes, cachés)
+.opencode/
+.atl/
+
+# Expo (estado local y salidas de build)
+.expo/
+web-build/
+
+# Salidas de build de apps.
+# OJO: packages/design-tokens/build/tokens.css SÍ se versiona a propósito
+# (el test de deriva exige el CSS commiteado); no ignorar build/.
+dist/

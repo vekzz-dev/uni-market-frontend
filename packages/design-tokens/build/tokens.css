@@ -1,0 +1,167 @@
+/* GENERADO por build.mjs — no editar a mano.
+   Fuente: src/primitives.js + src/semantic.js · Regenerar: node build.mjs
+   Contraste verificado en test/contraste.test.mjs (WCAG 2.2 AA). */
+
+:root {
+  color-scheme: light;
+  --um-primary: #F97316;
+  --um-primary-hover: #C2410C;
+  --um-primary-active: #9A3412;
+  --um-primary-strong: #9A3412;
+  --um-primary-soft: #FFF7ED;
+  --um-primary-selected: #FFEDD5;
+  --um-bg: #F9FAFB;
+  --um-surface: #FFFFFF;
+  --um-surface-hover: #F3F4F6;
+  --um-text: #111827;
+  --um-text-secondary: #4B5563;
+  --um-text-inverse: #FFFFFF;
+  --um-link: #C2410C;
+  --um-link-hover: #9A3412;
+  --um-border: #E5E7EB;
+  --um-border-strong: #D1D5DB;
+  --um-border-field: #7C8595;
+  --um-focus: #C2410C;
+  --um-success: #16A34A;
+  --um-success-soft: #F0FDF4;
+  --um-success-text: #166534;
+  --um-warning: #D97706;
+  --um-warning-soft: #FFFBEB;
+  --um-warning-text: #92400E;
+  --um-error: #DC2626;
+  --um-error-soft: #FEF2F2;
+  --um-error-text: #991B1B;
+  --um-info: #2563EB;
+  --um-info-soft: #EFF6FF;
+  --um-info-text: #1D4ED8;
+  --um-text-on-primary: #431407;
+  --um-text-on-primary-strong: #FFFFFF;
+  --um-text-on-error: #FFFFFF;
+  --um-text-on-info: #FFFFFF;
+  --um-disabled-bg: #E5E7EB;
+  --um-disabled-text: #5B6370;
+  --um-font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --um-font-size-xs: 12px;
+  --um-font-size-sm: 14px;
+  --um-font-size-base: 16px;
+  --um-font-size-lg: 20px;
+  --um-font-size-xl: 24px;
+  --um-font-size-2xl: 30px;
+  --um-line-height-xs: 1.4;
+  --um-line-height-sm: 1.45;
+  --um-line-height-base: 1.5;
+  --um-line-height-lg: 1.35;
+  --um-line-height-xl: 1.25;
+  --um-line-height-2xl: 1.2;
+  --um-font-weight-regular: 400;
+  --um-font-weight-medium: 500;
+  --um-font-weight-semibold: 600;
+  --um-space-1: 4px;
+  --um-space-2: 8px;
+  --um-space-3: 12px;
+  --um-space-4: 16px;
+  --um-space-5: 24px;
+  --um-space-6: 32px;
+  --um-space-7: 48px;
+  --um-space-8: 64px;
+  --um-radius-control: 8px;
+  --um-radius-card: 12px;
+  --um-radius-pill: 999px;
+  --um-duration-fast: 120ms;
+  --um-duration-base: 200ms;
+  --um-control-min-size: 44px;
+  --um-focus-width: 3px;
+  --um-focus-offset: 2px;
+  --um-shadow-elevated: 0 8px 24px rgba(17, 24, 39, 0.12);
+}
+
+/* Oscuro automático, salvo que la app fuerce el tema claro. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-um-theme='light']) {
+    color-scheme: dark;
+  --um-primary: #FB923C;
+  --um-primary-hover: #FDBA74;
+  --um-primary-active: #F97316;
+  --um-primary-strong: #FDBA74;
+  --um-primary-soft: #431407;
+  --um-primary-selected: #431407;
+  --um-bg: #111827;
+  --um-surface: #1F2937;
+  --um-surface-hover: #2A3341;
+  --um-text: #F9FAFB;
+  --um-text-secondary: #9CA3AF;
+  --um-text-inverse: #111827;
+  --um-link: #FB923C;
+  --um-link-hover: #FDBA74;
+  --um-border: #374151;
+  --um-border-strong: #4B5563;
+  --um-border-field: #8B93A0;
+  --um-focus: #FDBA74;
+  --um-success: #4ADE80;
+  --um-success-soft: #0F2A1A;
+  --um-success-text: #4ADE80;
+  --um-warning: #FBBF24;
+  --um-warning-soft: #33240A;
+  --um-warning-text: #FBBF24;
+  --um-error: #FCA5A5;
+  --um-error-soft: #3A1512;
+  --um-error-text: #FCA5A5;
+  --um-info: #93C5FD;
+  --um-info-soft: #10233F;
+  --um-info-text: #93C5FD;
+  --um-text-on-primary: #431407;
+  --um-text-on-primary-strong: #431407;
+  --um-text-on-error: #3A1512;
+  --um-text-on-info: #10233F;
+  --um-disabled-bg: #374151;
+  --um-disabled-text: #AEB7C4;
+  }
+}
+
+/* Oscuro forzado (permite probar sin cambiar el sistema operativo). */
+[data-um-theme='dark'] {
+  color-scheme: dark;
+  --um-primary: #FB923C;
+  --um-primary-hover: #FDBA74;
+  --um-primary-active: #F97316;
+  --um-primary-strong: #FDBA74;
+  --um-primary-soft: #431407;
+  --um-primary-selected: #431407;
+  --um-bg: #111827;
+  --um-surface: #1F2937;
+  --um-surface-hover: #2A3341;
+  --um-text: #F9FAFB;
+  --um-text-secondary: #9CA3AF;
+  --um-text-inverse: #111827;
+  --um-link: #FB923C;
+  --um-link-hover: #FDBA74;
+  --um-border: #374151;
+  --um-border-strong: #4B5563;
+  --um-border-field: #8B93A0;
+  --um-focus: #FDBA74;
+  --um-success: #4ADE80;
+  --um-success-soft: #0F2A1A;
+  --um-success-text: #4ADE80;
+  --um-warning: #FBBF24;
+  --um-warning-soft: #33240A;
+  --um-warning-text: #FBBF24;
+  --um-error: #FCA5A5;
+  --um-error-soft: #3A1512;
+  --um-error-text: #FCA5A5;
+  --um-info: #93C5FD;
+  --um-info-soft: #10233F;
+  --um-info-text: #93C5FD;
+  --um-text-on-primary: #431407;
+  --um-text-on-primary-strong: #431407;
+  --um-text-on-error: #3A1512;
+  --um-text-on-info: #10233F;
+  --um-disabled-bg: #374151;
+  --um-disabled-text: #AEB7C4;
+}
+
+/* El anillo de foco siempre visible: ancho, color y desplazamiento son requisito
+   de accesibilidad (WCAG 1.4.11), no estética. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: var(--um-focus-width) solid var(--um-focus);
+  outline-offset: var(--um-focus-offset);
+}

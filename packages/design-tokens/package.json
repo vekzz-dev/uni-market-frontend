@@ -1,0 +1,19 @@
+{
+  "name": "@uni-market/design-tokens",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Identidad visual Ember (claro/oscuro) de Uni Market — fuente única de tokens para web y móvil",
+  "exports": {
+    ".": "./src/index.js",
+    "./css": "./build/tokens.css"
+  },
+  "files": [
+    "src",
+    "build/tokens.css"
+  ],
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node --test"
+  }
+}

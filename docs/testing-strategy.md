@@ -69,13 +69,12 @@ No se exige un test por cada línea de JSX. Se exige que **cada afirmación sobr
 
 | Gate | Falla si |
 |---|---|
-| `lint` | ESLint reporta errores, o una app importa otra app, o `packages/*` importa `apps/*`, o `core` importa React/React Native |
-| `test` | Algún test falla |
-| `coverage-nucleo` | `packages/core` + `packages/api-client` bajan del **80 % de líneas** (obligación `prd.md:111`) |
-| `contract-drift` | Regenerar el cliente produce diferencias, o `openapi/uni-market.yaml` difiere de la referencia registrada en el lock |
-| `tokens-drift` | `tokens:build` produce un `tokens.css` distinto del commiteado |
-| `build-web` | Vite no compila, o el bundle inicial de la ruta de catálogo supera el presupuesto de §5 |
-| `no-hand-rolled-client` | Aparece una llamada HTTP directa fuera de `packages/api-client` (regla ESLint: `fetch`/`axios` prohibidos en `apps/*`) |
+| `test` | `pnpm test` falla (tokens + api-client) |
+| `contract` | El contrato vendorizado no coincide con `openapi/CONTRACT.lock.json` (`pnpm contract:check`) |
+| `api-drift` | Regenerar produce diferencias con `src/generado` (`pnpm api:check`, requiere Java) |
+| `tokens-drift` | `pnpm tokens:build` produce un `tokens.css` distinto del commiteado |
+| `lint` | **Previsto para Inc 1**: ESLint, fronteras entre paquetes y `no-hand-rolled-client` (hoy no hay apps ni ESLint instalado) |
+| `build-web` | **Previsto para Inc 1**: Vite no compila o el bundle inicial supera el presupuesto de §5 |
 
 Los gates de UI **no** imponen un porcentaje de cobertura: exigir 80 % de cobertura en pantallas produce pruebas de render sin valor. Lo que se exige a la UI es la lista de §2 y la resolución de todos los estados de `design-system.md` §6.
 

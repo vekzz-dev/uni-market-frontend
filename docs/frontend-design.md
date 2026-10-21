@@ -214,7 +214,7 @@ Convención de nombres de frame: **`Flujo · plataforma · estado`** (`Catálogo
 | Origen | `/v1`; rutas en plural kebab-case; campos en `camelCase` | `api-integration.md` §1 |
 | Colecciones | Siempre `{datos, paginacion}`; cursor en catálogo y mensajes (hacia atrás), offset en paneles | §4 |
 | Errores | `application/problem+json`; `400` estructura, `422` regla de negocio, `401` genérico, `403` permiso, `404` inexistente o no visible, `409` duplicado, `429` límite; **sin** código de máquina | §3 |
-| Sesión | Access 15 min en memoria; refresh 30 días persistido y rotado; el reuso revoca la familia completa → re-login forzado | §2 |
+| Sesión | Access 15 min en memoria; refresh 30 días persistido y rotado; el reuso revoca la familia completa → re-login forzado. **Implementado** en `packages/core/src/sesion/gestorSesion.js` con vuelo único y reloj inyectable | §2 |
 | Subidas | Solo multipart: `imagenes` (1..5, 5 MB) al crear, `archivo` (2 MB) para avatar; el tipo real se detecta por *magic bytes* | §6 |
 | Medios | Publicados por la API; nunca se construye una URL a mano | §5 |
 
@@ -244,7 +244,7 @@ Cada incremento entrega una capacidad visible completa y verificable, con web pr
 | Inc | Contenido | Salida observable |
 |---|---|---|
 | **Inc 0** | Monorepo: workspaces, configs, tokens, `contract:sync`, cliente generado y comprobación de deriva, CI | `pnpm install && pnpm api:check && pnpm tokens:build` en verde, sin UI — **completado el 2026-10-21** (ver `odd/tasks/frontend-engineering.md` T14) |
-| **Inc 1** | Sistema de diseño mínimo + núcleo de sesión + pantallas de sesión web | Registro → confirmar → login → refresh transparente → logout, probado con MSW |
+| **Inc 1** | Sistema de diseño mínimo + núcleo de sesión + pantallas de sesión web | **En curso**: `packages/core` con sesión, errores, formato y medios (22 pruebas). Faltan paginación/validación/capacidades y las pantallas |
 | **Inc 2** | Catálogo público web + detalle | Explorar, filtrar y abrir un anuncio con cursor infinito |
 | **Inc 3** | Shell móvil + paridad de sesión y catálogo | App Expo con flujo de sesión y catálogo funcionando |
 | **Inc 4** | Vendedor web | Publicar con imágenes, ver estado de revisión, editar, visibilidad, vendido |

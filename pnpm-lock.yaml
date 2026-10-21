@@ -10,4 +10,10 @@ importers:
 
   packages/api-client: {}
 
+  packages/core:
+    dependencies:
+      '@uni-market/api-client':
+        specifier: workspace:*
+        version: link:../api-client
+
   packages/design-tokens: {}

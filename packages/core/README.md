@@ -8,6 +8,9 @@ Dominio compartido por web y móvil. **No importa React ni React Native**: se ej
 | `errores/mapearProblema.js` | Tabla de copy por estado HTTP (`docs/api-integration.md` §3.2), sin inventar causas |
 | `formato/formato.js` | Precio en USD (`$45.00`), fecha legible y fecha relativa con reloj inyectable |
 | `medios/resolverUrlMedia.js` | Dev relativo (`/media/...`) y prod absoluto (R2) con una sola regla |
+| `paginacion/adaptadores.js` | Cursor opaco, fusión sin duplicados (hacia atrás incluida) y navegación por offset |
+| `validacion/validar.js` | Registro, precio, imágenes, avatar, mensaje y motivo, con las reglas del contrato |
+| `capacidades/capacidades.js` | Matriz rol → capacidad, **solo** para ocultar o deshabilitar (la autoridad es el servidor) |
 
 ## Uso de la sesión
 
@@ -35,9 +38,9 @@ const perfil = await sesion.ejecutar(() => usuarios.leerPerfilPropio());
 3. **Un segundo `401` no se reintenta**: la sesión pasa a `expirado` y se limpia el almacén.
 4. **El reloj se inyecta** en las pruebas; ninguna prueba lee la fecha del sistema.
 
-## Pendiente en este paquete
+## Siguiente
 
-Paginación (cursor/offset), validación espejo y capacidades por rol — llegan en el siguiente slice.
+Con el dominio cerrado, el Inc 1 sigue con `apps/web`: Vite + React Router + tokens y las pantallas de sesión.
 
 ## Comandos
 

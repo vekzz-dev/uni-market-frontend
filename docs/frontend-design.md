@@ -244,7 +244,7 @@ Cada incremento entrega una capacidad visible completa y verificable, con web pr
 | Inc | Contenido | Salida observable |
 |---|---|---|
 | **Inc 0** | Monorepo: workspaces, configs, tokens, `contract:sync`, cliente generado y comprobación de deriva, CI | `pnpm install && pnpm api:check && pnpm tokens:build` en verde, sin UI — **completado el 2026-10-21** (ver `odd/tasks/frontend-engineering.md` T14) |
-| **Inc 1** | Sistema de diseño mínimo + núcleo de sesión + pantallas de sesión web | **En curso**: `packages/core` con sesión, errores, formato y medios (22 pruebas). Faltan paginación/validación/capacidades y las pantallas |
+| **Inc 1** | Sistema de diseño mínimo + núcleo de sesión + pantallas de sesión web | **Núcleo cerrado** (41 pruebas). Faltan `apps/web` y las pantallas |
 | **Inc 2** | Catálogo público web + detalle | Explorar, filtrar y abrir un anuncio con cursor infinito |
 | **Inc 3** | Shell móvil + paridad de sesión y catálogo | App Expo con flujo de sesión y catálogo funcionando |
 | **Inc 4** | Vendedor web | Publicar con imágenes, ver estado de revisión, editar, visibilidad, vendido |

@@ -1,0 +1,16 @@
+{
+  "name": "@uni-market/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cliente HTTP de Uni Market generado desde el OpenAPI, con transporte fetch propio",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test"
+  }
+}

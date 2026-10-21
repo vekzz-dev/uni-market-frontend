@@ -1,0 +1,16 @@
+# Qué NO se copia del generador (scripts/api-generate.mjs copia solo src/api y src/model).
+#
+# ApiClient.js: el generador lo produce con superagent; usamos el transporte
+# propio sobre fetch que vive en ese mismo path. Ver docs/api-integration.md §1.2.
+ApiClient.js
+package.json
+package-lock.json
+README.md
+docs/
+test/
+mocha.opts
+.travis.yml
+.gitignore
+.babelrc
+git_push.sh
+.openapi-generator/

@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checks:
+    name: Contrato, cliente y tokens
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      # openapi-generator-cli es Java: api:check lo ejecuta.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Instalar workspaces
+        run: pnpm install --frozen-lockfile
+
+      - name: Pruebas
+        run: pnpm test
+
+      - name: Contrato vendorizado
+        run: pnpm contract:check
+
+      - name: Cliente generado (deriva)
+        run: pnpm api:check
+
+      - name: Tokens (deriva)
+        run: |
+          pnpm tokens:build
+          git diff --exit-code -- packages/design-tokens/build/tokens.css

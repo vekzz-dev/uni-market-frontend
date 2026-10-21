@@ -2,23 +2,24 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: ingeniería lista y revisable (diseño, contrato de integración, sistema de diseño y estrategia de pruebas), **paquete de tokens implementado y verificado** (`packages/design-tokens`, 23 pruebas en verde) y **archivo de diseño** en `design/uni-market.fig` con **9 páginas**: portada, fundamentos, catálogo y el flujo de sesión completo (`Entrar`, `Registro`, `Confirmar`, `Restablecer`, `Nueva contraseña`, `Reenviar`), cada vista con web, móvil y sus estados. **44 PNG** de verificación en `design/preview/`, frame por frame y agrupadas por página. El andamiaje de workspaces, el cliente generado y las primeras pantallas llegan en los incrementos de [`docs/frontend-design.md`](docs/frontend-design.md) §11. Los comandos de la tabla siguiente son el **contrato previsto** de scripts raíz: se implementan en el Inc 0.
+> **Estado actual**: **Inc 0 completo** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados y CI con gates de deriva. **29 pruebas en verde** (`pnpm test`). También está el **archivo de diseño** en `design/uni-market.fig` con 9 páginas (catálogo, fundamentos y el flujo de sesión completo) y 44 PNG en `design/preview/`. Las apps y `packages/core` llegan en el Inc 1; los comandos `dev:*` y `lint` siguen siendo previstos.
 
 ## Estructura
 
 ```
 apps/
-  web/        React + Vite · JavaScript · CSS puro (CSS Modules)
-  mobile/     React Native + Expo (Expo Router) · JavaScript
+  web/        (Inc 1) React + Vite · JavaScript · CSS puro (CSS Modules)
+  mobile/     (Inc 3) React Native + Expo (Expo Router) · JavaScript
 packages/
-  api-client/ cliente generado desde el OpenAPI + transporte propio sobre fetch
-  core/       sesión, errores, paginación, validación espejo, capacidades por rol, medios
-  design-tokens/ una fuente de tokens → variables CSS (web) y objeto JS (móvil)
-  config/     ESLint, Prettier y jsconfig compartidos
-openapi/      contrato vendorizado + lock con su referencia de origen (Inc 0)
-design/       uni-market.fig (OpenPencil) + preview/ con los PNG de verificación
-docs/         diseño, integración con la API, sistema de diseño, pruebas
-odd/tasks/    registro de trabajo por feature
+  api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
+  core/       (Inc 1) sesión, errores, paginación, validación espejo, capacidades por rol, medios
+  design-tokens/ ✅ una fuente de tokens → variables CSS (web) y objeto JS (móvil)
+  config/     (Inc 1) ESLint, Prettier y jsconfig compartidos
+openapi/      ✅ contrato vendorizado + lock con su referencia de origen
+design/       ✅ uni-market.fig (OpenPencil) + preview/ con los PNG de verificación
+scripts/      ✅ contract:sync · contract:check · api:generate · api:check
+docs/         ✅ diseño, integración con la API, sistema de diseño, pruebas
+odd/tasks/    ✅ registro de trabajo por feature
 ```
 
 ## Requisitos
@@ -32,19 +33,19 @@ odd/tasks/    registro de trabajo por feature
 
 El generador no requiere instalación global: se invoca con `npx` y descarga su CLI la primera vez.
 
-## Comandos (previstos)
+## Comandos
 
 | Comando | Qué hace |
 |---|---|
-| `pnpm install` | Instala todos los workspaces |
-| `pnpm contract:sync` | Actualiza `openapi/uni-market.yaml` desde la API y registra su origen |
-| `pnpm api:generate` | Regenera el cliente HTTP a partir del contrato |
-| `pnpm contract:check` | Verifica que el contrato no derive ni esté editado a mano |
-| `pnpm tokens:build` | Regenera las variables CSS desde los tokens — **ya disponible sin workspaces**: `node packages/design-tokens/build.mjs` |
-| `pnpm dev:web` | Desarrollo web (Vite) |
-| `pnpm dev:mobile` | Desarrollo móvil (Expo) |
-| `pnpm test` | Suite de paquetes y apps |
-| `pnpm lint` | ESLint, incluidas las reglas de frontera entre paquetes |
+| `pnpm install` | Instala los workspaces |
+| `pnpm contract:sync` | Copia el contrato de la API y registra su origen (commit + sha256) en el lock |
+| `pnpm contract:check` | Verifica que el contrato vendorizado coincide con su lock |
+| `pnpm api:generate` | Regenera el cliente HTTP (requiere Java) |
+| `pnpm api:check` | Regenera en un temporal y falla si el cliente deriva del contrato |
+| `pnpm tokens:build` | Regenera `tokens.css` desde los tokens |
+| `pnpm test` | Suite de todos los paquetes (hoy: tokens + api-client) |
+| `pnpm dev:web` / `pnpm dev:mobile` | **Previstos**: llegan con las apps (Inc 1 / Inc 3) |
+| `pnpm lint` | **Previsto**: llega con las apps (Inc 1), incluidas las reglas de frontera |
 
 ## Documentación
 

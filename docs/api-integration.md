@@ -38,14 +38,14 @@ Se ejecutó `@openapitools/openapi-generator-cli@2.41.0` (CLI **7.26.0**) sobre 
 ```
 packages/api-client/                 ← solo transporte y contrato; sin reglas de dominio
 ├─ src/
-│  ├─ generado/            ← SOLO lo escribe el generador (prohibido editar a mano)
+│  ├─ generado/            ← api/ y model/ SOLO los escribe el generador
 │  │  ├─ api/             los 9 módulos
-│  │  └─ model/           los modelos
-│  ├─ transporte.js        implementación fetch con la superficie del generado
-│  ├─ problemas.js         forma del error: normaliza problem+json y captura X-Request-Id
-│  └─ index.js             instancia configurada: basePath, proveedor de token, transporte, timeout
-├─ .openapi-generator-ignore   excluye package.json, docs/, test/, .travis.yml, mocha.opts, git_push.sh, ApiClient.js, .babelrc
-├─ openapi-generator-config.json
+│  │  ├─ model/           los modelos
+│  │  └─ ApiClient.js     transporte propio sobre fetch (excluido de la generación)
+│  ├─ problemas.js         forma del error: ApiError con problem+json y X-Request-Id
+│  └─ index.js             crearCliente(): baseUrl, token en memoria, fetch, timeout
+├─ test/transporte.test.mjs  fetch falso: URL, auth, multipart, problem+json, 204
+├─ .openapi-generator-ignore   qué NO se copia del generador (ApiClient.js, docs, tests, babel…)
 └─ README.md
 
 packages/core/                       ← dominio compartido; depende de api-client, nunca al revés
@@ -62,9 +62,10 @@ packages/core/                       ← dominio compartido; depende de api-clie
 
 | Script | Hace |
 |---|---|
-| `pnpm contract:sync` | Copia `openapi.yaml` desde la ruta local de la API (por defecto) o desde una URL fijada a un tag/SHA, y escribe `openapi/CONTRACT.lock.json` con origen, fecha y `info.version` |
-| `pnpm api:generate` | Ejecuta el generador sobre `openapi/uni-market.yaml` hacia `src/generado/` (determinista: misma entrada → mismo resultado) |
-| `pnpm contract:check` | Regenera en un directorio temporal y falla si hay diferencias con lo commiteado; valida además que el spec vendorizado coincide con la referencia del lock |
+| `pnpm contract:sync` | Copia el `openapi.yaml` de origen (`OPENAPI_SOURCE` o `../uni-market-api/openapi.yaml`) a `openapi/uni-market.yaml` y escribe `openapi/CONTRACT.lock.json` con la etiqueta de origen, el commit de la API, `info.version`, el **sha256** y la fecha |
+| `pnpm api:generate` | Genera con `openapi-generator-cli` en un temporal, copia solo `src/api` y `src/model`, **normaliza los imports a ESM con `.js`** (el generador los emite sin extensión y Node no los resuelve) y descarta el `ApiClient.js` de superagent |
+| `pnpm contract:check` | Compara el **sha256** del contrato vendorizado con el lock. No necesita red ni el repo de la API |
+| `pnpm api:check` | Regenera en un temporal y compara **archivo por archivo** con lo commiteado; falla ante cualquier deriva. No depende de git ni modifica el árbol |
 
 Reglas:
 

@@ -1,0 +1,19 @@
+{
+  "name": "uni-market-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Monorepo del cliente de Uni Market: web (React) y móvil (Expo) sobre el contrato de uni-market-api",
+  "license": "MIT",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "tokens:build": "node packages/design-tokens/build.mjs",
+    "contract:sync": "node scripts/contract-sync.mjs",
+    "contract:check": "node scripts/contract-check.mjs",
+    "api:generate": "node scripts/api-generate.mjs",
+    "api:check": "node scripts/api-check.mjs",
+    "test": "pnpm -r test"
+  }
+}

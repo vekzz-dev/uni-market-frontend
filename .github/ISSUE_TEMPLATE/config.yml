@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentación del proyecto
+    url: https://github.com/vekzz-dev/uni-market-frontend/blob/main/README.md
+    about: Estructura, comandos y requisitos.
+  - name: Contrato de la API
+    url: https://github.com/vekzz-dev/uni-market-api/blob/main/openapi.yaml
+    about: Fuente de verdad del contrato; si falta un campo, se corrige allí.

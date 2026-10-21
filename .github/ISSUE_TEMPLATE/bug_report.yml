@@ -1,0 +1,54 @@
+name: Reporte de bug
+description: Algo del cliente no responde como esperabas
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: resumen
+    attributes:
+      label: Resumen
+      description: Qué falla, en una o dos frases.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para reproducir
+      description: Incluye la ruta, el rol y los datos usados.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+      description: Qué debería ocurrir según el contrato o el diseño.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamiento actual
+      description: Qué ocurre realmente. Si hay error de la API, pega el `X-Request-Id`.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Navegador o dispositivo
+      description: Versión del navegador, del sistema o del cliente móvil.
+      placeholder: "Firefox 142 · Fedora 44 / Expo Go (Android 15)"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: confirmaciones
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Busqué en las issues existentes y no hay una igual.
+          required: true

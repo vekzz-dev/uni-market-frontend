@@ -1,0 +1,60 @@
+name: Propuesta de funcionalidad
+description: Nueva capacidad o incremento del cliente (web o móvil)
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir: revisa las issues existentes y el diseño en `design/uni-market.fig`.
+        El contrato de la API vive en `uni-market-api/openapi.yaml`; si algo no está ahí,
+        no se implementa a mano en el cliente.
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto
+      description: Qué problema resuelve y para quién.
+      placeholder: "El catálogo no muestra el estado de revisión de mis anuncios."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Alcance
+      description: Qué incluye, en una lista corta. Si hay pantallas, nómbralas.
+      placeholder: |
+        - Panel `mis-anuncios` con badge de revisión
+        - Motivo de rechazo visible
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      description: Cómo se comprueba que está terminado (observable, no "que funcione").
+      placeholder: |
+        - Un anuncio `pendiente` muestra su badge
+        - Un `rechazado` muestra el motivo del servidor
+    validations:
+      required: true
+
+  - type: textarea
+    id: fuera
+    attributes:
+      label: Fuera de alcance
+      description: Lo que este incremento NO incluye, para evitar crecimiento silencioso.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: confirmaciones
+    attributes:
+      label: Antes de enviar
+      options:
+        - label: Revisé que no exista una issue equivalente.
+          required: true
+        - label: El trabajo depende solo del contrato actual (o indico qué falta en la API).
+          required: true

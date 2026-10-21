@@ -2,7 +2,7 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0 completo** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados y CI con gates de deriva. **29 pruebas en verde** (`pnpm test`). También está el **archivo de diseño** en `design/uni-market.fig` con 9 páginas (catálogo, fundamentos y el flujo de sesión completo) y 44 PNG en `design/preview/`. Las apps y `packages/core` llegan en el Inc 1; los comandos `dev:*` y `lint` siguen siendo previstos.
+> **Estado actual**: **Inc 0 completo** y **núcleo del Inc 1 cerrado** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados, CI con gates de deriva y **dominio completo**: sesión (refresh de vuelo único), errores, paginación, validación espejo, capacidades y formato. **70 pruebas en verde** (`pnpm test`). También está el **archivo de diseño** con 9 páginas y 44 PNG en `design/preview/`. Falta la app web y el móvil.
 
 ## Estructura
 
@@ -12,7 +12,7 @@ apps/
   mobile/     (Inc 3) React Native + Expo (Expo Router) · JavaScript
 packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
-  core/       (Inc 1) sesión, errores, paginación, validación espejo, capacidades por rol, medios
+  core/       ✅ sesión, errores, paginación, validación espejo, capacidades, formato y medios
   design-tokens/ ✅ una fuente de tokens → variables CSS (web) y objeto JS (móvil)
   config/     (Inc 1) ESLint, Prettier y jsconfig compartidos
 openapi/      ✅ contrato vendorizado + lock con su referencia de origen

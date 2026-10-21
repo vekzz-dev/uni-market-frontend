@@ -1,0 +1,19 @@
+{
+  "name": "@uni-market/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Dominio compartido de Uni Market: sesión, errores, formato y medios (sin React ni React Native)",
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@uni-market/api-client": "workspace:*"
+  }
+}

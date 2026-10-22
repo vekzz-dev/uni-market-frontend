@@ -1,0 +1,165 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 72px;
+  padding: 0 32px;
+  background: var(--um-surface);
+  border-bottom: 1px solid var(--um-border);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--um-primary);
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.saludo {
+  font-size: 14px;
+  color: var(--um-text-secondary);
+}
+
+.boton {
+  width: auto;
+  padding: 0 14px;
+}
+
+.enlace {
+  color: var(--um-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.enlaceDestacado {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--um-radius-control);
+  background: var(--um-primary);
+  color: var(--um-text-on-primary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.enlaceDestacado:hover {
+  background: var(--um-primary-hover);
+  color: var(--um-text-on-primary-strong);
+}
+
+.principal {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 64px 16px;
+}
+
+.heroe {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 640px;
+}
+
+.etiqueta {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--um-primary-text);
+}
+
+.titulo {
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.texto {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--um-text-secondary);
+}
+
+.llamadas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.primario,
+.secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: var(--um-radius-control);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.primario {
+  background: var(--um-primary);
+  color: var(--um-text-on-primary);
+}
+
+.primario:hover {
+  background: var(--um-primary-hover);
+  color: var(--um-text-on-primary-strong);
+}
+
+.secundario {
+  background: var(--um-surface);
+  color: var(--um-text);
+  border: 1px solid var(--um-border-field);
+}
+
+.secundario:hover {
+  background: var(--um-surface-hover);
+}
+
+@media (max-width: 640px) {
+  .cabecera {
+    height: auto;
+    padding: 12px 16px;
+    flex-wrap: wrap;
+  }
+
+  .principal {
+    padding: 40px 16px;
+  }
+
+  .titulo {
+    font-size: 30px;
+    line-height: 38px;
+  }
+}

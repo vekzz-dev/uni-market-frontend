@@ -1,0 +1,40 @@
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.etiqueta {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--um-text);
+}
+
+.input {
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--um-border-field);
+  border-radius: var(--um-radius-control);
+  background: var(--um-surface);
+  color: var(--um-text);
+}
+
+.input::placeholder {
+  color: var(--um-text-secondary);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--um-error);
+}
+
+.ayuda {
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--um-text-secondary);
+}
+
+.error {
+  font-size: 12px;
+  line-height: 17px;
+  color: var(--um-error-text);
+}

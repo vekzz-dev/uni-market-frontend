@@ -14,6 +14,7 @@
 }
 
 .media {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,6 +24,8 @@
 }
 
 .imagen {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

@@ -19,7 +19,7 @@
 - [x] **T2 — Pruebas del catálogo**: primera página, carga de la siguiente sin duplicados, vacío, error con reintento y filtro por categoría. Ruta: padre.
 - [x] **T3 — Detalle en `/anuncios/:id`**: galería, información, estados 404 y error, enlace desde la tarjeta. Ruta: padre.
 - [x] **T4 — Pruebas del detalle**: render, 404 y enlace de vuelta. Ruta: padre.
-- [ ] **T5 — Verificación visual**: build servido con Vite en un panel de Herdr y capturas a 1440×900 y 390 contra `design/preview/`. Ruta: padre.
+- [x] **T5 — Verificación visual**: build servido con Vite en un panel de Herdr y capturas a 1440×900 y 390 contra `design/preview/`. Ruta: padre.
 
 ## Log
 
@@ -27,3 +27,4 @@
 - **Diseño del detalle (2026-10-22)**: no existía página de detalle en el `.fig`; se creó `08 · Detalle` con tres estados por plataforma (default, no disponible, error) y seis PNG en `design/preview/08-detalle/`. Se reutilizó el header real de `01 · Catálogo` clonándolo en cada frame, así que la cabecera es idéntica y no una reconstrucción. Hallazgo de contrato que condiciona la vista: `AnuncioResumen`/`AnuncioDetalle` exponen `vendedorId` pero **ningún nombre público de vendedor** y no hay endpoint público de perfil, así que la tarjeta y el detalle muestran categoría y fecha, no "Ana M." como en el preview.
 - **Herdr (2026-10-22)**: servidor de Vite levantado en el panel `w5:p6` (`pnpm dev:web`, `http://localhost:5173`) para la verificación en navegador.
 - **Catálogo y detalle implementados (2026-10-22)**: `/` reemplaza la portada por la grilla con filtros de categoría, orden, búsqueda por `q` en la URL y "Cargar más" con cursor; `/anuncios/:id` añade galería, información y los desenlaces 404/error. Se extrajo `CabeceraPublica` para compartir header entre catálogo y detalle. Pruebas: 20 en la app (catálogo 2, detalle 2); `pnpm build:web` limpio. Verificación visual con datos reales pendiente: la API no está levantada.
+- **Verificación con datos reales (2026-10-22)**: se levantó Postgres + el jar de `uni-market-api` y el catálogo mostró el anuncio aprobado de la BD de desarrollo (imagen, `$45.00`, "Sin categoría", "Hace 1 día"); el detalle mostró galería, fecha y descripción. Dos defectos visuales corregidos: la imagen de la tarjeta ignoraba el `aspect-ratio` 16:10 (`<img height:100%>` estiraba el contenedor; se sacó del flujo con `position:absolute`), y la fecha relativa iba en minúscula inicial. Búsqueda: ahora escribe `?q=` en la URL y el campo se sincroniza al limpiar filtros. El CTA de contacto autenticado se retiró hasta el Inc 5 (mensajería). 25 pruebas en la app.

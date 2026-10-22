@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation } from 'react-router-dom';
 import { Catalogo } from '../src/pantallas/Catalogo.jsx';
 import { SesionContexto } from '../src/sesion/SesionContexto.jsx';
 
@@ -16,6 +16,11 @@ const anuncio = (id, nombre) => ({
   imagenUrls: [],
 });
 
+function Sonda() {
+  const { search } = useLocation();
+  return <p data-testid="ubicacion">{search}</p>;
+}
+
 function montar(buscarCatalogo, entrada = '/') {
   const cliente = {
     catalogo: { buscarCatalogo },
@@ -27,6 +32,7 @@ function montar(buscarCatalogo, entrada = '/') {
         value={{ cliente, sesion: {}, estado: { estado: 'anonimo', usuario: null } }}
       >
         <Catalogo />
+        <Sonda />
       </SesionContexto.Provider>
     </MemoryRouter>,
   );
@@ -87,5 +93,57 @@ describe('pantalla Catálogo', () => {
     await usuario.click(await screen.findByRole('button', { name: 'Limpiar filtros' }));
 
     expect(buscador.value).toBe('');
+  });
+
+  it('escribe la búsqueda en la URL', async () => {
+    const usuario = userEvent.setup();
+    const buscarCatalogo = vi.fn().mockResolvedValue({
+      datos: [],
+      paginacion: { cursorSiguiente: null },
+    });
+    montar(buscarCatalogo);
+
+    const buscador = await screen.findByRole('searchbox', { name: 'Buscar en el catálogo' });
+    await usuario.type(buscador, 'bici');
+    await usuario.keyboard('{Enter}');
+
+    expect((await screen.findByTestId('ubicacion')).textContent).toBe('?q=bici');
+    expect(buscarCatalogo).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'bici' }));
+  });
+
+  it('muestra el error inicial y reintenta', async () => {
+    const usuario = userEvent.setup();
+    const buscarCatalogo = vi
+      .fn()
+      .mockRejectedValueOnce(new Error('sin red'))
+      .mockResolvedValueOnce({
+        datos: [anuncio('a1', 'Calculadora')],
+        paginacion: { cursorSiguiente: null },
+      });
+    montar(buscarCatalogo);
+
+    expect((await screen.findByRole('alert')).textContent).toContain('No pudimos conectar');
+    await usuario.click(screen.getByRole('button', { name: 'Reintentar' }));
+
+    expect(await screen.findByRole('heading', { name: 'Calculadora' })).toBeTruthy();
+  });
+
+  it('avisa del error al cargar más sin perder la página actual', async () => {
+    const usuario = userEvent.setup();
+    const buscarCatalogo = vi
+      .fn()
+      .mockResolvedValueOnce({
+        datos: [anuncio('a1', 'Calculadora')],
+        paginacion: { cursorSiguiente: 'c2' },
+      })
+      .mockRejectedValueOnce(new Error('sin red'));
+    montar(buscarCatalogo);
+
+    await screen.findByRole('heading', { name: 'Calculadora' });
+    await usuario.click(screen.getByRole('button', { name: 'Cargar más anuncios' }));
+
+    expect((await screen.findByRole('alert')).textContent).toContain('No pudimos conectar');
+    expect(screen.getByRole('heading', { name: 'Calculadora' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Cargar más anuncios' })).toBeTruthy();
   });
 });

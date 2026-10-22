@@ -14,7 +14,7 @@ const LIMITE = 12;
 export function Catalogo() {
   const { cliente, sesion, estado } = useSesion();
   const navegar = useNavigate();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const autenticado = estado.estado === 'autenticado';
 
   const [categorias, setCategorias] = useState([]);
@@ -30,6 +30,12 @@ export function Catalogo() {
   const [error, setError] = useState(null);
   const [errorMas, setErrorMas] = useState(null);
   const [recarga, setRecarga] = useState(0);
+
+  const qUrl = params.get('q') ?? '';
+
+  useEffect(() => {
+    setFiltros((actuales) => (actuales.q === qUrl ? actuales : { ...actuales, q: qUrl }));
+  }, [qUrl]);
 
   useEffect(() => {
     cliente.categorias
@@ -89,7 +95,13 @@ export function Catalogo() {
     }
   }
 
+  function aplicarBusqueda(q) {
+    setFiltros((actuales) => ({ ...actuales, q }));
+    setParams(q ? { q } : {}, { replace: true });
+  }
+
   function limpiarFiltros() {
+    setParams({}, { replace: true });
     setFiltros({ q: '', categoriaId: '', orden: 'fechaCreacion' });
   }
 
@@ -104,7 +116,7 @@ export function Catalogo() {
     <div className={estilos.pagina}>
       <CabeceraPublica
         inicial={filtros.q}
-        onBuscar={(q) => setFiltros((actuales) => ({ ...actuales, q }))}
+        onBuscar={aplicarBusqueda}
       >
         {autenticado ? (
           <>

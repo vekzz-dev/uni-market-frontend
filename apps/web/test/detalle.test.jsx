@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { ApiError } from '@uni-market/api-client';
 import { Detalle } from '../src/pantallas/Detalle.jsx';
@@ -54,5 +55,21 @@ describe('pantalla Detalle', () => {
     expect(
       await screen.findByRole('heading', { name: 'Este anuncio ya no está disponible' }),
     ).toBeTruthy();
+  });
+
+  it('muestra el error de carga y reintenta', async () => {
+    const usuario = userEvent.setup();
+    const leerAnuncio = vi
+      .fn()
+      .mockRejectedValueOnce(new ApiError('caído', { status: 500 }))
+      .mockResolvedValueOnce(detalle);
+    montar(leerAnuncio);
+
+    expect(
+      await screen.findByRole('heading', { name: 'No pudimos cargar el anuncio' }),
+    ).toBeTruthy();
+    await usuario.click(screen.getByRole('button', { name: 'Reintentar' }));
+
+    expect(await screen.findByRole('heading', { name: 'Calculadora científica' })).toBeTruthy();
   });
 });

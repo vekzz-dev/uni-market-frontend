@@ -4,6 +4,8 @@ import { Icono } from '../componentes/Icono.jsx';
 import { origenApi } from '../config.js';
 import estilos from './TarjetaAnuncio.module.css';
 
+const capitalizar = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
+
 /**
  * Tarjeta del catálogo. El contrato público no expone el nombre del vendedor
  * (solo `vendedorId`), así que la tarjeta muestra categoría y fecha, no autor.
@@ -27,7 +29,7 @@ export function TarjetaAnuncio({ anuncio, categoria }) {
           <p className={estilos.precio}>{formatearPrecio(anuncio.precio)}</p>
           <div className={estilos.meta}>
             <span>{categoria?.nombre ?? 'Sin categoría'}</span>
-            <span>{formatearFechaRelativa(anuncio.fechaCreacion)}</span>
+            <span>{capitalizar(formatearFechaRelativa(anuncio.fechaCreacion))}</span>
           </div>
         </div>
       </Link>

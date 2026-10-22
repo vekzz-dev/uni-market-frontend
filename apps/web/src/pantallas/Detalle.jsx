@@ -162,23 +162,17 @@ export function Detalle() {
                   <p className={estilos.descripcion}>{anuncio.descripcion}</p>
                 )}
 
-                <div className={estilos.contacto}>
-                  <h2 className={estilos.contactoTitulo}>¿Te interesa?</h2>
-                  {autenticado ? (
+                {!autenticado && (
+                  <div className={estilos.contacto}>
+                    <h2 className={estilos.contactoTitulo}>¿Te interesa?</h2>
                     <p className={estilos.contactoTexto}>
-                      La mensajería estará disponible en la siguiente entrega.
+                      Inicia sesión para contactar al vendedor.
                     </p>
-                  ) : (
-                    <>
-                      <p className={estilos.contactoTexto}>
-                        Inicia sesión para contactar al vendedor.
-                      </p>
-                      <Link to="/entrar" className={estilos.primario}>
-                        Entrar
-                      </Link>
-                    </>
-                  )}
-                </div>
+                    <Link to="/entrar" className={estilos.primario}>
+                      Entrar
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           </>

@@ -2,13 +2,13 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0 completo** y **núcleo del Inc 1 cerrado** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados, CI con gates de deriva y **dominio completo**: sesión (refresh de vuelo único), errores, paginación, validación espejo, capacidades y formato. **70 pruebas en verde** (`pnpm test`). También está el **archivo de diseño** con 9 páginas y 44 PNG en `design/preview/`. Falta la app web y el móvil.
+> **Estado actual**: **Inc 0 completo** y **flujo de sesión web (Inc 1) cerrado** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados, dominio completo (sesión con refresh de vuelo único, errores, paginación, validación espejo, capacidades, formato) y **app web** con las seis pantallas de sesión: entrar, registro, confirmar correo, restablecer, nueva contraseña y reenvío, más la portada provisional. **82 pruebas en verde** (`pnpm test`) y `vite build` limpio. El **archivo de diseño** tiene 9 páginas y 44 PNG en `design/preview/`. Faltan el catálogo web y el móvil.
 
 ## Estructura
 
 ```
 apps/
-  web/        (Inc 1) React + Vite · JavaScript · CSS puro (CSS Modules)
+  web/        ✅ (Inc 1) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · 6 pantallas de sesión
   mobile/     (Inc 3) React Native + Expo (Expo Router) · JavaScript
 packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
@@ -33,6 +33,8 @@ odd/tasks/    ✅ registro de trabajo por feature
 
 El generador no requiere instalación global: se invoca con `npx` y descarga su CLI la primera vez.
 
+La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localhost:8080/v1`); define esa variable en el entorno o en un `.env.local` de `apps/web/` si necesitas otro origen.
+
 ## Comandos
 
 | Comando | Qué hace |
@@ -43,9 +45,10 @@ El generador no requiere instalación global: se invoca con `npx` y descarga su 
 | `pnpm api:generate` | Regenera el cliente HTTP (requiere Java) |
 | `pnpm api:check` | Regenera en un temporal y falla si el cliente deriva del contrato |
 | `pnpm tokens:build` | Regenera `tokens.css` desde los tokens |
-| `pnpm test` | Suite de todos los paquetes (hoy: tokens + api-client) |
-| `pnpm dev:web` / `pnpm dev:mobile` | **Previstos**: llegan con las apps (Inc 1 / Inc 3) |
-| `pnpm lint` | **Previsto**: llega con las apps (Inc 1), incluidas las reglas de frontera |
+| `pnpm test` | Suite de todos los paquetes (hoy: tokens, api-client, core y web) |
+| `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
+| `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
+| `pnpm lint` | **Previsto**: llega con `packages/config` (Inc 1), incluidas las reglas de frontera |
 
 ## Documentación
 
@@ -56,7 +59,7 @@ El generador no requiere instalación global: se invoca con `npx` y descarga su 
 | [`docs/design-system.md`](docs/design-system.md) | Roles semánticos, tokens, convenciones de CSS puro, componentes y accesibilidad |
 | [`docs/testing-strategy.md`](docs/testing-strategy.md) | Niveles de prueba, deriva de contrato y gates de CI |
 | [`design/uni-market.fig`](design/uni-market.fig) | Archivo de diseño (OpenPencil): una página por vista, web y móvil con sus estados |
-| [`design/preview/README.md`](design/preview/README.md) | Exportes SVG por vista y cómo regenerarlos |
+| [`design/preview/README.md`](design/preview/README.md) | Exportes PNG por vista y cómo regenerarlos |
 | [`odd/tasks/frontend-engineering.md`](odd/tasks/frontend-engineering.md) | Track de esta ingeniería, con evidencia |
 
 Requisitos de producto, reglas de negocio (R1–R16) y esquema: repositorio `uni-market-api` (`docs/prd.md`, `docs/database-design.md`, `docs/system-design.md`). **No se duplican aquí.**

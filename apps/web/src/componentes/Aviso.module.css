@@ -1,0 +1,28 @@
+.aviso {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--um-radius-control);
+  font-size: 13px;
+  line-height: 19px;
+}
+
+.error {
+  background: var(--um-error-soft);
+  color: var(--um-error-text);
+}
+
+.advertencia {
+  background: var(--um-warning-soft);
+  color: var(--um-warning-text);
+}
+
+.exito {
+  background: var(--um-success-soft);
+  color: var(--um-success-text);
+}
+
+.info {
+  background: var(--um-info-soft);
+  color: var(--um-info-text);
+}

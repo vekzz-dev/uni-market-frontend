@@ -1,0 +1,52 @@
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: var(--um-radius-control);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--um-duration-fast) ease;
+}
+
+.primario {
+  background: var(--um-primary);
+  color: var(--um-text-on-primary);
+}
+
+.primario:hover {
+  background: var(--um-primary-hover);
+  color: var(--um-text-on-primary-strong);
+}
+
+.primario:active {
+  background: var(--um-primary-active);
+  color: var(--um-text-on-primary-strong);
+}
+
+.secundario {
+  background: var(--um-surface);
+  color: var(--um-text);
+  border-color: var(--um-border-field);
+}
+
+.secundario:hover {
+  background: var(--um-surface-hover);
+}
+
+.peligro {
+  background: var(--um-error);
+  color: var(--um-text-on-error);
+}
+
+.boton:disabled {
+  background: var(--um-disabled-bg);
+  color: var(--um-disabled-text);
+  border-color: transparent;
+  cursor: not-allowed;
+}

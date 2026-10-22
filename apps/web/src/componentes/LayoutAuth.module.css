@@ -1,0 +1,141 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--um-primary-soft);
+}
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  height: 72px;
+  padding: 0 32px;
+  background: var(--um-surface);
+  border-bottom: 1px solid var(--um-border);
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--um-text);
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--um-primary);
+}
+
+.enlace {
+  color: var(--um-link);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.centro {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  background: var(--um-surface);
+  border: 1px solid var(--um-border);
+  border-radius: var(--um-radius-card);
+}
+
+.cabeceraTarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Desenlace: icono, título y cuerpo centrados (confirmar, restablecer, registro). */
+.tarjetaResultado {
+  align-items: center;
+  text-align: center;
+}
+
+.cabeceraResultado {
+  align-items: center;
+  gap: 12px;
+}
+
+.iconoResultado {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--um-surface-hover);
+  color: var(--um-text-secondary);
+  font-size: 22px;
+}
+
+.iconoResultado[data-girando='true'] svg {
+  animation: girar 900ms linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.exito {
+  background: var(--um-success-soft);
+  color: var(--um-success-text);
+}
+
+.error {
+  background: var(--um-error-soft);
+  color: var(--um-error-text);
+}
+
+.titulo {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.subtitulo {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--um-text-secondary);
+}
+
+@media (max-width: 640px) {
+  .cabecera {
+    height: 64px;
+    padding: 0 16px;
+  }
+
+  .centro {
+    align-items: flex-start;
+  }
+
+  .tarjeta {
+    padding: 20px;
+  }
+
+  /* En móvil la marca ya vuelve al catálogo; el enlace extra solo comprime la cabecera. */
+  .enlace {
+    display: none;
+  }
+}

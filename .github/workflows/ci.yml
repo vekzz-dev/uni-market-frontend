@@ -32,6 +32,9 @@ jobs:
       - name: Pruebas
         run: pnpm test
 
+      - name: Lint
+        run: pnpm lint
+
       - name: Build de la web
         run: pnpm build:web
 

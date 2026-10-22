@@ -33,6 +33,12 @@
   background: var(--um-primary);
 }
 
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .enlace {
   color: var(--um-link);
   font-size: 14px;
@@ -135,7 +141,13 @@
   }
 
   /* En móvil la marca ya vuelve al catálogo; el enlace extra solo comprime la cabecera. */
-  .enlace {
+  .acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.enlace {
     display: none;
   }
 }

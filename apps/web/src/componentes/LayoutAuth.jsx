@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Icono } from './Icono.jsx';
+import { SelectorTema } from './SelectorTema.jsx';
 import estilos from './LayoutAuth.module.css';
 
 /**
@@ -31,9 +32,12 @@ export function LayoutAuth({
           <span className={estilos.logo} aria-hidden="true" />
           Uni Market
         </Link>
-        <Link to="/" className={estilos.enlace}>
-          Volver al catálogo
-        </Link>
+        <div className={estilos.acciones}>
+          <SelectorTema />
+          <Link to="/" className={estilos.enlace}>
+            Volver al catálogo
+          </Link>
+        </div>
       </header>
 
       <main className={estilos.centro}>

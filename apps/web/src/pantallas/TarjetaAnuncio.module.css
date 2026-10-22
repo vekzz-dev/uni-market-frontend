@@ -1,0 +1,63 @@
+.tarjeta {
+  overflow: hidden;
+  background: var(--um-surface);
+  border: 1px solid var(--um-border);
+  border-radius: var(--um-radius-card);
+}
+
+.enlace {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.media {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  background: var(--um-surface-hover);
+  color: var(--um-text-secondary);
+}
+
+.imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cuerpo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+}
+
+.nombre {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.precio {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--um-text-secondary);
+}
+
+.enlace:hover .media {
+  background: var(--um-border);
+}
+
+.enlace:hover .nombre {
+  text-decoration: underline;
+}

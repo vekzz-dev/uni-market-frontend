@@ -32,6 +32,9 @@ jobs:
       - name: Pruebas
         run: pnpm test
 
+      - name: Build de la web
+        run: pnpm build:web
+
       - name: Contrato vendorizado
         run: pnpm contract:check
 

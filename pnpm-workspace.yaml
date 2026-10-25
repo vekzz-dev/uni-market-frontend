@@ -2,6 +2,6 @@ packages:
   - apps/*
   - packages/*
 
-onlyBuiltDependencies:
+ignoredBuiltDependencies:
   - '@parcel/watcher'
   - unrs-resolver

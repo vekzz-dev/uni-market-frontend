@@ -2,7 +2,7 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0 completo** y **flujo de sesión web (Inc 1) cerrado** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados, dominio completo (sesión con refresh de vuelo único, errores, paginación, validación espejo, capacidades, formato) y **app web** con las seis pantallas de sesión: entrar, registro, confirmar correo, restablecer, nueva contraseña y reenvío, más la portada provisional. **95 pruebas en verde** (`pnpm test`) y `vite build` limpio. El **archivo de diseño** tiene 10 páginas y 50 PNG en `design/preview/`. El catálogo y el detalle web ya están implementados contra la API real; falta el móvil.
+> **Estado actual**: **Inc 0 completo** y **flujo de sesión web (Inc 1) cerrado** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados, dominio completo (sesión con refresh de vuelo único, errores, paginación, validación espejo, capacidades, formato) y **app web** con las seis pantallas de sesión: entrar, registro, confirmar correo, restablecer, nueva contraseña y reenvío, más la portada provisional. **102 pruebas en verde** (`pnpm test`) y `vite build` limpio. El **archivo de diseño** tiene 10 páginas y 50 PNG en `design/preview/`. El catálogo y el detalle web están implementados contra la API real; la plataforma web ya tiene lint, tema oscuro con conmutador, 404 y auditoría `axe`. Falta el móvil.
 
 ## Estructura
 
@@ -14,7 +14,7 @@ packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
   core/       ✅ sesión, errores, paginación, validación espejo, capacidades, formato y medios
   design-tokens/ ✅ una fuente de tokens → variables CSS (web) y objeto JS (móvil)
-  config/     (Inc 1) ESLint, Prettier y jsconfig compartidos
+  config/     ✅ ESLint flat, Prettier y reglas de frontera (sin fetch a mano, core sin React)
 openapi/      ✅ contrato vendorizado + lock con su referencia de origen
 design/       ✅ uni-market.fig (OpenPencil) + preview/ con los PNG de verificación
 scripts/      ✅ contract:sync · contract:check · api:generate · api:check
@@ -48,7 +48,8 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm test` | Suite de todos los paquetes (hoy: tokens, api-client, core y web) |
 | `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
 | `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
-| `pnpm lint` | **Previsto**: llega con `packages/config` (Inc 1), incluidas las reglas de frontera |
+| `pnpm lint` | ESLint sobre el monorepo, con las reglas de frontera |
+| `pnpm format:check` | Comprueba el formato con Prettier |
 
 ## Documentación
 

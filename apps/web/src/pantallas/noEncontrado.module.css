@@ -1,0 +1,77 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.principal {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+  padding: 32px;
+  text-align: center;
+  background: var(--um-surface);
+  border: 1px solid var(--um-border);
+  border-radius: var(--um-radius-card);
+}
+
+.icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--um-surface-hover);
+  color: var(--um-text-secondary);
+}
+
+.codigo {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--um-text-secondary);
+}
+
+.titulo {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.texto {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--um-text-secondary);
+}
+
+.primario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--um-radius-control);
+  background: var(--um-primary);
+  color: var(--um-text-on-primary);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.primario:hover {
+  background: var(--um-primary-hover);
+  color: var(--um-text-on-primary-strong);
+}

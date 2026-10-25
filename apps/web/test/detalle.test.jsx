@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { axe } from 'vitest-axe';
 import { ApiError } from '@uni-market/api-client';
 import { Detalle } from '../src/pantallas/Detalle.jsx';
 import { SesionContexto } from '../src/sesion/SesionContexto.jsx';
@@ -71,5 +72,12 @@ describe('pantalla Detalle', () => {
     await usuario.click(screen.getByRole('button', { name: 'Reintentar' }));
 
     expect(await screen.findByRole('heading', { name: 'Calculadora científica' })).toBeTruthy();
+  });
+
+  it('no tiene violaciones de accesibilidad', async () => {
+    const { container } = montar(vi.fn().mockResolvedValue(detalle));
+
+    await screen.findByRole('heading', { name: 'Calculadora científica' });
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useLocation } from 'react-router-dom';
+import { axe } from 'vitest-axe';
 import { Catalogo } from '../src/pantallas/Catalogo.jsx';
 import { SesionContexto } from '../src/sesion/SesionContexto.jsx';
 
@@ -145,5 +146,16 @@ describe('pantalla Catálogo', () => {
     expect((await screen.findByRole('alert')).textContent).toContain('No pudimos conectar');
     expect(screen.getByRole('heading', { name: 'Calculadora' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Cargar más anuncios' })).toBeTruthy();
+  });
+
+  it('no tiene violaciones de accesibilidad', async () => {
+    const buscarCatalogo = vi.fn().mockResolvedValue({
+      datos: [anuncio('a1', 'Calculadora')],
+      paginacion: { cursorSiguiente: null },
+    });
+    const { container } = montar(buscarCatalogo);
+
+    await screen.findByRole('heading', { name: 'Calculadora' });
+    expect((await axe(container)).violations).toEqual([]);
   });
 });

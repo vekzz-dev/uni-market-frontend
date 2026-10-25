@@ -1,0 +1,11 @@
+{
+  "name": "@uni-market/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Configuración compartida de ESLint, Prettier y jsconfig del monorepo",
+  "exports": {
+    "./eslint": "./eslint.config.js",
+    "./prettier": "./prettier.config.js"
+  }
+}

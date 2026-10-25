@@ -9,31 +9,36 @@ export const SesionContexto = createContext(null);
 
 export function SesionProvider({ children }) {
   const [estado, setEstado] = useState({ estado: 'anonimo', usuario: null });
-  const gestorRef = useRef(null);
-  const clienteRef = useRef(null);
-  const restaurado = useRef(false);
 
-  if (!gestorRef.current) {
-    clienteRef.current = crearCliente({
+  // Se crea una sola vez. `gestor` se asigna dentro del inicializador para que la
+  // closure de `getAccessToken` lo vea sin tocar refs durante el render.
+  const [recursos] = useState(() => {
+    let gestor = null;
+    const cliente = crearCliente({
       baseUrl: apiBaseUrl,
-      getAccessToken: () => gestorRef.current?.obtenerAccessToken() ?? null,
+      getAccessToken: () => gestor?.obtenerAccessToken() ?? null,
     });
-    gestorRef.current = crearGestorSesion({
-      auth: clienteRef.current.auth,
+    gestor = crearGestorSesion({
+      auth: cliente.auth,
       almacen: crearAlmacenWeb(),
       alCambiar: setEstado,
     });
-  }
+    return { cliente, sesion: gestor };
+  });
+
+  const restaurado = useRef(false);
 
   useEffect(() => {
     // StrictMode ejecuta el efecto dos veces: restaurar dos veces rotaría dos veces.
     if (restaurado.current) return;
     restaurado.current = true;
-    gestorRef.current.restaurar().catch(() => {});
-  }, []);
+    recursos.sesion.restaurar().catch(() => {});
+  }, [recursos]);
 
   return (
-    <SesionContexto.Provider value={{ cliente: clienteRef.current, sesion: gestorRef.current, estado }}>
+    <SesionContexto.Provider
+      value={{ cliente: recursos.cliente, sesion: recursos.sesion, estado }}
+    >
       {children}
     </SesionContexto.Provider>
   );

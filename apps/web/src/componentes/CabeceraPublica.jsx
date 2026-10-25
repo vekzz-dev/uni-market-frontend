@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Icono } from './Icono.jsx';
+import { SelectorTema } from './SelectorTema.jsx';
 import estilos from './CabeceraPublica.module.css';
 
 /**
@@ -43,6 +44,7 @@ export function CabeceraPublica({ inicial = '', onBuscar, children }) {
       </form>
 
       <nav className={estilos.acciones} aria-label="Cuenta">
+        <SelectorTema />
         {children}
       </nav>
     </header>

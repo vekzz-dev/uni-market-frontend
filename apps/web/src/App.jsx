@@ -7,6 +7,7 @@ import { NuevaContrasena } from './pantallas/NuevaContrasena.jsx';
 import { Reenviar } from './pantallas/Reenviar.jsx';
 import { Catalogo } from './pantallas/Catalogo.jsx';
 import { Detalle } from './pantallas/Detalle.jsx';
+import { NoEncontrado } from './pantallas/NoEncontrado.jsx';
 
 export function App() {
   return (
@@ -19,6 +20,7 @@ export function App() {
       <Route path="/restablecer" element={<Restablecer />} />
       <Route path="/nueva-contrasena" element={<NuevaContrasena />} />
       <Route path="/reenviar" element={<Reenviar />} />
+      <Route path="*" element={<NoEncontrado />} />
     </Routes>
   );
 }

@@ -115,6 +115,11 @@
   font-weight: 600;
 }
 
+.vendedor {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 .meta {
   font-size: 14px;
   color: var(--um-text-secondary);

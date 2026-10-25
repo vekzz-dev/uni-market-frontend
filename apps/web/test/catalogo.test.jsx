@@ -13,6 +13,7 @@ const anuncio = (id, nombre) => ({
   precio: 45,
   categoriaId: 3,
   vendedorId: 'u1',
+  vendedorNombre: 'Ana P.',
   fechaCreacion: new Date().toISOString(),
   imagenUrls: [],
 });
@@ -55,6 +56,7 @@ describe('pantalla Catálogo', () => {
     montar(buscarCatalogo);
 
     expect(await screen.findByRole('heading', { name: 'Calculadora' })).toBeTruthy();
+    expect(screen.getByText(/Ana P\./)).toBeTruthy();
     await usuario.click(screen.getByRole('button', { name: 'Cargar más anuncios' }));
 
     expect(await screen.findByRole('heading', { name: 'Bicicleta' })).toBeTruthy();

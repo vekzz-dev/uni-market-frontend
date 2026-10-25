@@ -14,6 +14,7 @@ const detalle = {
   descripcion: 'Con funda y manual.',
   categoriaId: 3,
   vendedorId: 'u1',
+  vendedorNombre: 'Ana P.',
   fechaCreacion: '2026-10-20T10:00:00Z',
   imagenUrls: [],
 };
@@ -48,6 +49,7 @@ describe('pantalla Detalle', () => {
     expect(await screen.findByRole('heading', { name: 'Calculadora científica' })).toBeTruthy();
     expect(screen.getByText('$45.00')).toBeTruthy();
     expect(screen.getByText('Electrónica')).toBeTruthy();
+    expect(screen.getByText('Vendedor: Ana P.')).toBeTruthy();
   });
 
   it('trata el 404 como anuncio no disponible', async () => {

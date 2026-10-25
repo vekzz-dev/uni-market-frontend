@@ -151,6 +151,9 @@ export function Detalle() {
                 <span className={estilos.chip}>{categoria?.nombre ?? 'Sin categoría'}</span>
                 <h1 className={estilos.titulo}>{anuncio.nombre}</h1>
                 <p className={estilos.precio}>{formatearPrecio(anuncio.precio)}</p>
+                {anuncio.vendedorNombre && (
+                  <p className={estilos.vendedor}>Vendedor: {anuncio.vendedorNombre}</p>
+                )}
                 <p className={estilos.meta}>
                   Publicado el {formatearFecha(anuncio.fechaCreacion)}
                   {imagenes.length > 1 ? ` · ${imagenes.length} imágenes` : ''}

@@ -28,7 +28,10 @@ export function TarjetaAnuncio({ anuncio, categoria }) {
           <h2 className={estilos.nombre}>{anuncio.nombre}</h2>
           <p className={estilos.precio}>{formatearPrecio(anuncio.precio)}</p>
           <div className={estilos.meta}>
-            <span>{categoria?.nombre ?? 'Sin categoría'}</span>
+            <span>
+              {categoria?.nombre ?? 'Sin categoría'}
+              {anuncio.vendedorNombre ? ` · ${anuncio.vendedorNombre}` : ''}
+            </span>
             <span>{capitalizar(formatearFechaRelativa(anuncio.fechaCreacion))}</span>
           </div>
         </div>

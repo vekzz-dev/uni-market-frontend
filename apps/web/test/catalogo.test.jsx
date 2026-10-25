@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 import { axe } from 'vitest-axe';
@@ -7,6 +7,7 @@ import { Catalogo } from '../src/pantallas/Catalogo.jsx';
 import { SesionContexto } from '../src/sesion/SesionContexto.jsx';
 
 const categoria = { id: 3, nombre: 'Electrónica', orden: 1 };
+const categoriaLibros = { id: 4, nombre: 'Libros', orden: 2 };
 const anuncio = (id, nombre) => ({
   id,
   nombre,
@@ -26,7 +27,7 @@ function Sonda() {
 function montar(buscarCatalogo, entrada = '/') {
   const cliente = {
     catalogo: { buscarCatalogo },
-    categorias: { listarCategorias: vi.fn().mockResolvedValue({ datos: [categoria] }) },
+    categorias: { listarCategorias: vi.fn().mockResolvedValue({ datos: [categoria, categoriaLibros] }) },
   };
   return render(
     <MemoryRouter initialEntries={[entrada]}>
@@ -159,5 +160,66 @@ describe('pantalla Catálogo', () => {
 
     await screen.findByRole('heading', { name: 'Calculadora' });
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it('conserva los resultados si falla la recarga por filtro', async () => {
+    const usuario = userEvent.setup();
+    const buscarCatalogo = vi
+      .fn()
+      .mockResolvedValueOnce({
+        datos: [anuncio('a1', 'Calculadora')],
+        paginacion: { cursorSiguiente: null },
+      })
+      .mockRejectedValueOnce(new Error('sin red'));
+    montar(buscarCatalogo);
+
+    await screen.findByRole('heading', { name: 'Calculadora' });
+    await usuario.click(screen.getByRole('button', { name: 'Electrónica' }));
+
+    expect((await screen.findByRole('alert')).textContent).toContain('No pudimos conectar');
+    expect(screen.getByRole('heading', { name: 'Calculadora' })).toBeTruthy();
+  });
+
+  it('ignora la respuesta de un filtro anterior', async () => {
+    const usuario = userEvent.setup();
+    let resolverLenta;
+    let resolverRapida;
+    const lenta = new Promise((resolve) => {
+      resolverLenta = resolve;
+    });
+    const rapida = new Promise((resolve) => {
+      resolverRapida = resolve;
+    });
+    const buscarCatalogo = vi
+      .fn()
+      .mockResolvedValueOnce({
+        datos: [anuncio('a1', 'Calculadora')],
+        paginacion: { cursorSiguiente: null },
+      })
+      .mockReturnValueOnce(lenta)
+      .mockReturnValueOnce(rapida);
+    montar(buscarCatalogo);
+
+    await screen.findByRole('heading', { name: 'Calculadora' });
+    await usuario.click(screen.getByRole('button', { name: 'Electrónica' }));
+    await usuario.click(screen.getByRole('button', { name: 'Libros' }));
+
+    await act(async () => {
+      resolverRapida({
+        datos: [anuncio('c1', 'Libro C')],
+        paginacion: { cursorSiguiente: null },
+      });
+    });
+    expect(await screen.findByRole('heading', { name: 'Libro C' })).toBeTruthy();
+
+    await act(async () => {
+      resolverLenta({
+        datos: [anuncio('b1', 'Electrónica B')],
+        paginacion: { cursorSiguiente: null },
+      });
+    });
+
+    expect(screen.queryByRole('heading', { name: 'Electrónica B' })).toBeNull();
+    expect(screen.getByRole('heading', { name: 'Libro C' })).toBeTruthy();
   });
 });

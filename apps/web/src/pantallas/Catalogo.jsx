@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { fusionarPagina, mapearProblema } from '@uni-market/core';
 import { Aviso } from '../componentes/Aviso.jsx';
@@ -30,6 +30,7 @@ export function Catalogo() {
   const [error, setError] = useState(null);
   const [errorMas, setErrorMas] = useState(null);
   const [recarga, setRecarga] = useState(0);
+  const solicitud = useRef(0);
 
   const qUrl = params.get('q') ?? '';
 
@@ -45,7 +46,7 @@ export function Catalogo() {
   }, [cliente]);
 
   useEffect(() => {
-    let vigente = true;
+    const id = ++solicitud.current;
     setCargando(true);
     setError(null);
 
@@ -56,27 +57,24 @@ export function Catalogo() {
     cliente.catalogo
       .buscarCatalogo(parametros)
       .then((pagina) => {
-        if (!vigente) return;
+        if (solicitud.current !== id) return;
         setAnuncios(pagina.datos ?? []);
         setCursor(pagina.paginacion?.cursorSiguiente ?? null);
       })
       .catch((fallo) => {
-        if (!vigente) return;
+        if (solicitud.current !== id) return;
         setError(mapearProblema(fallo).mensaje);
       })
       .finally(() => {
-        if (vigente) setCargando(false);
+        if (solicitud.current === id) setCargando(false);
       });
-
-    return () => {
-      vigente = false;
-    };
   }, [cliente, filtros, recarga]);
 
   const porId = new Map(categorias.map((categoria) => [String(categoria.id), categoria]));
 
   async function cargarMas() {
-    if (!cursor || cargandoMas) return;
+    if (!cursor || cargandoMas || cargando) return;
+    const id = ++solicitud.current;
     setCargandoMas(true);
     setErrorMas(null);
 
@@ -86,10 +84,11 @@ export function Catalogo() {
 
     try {
       const pagina = await cliente.catalogo.buscarCatalogo(parametros);
+      if (solicitud.current !== id) return;
       setAnuncios((vigentes) => fusionarPagina(vigentes, pagina.datos ?? []));
       setCursor(pagina.paginacion?.cursorSiguiente ?? null);
     } catch (fallo) {
-      setErrorMas(mapearProblema(fallo).mensaje);
+      if (solicitud.current === id) setErrorMas(mapearProblema(fallo).mensaje);
     } finally {
       setCargandoMas(false);
     }
@@ -187,11 +186,11 @@ export function Catalogo() {
 
         {cargando && (
           <p className={estilos.estado} role="status">
-            Cargando anuncios…
+            {anuncios.length > 0 ? 'Actualizando anuncios…' : 'Cargando anuncios…'}
           </p>
         )}
 
-        {!cargando && error && (
+        {error && (
           <div className={estilos.estadoError}>
             <Aviso>{error}</Aviso>
             <Boton variante="secundario" onClick={() => setRecarga((n) => n + 1)}>
@@ -219,9 +218,9 @@ export function Catalogo() {
           </div>
         )}
 
-        {!cargando && !error && anuncios.length > 0 && (
+        {anuncios.length > 0 && (
           <>
-            <div className={estilos.grilla}>
+            <div className={estilos.grilla} aria-busy={cargando || undefined}>
               {anuncios.map((anuncio) => (
                 <TarjetaAnuncio
                   key={anuncio.id}
@@ -235,7 +234,12 @@ export function Catalogo() {
 
             {cursor && (
               <div className={estilos.mas}>
-                <Boton variante="secundario" cargando={cargandoMas} onClick={cargarMas}>
+                <Boton
+                  variante="secundario"
+                  cargando={cargandoMas}
+                  disabled={cargando}
+                  onClick={cargarMas}
+                >
                   {cargandoMas ? 'Cargando…' : 'Cargar más anuncios'}
                 </Boton>
               </div>

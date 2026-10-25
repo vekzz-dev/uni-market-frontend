@@ -245,8 +245,8 @@ Cada incremento entrega una capacidad visible completa y verificable, con web pr
 | Inc | Contenido | Salida observable |
 |---|---|---|
 | **Inc 0** | Monorepo: workspaces, configs, tokens, `contract:sync`, cliente generado y comprobación de deriva, CI | `pnpm install && pnpm api:check && pnpm tokens:build` en verde, sin UI — **completado el 2026-10-21** (ver `odd/tasks/frontend-engineering.md` T14) |
-| **Inc 1** | Sistema de diseño mínimo + núcleo de sesión + pantallas de sesión web | **Completado el 2026-10-21**: seis pantallas de sesión y portada con Inter autoalojada, 12 pruebas de interfaz y `vite build` limpio (**82** en el workspace). El lint compartido queda para `packages/config` |
-| **Inc 2** | Catálogo público web + detalle | Explorar, filtrar y abrir un anuncio con cursor infinito |
+| **Inc 1** | Sistema de diseño mínimo + núcleo de sesión + pantallas de sesión web | **Completado el 2026-10-21**: seis pantallas de sesión y portada con Inter autoalojada, 18 pruebas de interfaz y `vite build` limpio. El lint compartido llegó con el Inc 2 |
+| **Inc 2** | Catálogo público web + detalle | **Completado el 2026-10-24**: catálogo con cursor, detalle, nombre público del vendedor, 404, tema oscuro, lint/Prettier y `axe`; 34 pruebas web (**104** en el workspace) |
 | **Inc 3** | Shell móvil + paridad de sesión y catálogo | App Expo con flujo de sesión y catálogo funcionando |
 | **Inc 4** | Vendedor web | Publicar con imágenes, ver estado de revisión, editar, visibilidad, vendido |
 | **Inc 5** | Mensajería web | Conversaciones, hilo con cursor hacia atrás, envío y marcado de lectura |

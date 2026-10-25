@@ -2,13 +2,13 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0 completo** y **flujo de sesión web (Inc 1) cerrado** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember verificados, dominio completo (sesión con refresh de vuelo único, errores, paginación, validación espejo, capacidades, formato) y **app web** con las seis pantallas de sesión: entrar, registro, confirmar correo, restablecer, nueva contraseña y reenvío, más la portada provisional. **104 pruebas en verde** (`pnpm test`) y `vite build` limpio. El **archivo de diseño** tiene 10 páginas y 50 PNG en `design/preview/`. El catálogo y el detalle web están implementados contra la API real; la plataforma web ya tiene lint, tema oscuro con conmutador, 404 y auditoría `axe`. Falta el móvil.
+> **Estado actual**: **Inc 0, Inc 1 e Inc 2 web completos** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo público, detalle, 404, tema claro/oscuro con conmutador y auditoría `axe`. **104 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 10 páginas y 50 PNG en `design/preview/`. Falta el móvil (Inc 3).
 
 ## Estructura
 
 ```
 apps/
-  web/        ✅ (Inc 1) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · 6 pantallas de sesión
+  web/        ✅ (Inc 1–2) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · sesión, catálogo y detalle
   mobile/     (Inc 3) React Native + Expo (Expo Router) · JavaScript
 packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch

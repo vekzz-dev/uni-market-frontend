@@ -27,7 +27,7 @@ jobs:
           java-version: 21
 
       - name: Instalar workspaces
-        run: pnpm install --frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Pruebas
         run: pnpm test

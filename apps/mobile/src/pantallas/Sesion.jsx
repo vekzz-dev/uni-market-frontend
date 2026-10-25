@@ -15,22 +15,33 @@ import { useTema } from "../tema.js";
 function Pantalla({ titulo, subtitulo, children }) {
   const { semantic: c } = useTema();
   return (
-    <View style={{ flex: 1, backgroundColor: c.bg }}>
+    <View style={{ flex: 1, backgroundColor: c.primarySoft }}>
       <Cabecera />
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView contentContainerStyle={{ padding: 20, gap: 16 }}>
-          <View style={{ gap: 6 }}>
-            <Text style={{ color: c.text, fontSize: 24, fontWeight: "600" }}>
-              {titulo}
-            </Text>
-            {subtitulo && (
-              <Text style={{ color: c.textSecondary }}>{subtitulo}</Text>
-            )}
+        <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
+          <View
+            style={{
+              backgroundColor: c.surface,
+              borderWidth: 1,
+              borderColor: c.border,
+              borderRadius: 16,
+              padding: 20,
+              gap: 16,
+            }}
+          >
+            <View style={{ gap: 6 }}>
+              <Text style={{ color: c.text, fontSize: 24, fontWeight: "600" }}>
+                {titulo}
+              </Text>
+              {subtitulo && (
+                <Text style={{ color: c.textSecondary }}>{subtitulo}</Text>
+              )}
+            </View>
+            {children}
           </View>
-          {children}
         </ScrollView>
       </KeyboardAvoidingView>
     </View>

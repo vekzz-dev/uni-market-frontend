@@ -22,3 +22,4 @@
 - **L1 (2026-10-22, verbatim)**: "podemos resolver primero la deuda tecnica, hazme preguntas"
 - **Decisiones (2026-10-22)**: conmutador de tema persistido (no solo sistema), 404 con el patrón de desenlace, axe en pruebas de componentes, y este lote acotado a plataforma.
 - **Verificación (2026-10-22)**: `pnpm lint` limpio (ESLint 9; ESLint 10 rompía `eslint-plugin-react`), **32** pruebas de la web (**102** en el workspace), `pnpm build:web` limpio. El provider de sesión pasó de refs en render a un inicializador de `useState`, que además elimina el aviso del compilador de React.
+- **Formato (2026-10-24)**: Prettier aplicado a 71 archivos y `format:check` añadido al CI, con `.prettierignore` para generado, contrato, diseño y Markdown. El servidor de Vite del panel de Herdr quedó detenido.

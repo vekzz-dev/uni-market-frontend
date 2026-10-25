@@ -1,14 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Icono } from './Icono.jsx';
-import { SelectorTema } from './SelectorTema.jsx';
-import estilos from './CabeceraPublica.module.css';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Icono } from "./Icono.jsx";
+import { SelectorTema } from "./SelectorTema.jsx";
+import estilos from "./CabeceraPublica.module.css";
 
 /**
  * Cabecera pública del catálogo y del detalle: marca, búsqueda y acciones de cuenta.
  * `onBuscar` recibe el texto recortado; vacío significa "quitar la búsqueda".
  */
-export function CabeceraPublica({ inicial = '', onBuscar, children }) {
+export function CabeceraPublica({ inicial = "", onBuscar, children }) {
   const [texto, setTexto] = useState(inicial);
 
   // Si el catálogo limpia los filtros, el campo debe vaciarse con él.

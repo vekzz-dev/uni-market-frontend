@@ -7,9 +7,9 @@
 // - El refresh rota: cada respuesta trae un token nuevo que se persiste antes de publicarlo.
 
 export const ESTADOS = Object.freeze({
-  ANONIMO: 'anonimo',
-  AUTENTICADO: 'autenticado',
-  EXPIRADO: 'expirado',
+  ANONIMO: "anonimo",
+  AUTENTICADO: "autenticado",
+  EXPIRADO: "expirado",
 });
 
 /**
@@ -29,8 +29,11 @@ export function crearGestorSesion({
   alCambiar = () => {},
   canal = null,
 } = {}) {
-  if (!auth) throw new Error('crearGestorSesion necesita auth');
-  if (!almacen) throw new Error('crearGestorSesion necesita almacen (leer/escribir/borrar)');
+  if (!auth) throw new Error("crearGestorSesion necesita auth");
+  if (!almacen)
+    throw new Error(
+      "crearGestorSesion necesita almacen (leer/escribir/borrar)",
+    );
 
   let estado = ESTADOS.ANONIMO;
   let usuario = null;
@@ -81,7 +84,7 @@ export function crearGestorSesion({
         await guardarRefresh(sesion.refreshToken);
         aplicar(sesion);
         // Las demás pestañas adoptan el par nuevo (evita reutilizar un token rotado).
-        canal?.publicar?.({ tipo: 'sesion-renovada', sesion });
+        canal?.publicar?.({ tipo: "sesion-renovada", sesion });
         return sesion;
       } catch (error) {
         await expirar();
@@ -194,7 +197,7 @@ export function crearGestorSesion({
 
   if (canal?.suscribir) {
     canal.suscribir((mensaje) => {
-      if (mensaje?.tipo === 'sesion-renovada') adoptarSesion(mensaje.sesion);
+      if (mensaje?.tipo === "sesion-renovada") adoptarSesion(mensaje.sesion);
     });
   }
 

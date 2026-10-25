@@ -1,9 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Icono } from './Icono.jsx';
-import { ETIQUETAS, aplicarTema, guardarTema, leerTema, siguienteTema } from '../tema.js';
-import estilos from './SelectorTema.module.css';
+import { useEffect, useState } from "react";
+import { Icono } from "./Icono.jsx";
+import {
+  ETIQUETAS,
+  aplicarTema,
+  guardarTema,
+  leerTema,
+  siguienteTema,
+} from "../tema.js";
+import estilos from "./SelectorTema.module.css";
 
-const ICONOS = { sistema: 'monitor', claro: 'sol', oscuro: 'luna' };
+const ICONOS = { sistema: "monitor", claro: "sol", oscuro: "luna" };
 
 /** Conmutador de tema: sistema → claro → oscuro → sistema. */
 export function SelectorTema() {

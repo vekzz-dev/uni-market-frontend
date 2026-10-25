@@ -6,19 +6,20 @@ const NIVEL = Object.freeze({ miembro: 1, moderador: 2, admin: 3 });
 
 /** Capacidad → rol mínimo. */
 export const CAPACIDADES = Object.freeze({
-  'anuncios.publicar': 'miembro',
-  'anuncios.gestionar': 'miembro',
-  'conversaciones.usar': 'miembro',
-  'perfil.gestionar': 'miembro',
-  'moderacion.decidir': 'moderador',
-  'categorias.gestionar': 'moderador',
-  'admin.usuarios': 'admin',
-  'admin.roles': 'admin',
+  "anuncios.publicar": "miembro",
+  "anuncios.gestionar": "miembro",
+  "conversaciones.usar": "miembro",
+  "perfil.gestionar": "miembro",
+  "moderacion.decidir": "moderador",
+  "categorias.gestionar": "moderador",
+  "admin.usuarios": "admin",
+  "admin.roles": "admin",
 });
 
 export const ROLES = Object.freeze(Object.keys(NIVEL));
 
-export const esRolValido = (rol) => Object.prototype.hasOwnProperty.call(NIVEL, rol);
+export const esRolValido = (rol) =>
+  Object.prototype.hasOwnProperty.call(NIVEL, rol);
 
 /**
  * @param {string|null|undefined} rol  rol del usuario según el servidor

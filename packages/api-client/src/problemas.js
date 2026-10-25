@@ -4,9 +4,12 @@
 
 /** Error de transporte que conserva el problema RFC 9457 y el X-Request-Id. */
 export class ApiError extends Error {
-  constructor(mensaje, { status = 0, problem = null, requestId = null, response = null } = {}) {
+  constructor(
+    mensaje,
+    { status = 0, problem = null, requestId = null, response = null } = {},
+  ) {
     super(mensaje);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = status;
     this.problem = problem;
     this.requestId = requestId;
@@ -31,7 +34,7 @@ export function normalizarProblema(error) {
   return {
     status: 0,
     type: null,
-    title: 'Error de red',
+    title: "Error de red",
     detail: error?.message ?? null,
     requestId: null,
   };

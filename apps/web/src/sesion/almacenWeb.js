@@ -1,7 +1,7 @@
 // Almacén del refresh token en web: localStorage.
 // El access token NUNCA se persiste (vive en el gestor de sesión, en memoria).
 
-const CLAVE = 'umi.refresh';
+const CLAVE = "umi.refresh";
 
 export function crearAlmacenWeb() {
   return {

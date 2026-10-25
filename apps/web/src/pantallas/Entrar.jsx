@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { mapearProblema } from '@uni-market/core';
-import { Aviso } from '../componentes/Aviso.jsx';
-import { Boton } from '../componentes/Boton.jsx';
-import { Campo } from '../componentes/Campo.jsx';
-import { LayoutAuth } from '../componentes/LayoutAuth.jsx';
-import { useSesion } from '../sesion/SesionContexto.jsx';
-import estilos from './auth.module.css';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { mapearProblema } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
+import { Boton } from "../componentes/Boton.jsx";
+import { Campo } from "../componentes/Campo.jsx";
+import { LayoutAuth } from "../componentes/LayoutAuth.jsx";
+import { useSesion } from "../sesion/SesionContexto.jsx";
+import estilos from "./auth.module.css";
 
 export function Entrar() {
   const { sesion } = useSesion();
   const navegar = useNavigate();
-  const [email, setEmail] = useState('');
-  const [contrasena, setContrasena] = useState('');
+  const [email, setEmail] = useState("");
+  const [contrasena, setContrasena] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
@@ -23,7 +23,7 @@ export function Entrar() {
     setEnviando(true);
     try {
       await sesion.iniciarSesion({ email, contrasena });
-      navegar('/');
+      navegar("/");
     } catch (fallo) {
       const { mensaje, status } = mapearProblema(fallo);
       setError(mensaje);
@@ -35,7 +35,10 @@ export function Entrar() {
   }
 
   return (
-    <LayoutAuth titulo="Entrar" subtitulo="Accede a tu cuenta para publicar y conversar.">
+    <LayoutAuth
+      titulo="Entrar"
+      subtitulo="Accede a tu cuenta para publicar y conversar."
+    >
       <form className={estilos.formulario} onSubmit={enviar} noValidate>
         {error && <Aviso>{error}</Aviso>}
 
@@ -66,7 +69,7 @@ export function Entrar() {
         </div>
 
         <Boton type="submit" cargando={enviando} disabled={bloqueado}>
-          {enviando ? 'Entrando…' : 'Entrar'}
+          {enviando ? "Entrando…" : "Entrar"}
         </Boton>
       </form>
 

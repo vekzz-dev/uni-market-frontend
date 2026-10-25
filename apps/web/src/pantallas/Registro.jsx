@@ -1,17 +1,21 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { mapearProblema, validarRegistro } from '@uni-market/core';
-import { Aviso } from '../componentes/Aviso.jsx';
-import { Boton } from '../componentes/Boton.jsx';
-import { Campo } from '../componentes/Campo.jsx';
-import { LayoutAuth } from '../componentes/LayoutAuth.jsx';
-import { useSesion } from '../sesion/SesionContexto.jsx';
-import estilos from './auth.module.css';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { mapearProblema, validarRegistro } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
+import { Boton } from "../componentes/Boton.jsx";
+import { Campo } from "../componentes/Campo.jsx";
+import { LayoutAuth } from "../componentes/LayoutAuth.jsx";
+import { useSesion } from "../sesion/SesionContexto.jsx";
+import estilos from "./auth.module.css";
 
 export function Registro() {
   const { cliente } = useSesion();
   const navegar = useNavigate();
-  const [formulario, setFormulario] = useState({ nombre: '', email: '', contrasena: '' });
+  const [formulario, setFormulario] = useState({
+    nombre: "",
+    email: "",
+    contrasena: "",
+  });
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
@@ -26,7 +30,9 @@ export function Registro() {
 
     const problemas = validarRegistro(formulario);
     if (problemas.length > 0) {
-      setErrores(Object.fromEntries(problemas.map((p) => [p.campo, p.mensaje])));
+      setErrores(
+        Object.fromEntries(problemas.map((p) => [p.campo, p.mensaje])),
+      );
       return;
     }
     setErrores({});
@@ -48,9 +54,9 @@ export function Registro() {
         titulo="Revisa tu correo"
         subtitulo={`Te enviamos un enlace de confirmación a ${formulario.email}. Vence en 24 horas.`}
         resultado
-        icono={{ nombre: 'correo', tono: 'exito' }}
+        icono={{ nombre: "correo", tono: "exito" }}
       >
-        <Boton variante="secundario" onClick={() => navegar('/entrar')}>
+        <Boton variante="secundario" onClick={() => navegar("/entrar")}>
           Ir a entrar
         </Boton>
       </LayoutAuth>
@@ -58,7 +64,10 @@ export function Registro() {
   }
 
   return (
-    <LayoutAuth titulo="Crear cuenta" subtitulo="Publica y conversa en el marketplace universitario.">
+    <LayoutAuth
+      titulo="Crear cuenta"
+      subtitulo="Publica y conversa en el marketplace universitario."
+    >
       <form className={estilos.formulario} onSubmit={enviar} noValidate>
         {error && <Aviso>{error}</Aviso>}
 
@@ -68,7 +77,7 @@ export function Registro() {
           autoComplete="name"
           placeholder="Tu nombre"
           value={formulario.nombre}
-          onChange={cambiar('nombre')}
+          onChange={cambiar("nombre")}
           error={errores.nombre}
           required
         />
@@ -80,7 +89,7 @@ export function Registro() {
           autoComplete="email"
           placeholder="tu@correo.com"
           value={formulario.email}
-          onChange={cambiar('email')}
+          onChange={cambiar("email")}
           error={errores.email}
           required
         />
@@ -93,13 +102,13 @@ export function Registro() {
           placeholder="••••••••"
           ayuda="Mínimo 8 caracteres."
           value={formulario.contrasena}
-          onChange={cambiar('contrasena')}
+          onChange={cambiar("contrasena")}
           error={errores.contrasena}
           required
         />
 
         <Boton type="submit" cargando={enviando}>
-          {enviando ? 'Creando cuenta…' : 'Crear cuenta'}
+          {enviando ? "Creando cuenta…" : "Crear cuenta"}
         </Boton>
       </form>
 

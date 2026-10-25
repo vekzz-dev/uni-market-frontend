@@ -1,7 +1,14 @@
-import estilos from './Boton.module.css';
+import estilos from "./Boton.module.css";
 
-export function Boton({ variante = 'primario', cargando = false, children, ...props }) {
-  const clase = [estilos.boton, estilos[variante], props.className].filter(Boolean).join(' ');
+export function Boton({
+  variante = "primario",
+  cargando = false,
+  children,
+  ...props
+}) {
+  const clase = [estilos.boton, estilos[variante], props.className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <button

@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { CabeceraPublica } from '../componentes/CabeceraPublica.jsx';
-import { Icono } from '../componentes/Icono.jsx';
-import estilos from './noEncontrado.module.css';
+import { Link, useNavigate } from "react-router-dom";
+import { CabeceraPublica } from "../componentes/CabeceraPublica.jsx";
+import { Icono } from "../componentes/Icono.jsx";
+import estilos from "./noEncontrado.module.css";
 
 export function NoEncontrado() {
   const navegar = useNavigate();
@@ -9,7 +9,7 @@ export function NoEncontrado() {
   return (
     <div className={estilos.pagina}>
       <CabeceraPublica
-        onBuscar={(q) => navegar(q ? `/?q=${encodeURIComponent(q)}` : '/')}
+        onBuscar={(q) => navegar(q ? `/?q=${encodeURIComponent(q)}` : "/")}
       />
 
       <main className={estilos.principal}>
@@ -22,7 +22,8 @@ export function NoEncontrado() {
             Página no encontrada
           </h1>
           <p className={estilos.texto}>
-            La dirección no existe o cambió de sitio. Vuelve al catálogo para seguir buscando.
+            La dirección no existe o cambió de sitio. Vuelve al catálogo para
+            seguir buscando.
           </p>
           <Link to="/" className={estilos.primario}>
             Ir al catálogo

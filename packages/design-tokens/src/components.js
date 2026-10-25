@@ -6,35 +6,83 @@
 //     un relleno ámbar junto a un botón naranja no se distingue.
 //   - el anillo de foco lleva desplazamiento obligatorio.
 
-import { space, radius, control, focus, shadow } from './primitives.js';
+import { space, radius, control, focus, shadow } from "./primitives.js";
 
 export const componentsFor = (theme) => ({
   button: {
     primary: {
-      base: { bg: theme.primary, fg: theme.textOnPrimary, border: 'transparent' },
-      hover: { bg: theme.primaryHover, fg: theme.textOnPrimaryStrong, border: 'transparent' },
-      active: { bg: theme.primaryActive, fg: theme.textOnPrimaryStrong, border: 'transparent' },
-      disabled: { bg: theme.disabledBg, fg: theme.disabledText, border: 'transparent' },
+      base: {
+        bg: theme.primary,
+        fg: theme.textOnPrimary,
+        border: "transparent",
+      },
+      hover: {
+        bg: theme.primaryHover,
+        fg: theme.textOnPrimaryStrong,
+        border: "transparent",
+      },
+      active: {
+        bg: theme.primaryActive,
+        fg: theme.textOnPrimaryStrong,
+        border: "transparent",
+      },
+      disabled: {
+        bg: theme.disabledBg,
+        fg: theme.disabledText,
+        border: "transparent",
+      },
     },
     secondary: {
       base: { bg: theme.surface, fg: theme.text, border: theme.borderField },
-      hover: { bg: theme.surfaceHover, fg: theme.text, border: theme.borderField },
+      hover: {
+        bg: theme.surfaceHover,
+        fg: theme.text,
+        border: theme.borderField,
+      },
       active: { bg: theme.surfaceHover, fg: theme.text, border: theme.focus },
-      disabled: { bg: theme.disabledBg, fg: theme.disabledText, border: 'transparent' },
+      disabled: {
+        bg: theme.disabledBg,
+        fg: theme.disabledText,
+        border: "transparent",
+      },
     },
     danger: {
       // Claro: relleno rojo con blanco (4.83:1). Oscuro: par suave, porque el
       // rojo claro relleno no admite texto claro en AA.
-      base: { bg: theme.error, fg: theme.textOnError, border: 'transparent' },
-      hover: { bg: theme.errorText, fg: theme.textOnError, border: 'transparent' },
-      active: { bg: theme.errorText, fg: theme.textOnError, border: 'transparent' },
-      disabled: { bg: theme.disabledBg, fg: theme.disabledText, border: 'transparent' },
+      base: { bg: theme.error, fg: theme.textOnError, border: "transparent" },
+      hover: {
+        bg: theme.errorText,
+        fg: theme.textOnError,
+        border: "transparent",
+      },
+      active: {
+        bg: theme.errorText,
+        fg: theme.textOnError,
+        border: "transparent",
+      },
+      disabled: {
+        bg: theme.disabledBg,
+        fg: theme.disabledText,
+        border: "transparent",
+      },
     },
     text: {
-      base: { bg: 'transparent', fg: theme.link, border: 'transparent' },
-      hover: { bg: theme.primarySoft, fg: theme.linkHover, border: 'transparent' },
-      active: { bg: theme.primarySelected, fg: theme.linkHover, border: 'transparent' },
-      disabled: { bg: 'transparent', fg: theme.disabledText, border: 'transparent' },
+      base: { bg: "transparent", fg: theme.link, border: "transparent" },
+      hover: {
+        bg: theme.primarySoft,
+        fg: theme.linkHover,
+        border: "transparent",
+      },
+      active: {
+        bg: theme.primarySelected,
+        fg: theme.linkHover,
+        border: "transparent",
+      },
+      disabled: {
+        bg: "transparent",
+        fg: theme.disabledText,
+        border: "transparent",
+      },
     },
   },
 
@@ -71,7 +119,7 @@ export const componentsFor = (theme) => ({
     color: theme.focus,
     width: focus.width,
     offset: focus.offset,
-    style: 'solid',
+    style: "solid",
   },
 
   layout: {

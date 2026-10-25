@@ -84,7 +84,7 @@
   cursor: pointer;
 }
 
-.miniatura[aria-pressed='true'] {
+.miniatura[aria-pressed="true"] {
   border: 2px solid var(--um-primary-active);
 }
 
@@ -113,6 +113,11 @@
 .precio {
   font-size: 30px;
   font-weight: 600;
+}
+
+.vendedor {
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .meta {

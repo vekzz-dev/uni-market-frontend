@@ -29,13 +29,14 @@ class AnuncioDetalle {
      * @param nombre {String} 
      * @param precio {Number} Rango `0 ≤ precio ≤ 99999999.99` (R8); fuera de rango → 422.
      * @param vendedorId {String} 
+     * @param vendedorNombre {String} Nombre público del vendedor (R17): nombre de pila + inicial del último apellido (`\"Ana P.\"`). Nunca el nombre completo; cuando no es resoluble (cuenta dada de baja o inexistente) publica `\"Vendedor\"` sin revelar estado. Aditivo: los clientes anteriores lo ignoran. 
      * @param fechaCreacion {Date} 
      * @param estado {module:model/Estado} 
      * @param fechaActualizacion {Date} 
      */
-    constructor(id, nombre, precio, vendedorId, fechaCreacion, estado, fechaActualizacion) { 
-        AnuncioResumen.initialize(this, id, nombre, precio, vendedorId, fechaCreacion);
-        AnuncioDetalle.initialize(this, id, nombre, precio, vendedorId, fechaCreacion, estado, fechaActualizacion);
+    constructor(id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion) { 
+        AnuncioResumen.initialize(this, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion);
+        AnuncioDetalle.initialize(this, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion);
     }
 
     /**
@@ -43,11 +44,12 @@ class AnuncioDetalle {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, nombre, precio, vendedorId, fechaCreacion, estado, fechaActualizacion) { 
+    static initialize(obj, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion) { 
         obj['id'] = id;
         obj['nombre'] = nombre;
         obj['precio'] = precio;
         obj['vendedorId'] = vendedorId;
+        obj['vendedorNombre'] = vendedorNombre;
         obj['fechaCreacion'] = fechaCreacion;
         obj['estado'] = estado;
         obj['fechaActualizacion'] = fechaActualizacion;
@@ -85,6 +87,9 @@ class AnuncioDetalle {
             }
             if (data.hasOwnProperty('vendedorId')) {
                 obj['vendedorId'] = ApiClient.convertToType(data['vendedorId'], 'String');
+            }
+            if (data.hasOwnProperty('vendedorNombre')) {
+                obj['vendedorNombre'] = ApiClient.convertToType(data['vendedorNombre'], 'String');
             }
             if (data.hasOwnProperty('fechaCreacion')) {
                 obj['fechaCreacion'] = ApiClient.convertToType(data['fechaCreacion'], 'Date');
@@ -131,6 +136,10 @@ class AnuncioDetalle {
         if (data['vendedorId'] && !(typeof data['vendedorId'] === 'string' || data['vendedorId'] instanceof String)) {
             throw new Error("Expected the field `vendedorId` to be a primitive type in the JSON string but got " + data['vendedorId']);
         }
+        // ensure the json data is a string
+        if (data['vendedorNombre'] && !(typeof data['vendedorNombre'] === 'string' || data['vendedorNombre'] instanceof String)) {
+            throw new Error("Expected the field `vendedorNombre` to be a primitive type in the JSON string but got " + data['vendedorNombre']);
+        }
 
         return true;
     }
@@ -138,7 +147,7 @@ class AnuncioDetalle {
 
 }
 
-AnuncioDetalle.RequiredProperties = ["id", "nombre", "precio", "vendedorId", "fechaCreacion", "estado", "fechaActualizacion"];
+AnuncioDetalle.RequiredProperties = ["id", "nombre", "precio", "vendedorId", "vendedorNombre", "fechaCreacion", "estado", "fechaActualizacion"];
 
 /**
  * @member {String} id
@@ -176,6 +185,12 @@ AnuncioDetalle.prototype['imagenUrls'] = undefined;
  * @member {String} vendedorId
  */
 AnuncioDetalle.prototype['vendedorId'] = undefined;
+
+/**
+ * Nombre público del vendedor (R17): nombre de pila + inicial del último apellido (`\"Ana P.\"`). Nunca el nombre completo; cuando no es resoluble (cuenta dada de baja o inexistente) publica `\"Vendedor\"` sin revelar estado. Aditivo: los clientes anteriores lo ignoran. 
+ * @member {String} vendedorNombre
+ */
+AnuncioDetalle.prototype['vendedorNombre'] = undefined;
 
 /**
  * @member {Date} fechaCreacion
@@ -224,6 +239,11 @@ AnuncioResumen.prototype['imagenUrls'] = undefined;
  * @member {String} vendedorId
  */
 AnuncioResumen.prototype['vendedorId'] = undefined;
+/**
+ * Nombre público del vendedor (R17): nombre de pila + inicial del último apellido (`\"Ana P.\"`). Nunca el nombre completo; cuando no es resoluble (cuenta dada de baja o inexistente) publica `\"Vendedor\"` sin revelar estado. Aditivo: los clientes anteriores lo ignoran. 
+ * @member {String} vendedorNombre
+ */
+AnuncioResumen.prototype['vendedorNombre'] = undefined;
 /**
  * @member {Date} fechaCreacion
  */

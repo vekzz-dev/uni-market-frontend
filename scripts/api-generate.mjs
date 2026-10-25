@@ -11,58 +11,75 @@
 //   node scripts/api-generate.mjs                 # escribe en packages/api-client/src/generado
 //   node scripts/api-generate.mjs --out <dir>     # escribe en otro destino (lo usa api:check)
 
-import { execFileSync } from 'node:child_process';
-import { copyFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { execFileSync } from "node:child_process";
+import {
+  copyFileSync,
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const spec = join(root, 'openapi', 'uni-market.yaml');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const spec = join(root, "openapi", "uni-market.yaml");
 
-const indiceOut = process.argv.indexOf('--out');
-const destino = indiceOut !== -1 ? resolve(process.argv[indiceOut + 1]) : join(root, 'packages', 'api-client', 'src', 'generado');
+const indiceOut = process.argv.indexOf("--out");
+const destino =
+  indiceOut !== -1
+    ? resolve(process.argv[indiceOut + 1])
+    : join(root, "packages", "api-client", "src", "generado");
 
 if (!existsSync(spec)) {
-  console.error('Falta openapi/uni-market.yaml — ejecuta `pnpm contract:sync` primero.');
+  console.error(
+    "Falta openapi/uni-market.yaml — ejecuta `pnpm contract:sync` primero.",
+  );
   process.exit(1);
 }
 
-const temp = mkdtempSync(join(tmpdir(), 'uni-market-api-client-'));
+const temp = mkdtempSync(join(tmpdir(), "uni-market-api-client-"));
 // npx re-parte argumentos con espacios: generamos desde una copia con ruta segura.
-const specSeguro = join(temp, 'spec.yaml');
+const specSeguro = join(temp, "spec.yaml");
 
 try {
   copyFileSync(spec, specSeguro);
   console.log(`Generando cliente desde el contrato → ${destino}`);
   execFileSync(
-    'npx',
+    "npx",
     [
-      '-y',
-      '@openapitools/openapi-generator-cli@2.41.0',
-      'generate',
-      '-i',
+      "-y",
+      "@openapitools/openapi-generator-cli@2.41.0",
+      "generate",
+      "-i",
       specSeguro,
-      '-g',
-      'javascript',
-      '-o',
+      "-g",
+      "javascript",
+      "-o",
       temp,
-      '--additional-properties=useES6=true,usePromises=true,projectName=uni-market-api-client',
+      "--additional-properties=useES6=true,usePromises=true,projectName=uni-market-api-client",
     ],
-    { stdio: 'inherit', cwd: root },
+    { stdio: "inherit", cwd: root },
   );
 
-  const origenApi = join(temp, 'src', 'api');
-  const origenModel = join(temp, 'src', 'model');
+  const origenApi = join(temp, "src", "api");
+  const origenModel = join(temp, "src", "model");
   if (!existsSync(origenApi) || !existsSync(origenModel)) {
-    throw new Error('El generador no produjo src/api y src/model; revisa la salida anterior.');
+    throw new Error(
+      "El generador no produjo src/api y src/model; revisa la salida anterior.",
+    );
   }
 
-  rmSync(join(destino, 'api'), { recursive: true, force: true });
-  rmSync(join(destino, 'model'), { recursive: true, force: true });
+  rmSync(join(destino, "api"), { recursive: true, force: true });
+  rmSync(join(destino, "model"), { recursive: true, force: true });
   mkdirSync(destino, { recursive: true });
-  cpSync(origenApi, join(destino, 'api'), { recursive: true });
-  cpSync(origenModel, join(destino, 'model'), { recursive: true });
+  cpSync(origenApi, join(destino, "api"), { recursive: true });
+  cpSync(origenModel, join(destino, "model"), { recursive: true });
 
   normalizarImports(destino);
   console.log(`Cliente generado en ${destino}`);
@@ -78,13 +95,15 @@ function normalizarImports(dir) {
       normalizarImports(ruta);
       continue;
     }
-    if (!entrada.name.endsWith('.js')) continue;
+    if (!entrada.name.endsWith(".js")) continue;
 
-    const original = readFileSync(ruta, 'utf8');
+    const original = readFileSync(ruta, "utf8");
     const normalizado = original.replace(
       /(from\s+['"])(\.{1,2}\/[^'"]+)(['"])/g,
       (match, antes, rutaImport, despues) =>
-        /\.(js|mjs|cjs|json)$/.test(rutaImport) ? match : `${antes}${rutaImport}.js${despues}`,
+        /\.(js|mjs|cjs|json)$/.test(rutaImport)
+          ? match
+          : `${antes}${rutaImport}.js${despues}`,
     );
     if (normalizado !== original) writeFileSync(ruta, normalizado);
   }

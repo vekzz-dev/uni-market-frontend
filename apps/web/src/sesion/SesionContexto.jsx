@@ -1,14 +1,14 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import { crearCliente } from '@uni-market/api-client';
-import { crearGestorSesion } from '@uni-market/core';
-import { apiBaseUrl } from '../config.js';
-import { crearAlmacenWeb } from './almacenWeb.js';
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { crearCliente } from "@uni-market/api-client";
+import { crearGestorSesion } from "@uni-market/core";
+import { apiBaseUrl } from "../config.js";
+import { crearAlmacenWeb } from "./almacenWeb.js";
 
 // Se exporta para poder inyectar un valor falso en las pruebas.
 export const SesionContexto = createContext(null);
 
 export function SesionProvider({ children }) {
-  const [estado, setEstado] = useState({ estado: 'anonimo', usuario: null });
+  const [estado, setEstado] = useState({ estado: "anonimo", usuario: null });
 
   // Se crea una sola vez. `gestor` se asigna dentro del inicializador para que la
   // closure de `getAccessToken` lo vea sin tocar refs durante el render.
@@ -46,6 +46,7 @@ export function SesionProvider({ children }) {
 
 export function useSesion() {
   const valor = useContext(SesionContexto);
-  if (!valor) throw new Error('useSesion necesita estar dentro de <SesionProvider>');
+  if (!valor)
+    throw new Error("useSesion necesita estar dentro de <SesionProvider>");
   return valor;
 }

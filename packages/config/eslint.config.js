@@ -59,10 +59,7 @@ export const web = [
   {
     files: ['packages/core/**/*.{js,mjs}'],
     rules: {
-      'no-restricted-imports': [
-        'error',
-        { paths: ['react', 'react-dom', 'react-native'] },
-      ],
+      'no-restricted-imports': ['error', { paths: ['react', 'react-dom', 'react-native'] }],
     },
   },
   prettier,

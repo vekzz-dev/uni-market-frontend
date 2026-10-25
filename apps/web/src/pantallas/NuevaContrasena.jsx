@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { mapearProblema } from '@uni-market/core';
-import { Aviso } from '../componentes/Aviso.jsx';
-import { Boton } from '../componentes/Boton.jsx';
-import { Campo } from '../componentes/Campo.jsx';
-import { LayoutAuth } from '../componentes/LayoutAuth.jsx';
-import { useSesion } from '../sesion/SesionContexto.jsx';
-import estilos from './auth.module.css';
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { mapearProblema } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
+import { Boton } from "../componentes/Boton.jsx";
+import { Campo } from "../componentes/Campo.jsx";
+import { LayoutAuth } from "../componentes/LayoutAuth.jsx";
+import { useSesion } from "../sesion/SesionContexto.jsx";
+import estilos from "./auth.module.css";
 
 const MINIMO = 8;
 
@@ -14,13 +14,13 @@ export function NuevaContrasena() {
   const { cliente } = useSesion();
   const navegar = useNavigate();
   const [params] = useSearchParams();
-  const token = params.get('token');
+  const token = params.get("token");
 
-  const [formulario, setFormulario] = useState({ nueva: '', repetir: '' });
+  const [formulario, setFormulario] = useState({ nueva: "", repetir: "" });
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [estado, setEstado] = useState(token ? 'formulario' : 'invalido');
+  const [estado, setEstado] = useState(token ? "formulario" : "invalido");
 
   const cambiar = (campo) => (evento) =>
     setFormulario((actual) => ({ ...actual, [campo]: evento.target.value }));
@@ -34,7 +34,7 @@ export function NuevaContrasena() {
       problemas.nueva = `La contraseña debe tener al menos ${MINIMO} caracteres.`;
     }
     if (formulario.repetir !== formulario.nueva) {
-      problemas.repetir = 'Las contraseñas no coinciden.';
+      problemas.repetir = "Las contraseñas no coinciden.";
     }
     if (Object.keys(problemas).length > 0) {
       setErrores(problemas);
@@ -48,12 +48,12 @@ export function NuevaContrasena() {
         token,
         nuevaContrasena: formulario.nueva,
       });
-      setEstado('listo');
+      setEstado("listo");
     } catch (fallo) {
       const { mensaje, status } = mapearProblema(fallo);
       // El enlace es de un solo uso y vence en 60 minutos: un 4xx significa token inválido.
       if (status >= 400 && status < 500) {
-        setEstado('invalido');
+        setEstado("invalido");
       } else {
         setError(mensaje);
       }
@@ -62,28 +62,28 @@ export function NuevaContrasena() {
     }
   }
 
-  if (estado === 'invalido') {
+  if (estado === "invalido") {
     return (
       <LayoutAuth
         titulo="El enlace no es válido"
         subtitulo="Puede que haya expirado o que ya se haya usado. Solicita uno nuevo."
         resultado
-        icono={{ nombre: 'enlaceRoto', tono: 'error' }}
+        icono={{ nombre: "enlaceRoto", tono: "error" }}
       >
-        <Boton onClick={() => navegar('/restablecer')}>Solicitar enlace</Boton>
+        <Boton onClick={() => navegar("/restablecer")}>Solicitar enlace</Boton>
       </LayoutAuth>
     );
   }
 
-  if (estado === 'listo') {
+  if (estado === "listo") {
     return (
       <LayoutAuth
         titulo="Contraseña actualizada"
         subtitulo="Ya puedes entrar con tu nueva contraseña."
         resultado
-        icono={{ nombre: 'exito', tono: 'exito' }}
+        icono={{ nombre: "exito", tono: "exito" }}
       >
-        <Boton onClick={() => navegar('/entrar')}>Entrar</Boton>
+        <Boton onClick={() => navegar("/entrar")}>Entrar</Boton>
       </LayoutAuth>
     );
   }
@@ -104,7 +104,7 @@ export function NuevaContrasena() {
           placeholder="••••••••"
           ayuda="Mínimo 8 caracteres, sin reglas de composición."
           value={formulario.nueva}
-          onChange={cambiar('nueva')}
+          onChange={cambiar("nueva")}
           error={errores.nueva}
           required
         />
@@ -116,13 +116,13 @@ export function NuevaContrasena() {
           autoComplete="new-password"
           placeholder="••••••••"
           value={formulario.repetir}
-          onChange={cambiar('repetir')}
+          onChange={cambiar("repetir")}
           error={errores.repetir}
           required
         />
 
         <Boton type="submit" cargando={enviando}>
-          {enviando ? 'Guardando…' : 'Guardar contraseña'}
+          {enviando ? "Guardando…" : "Guardar contraseña"}
         </Boton>
       </form>
     </LayoutAuth>

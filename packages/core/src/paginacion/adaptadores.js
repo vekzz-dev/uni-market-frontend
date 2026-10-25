@@ -11,8 +11,14 @@ export function siguienteCursor(paginacion) {
  * Fusiona páginas sin duplicados, por `id`.
  * El historial de mensajes carga hacia atrás: `alPrincipio` inserta lo nuevo delante.
  */
-export function fusionarPagina(vigentes = [], nuevos = [], { alPrincipio = false } = {}) {
-  const combinados = alPrincipio ? [...nuevos, ...vigentes] : [...vigentes, ...nuevos];
+export function fusionarPagina(
+  vigentes = [],
+  nuevos = [],
+  { alPrincipio = false } = {},
+) {
+  const combinados = alPrincipio
+    ? [...nuevos, ...vigentes]
+    : [...vigentes, ...nuevos];
   const vistos = new Set();
   const salida = [];
 

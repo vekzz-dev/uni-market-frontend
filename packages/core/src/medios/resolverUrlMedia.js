@@ -12,8 +12,8 @@ export function resolverUrlMedia(valor, origenApi) {
 
   if (/^https?:\/\//i.test(valor)) return valor;
 
-  const base = String(origenApi ?? '').replace(/\/+$/, '');
+  const base = String(origenApi ?? "").replace(/\/+$/, "");
   if (!base) return valor;
 
-  return valor.startsWith('/') ? `${base}${valor}` : `${base}/${valor}`;
+  return valor.startsWith("/") ? `${base}${valor}` : `${base}/${valor}`;
 }

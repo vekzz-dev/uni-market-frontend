@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { fusionarPagina, mapearProblema } from '@uni-market/core';
-import { Aviso } from '../componentes/Aviso.jsx';
-import { Boton } from '../componentes/Boton.jsx';
-import { CabeceraPublica } from '../componentes/CabeceraPublica.jsx';
-import { Icono } from '../componentes/Icono.jsx';
-import { useSesion } from '../sesion/SesionContexto.jsx';
-import { TarjetaAnuncio } from './TarjetaAnuncio.jsx';
-import estilos from './catalogo.module.css';
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { fusionarPagina, mapearProblema } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
+import { Boton } from "../componentes/Boton.jsx";
+import { CabeceraPublica } from "../componentes/CabeceraPublica.jsx";
+import { Icono } from "../componentes/Icono.jsx";
+import { useSesion } from "../sesion/SesionContexto.jsx";
+import { TarjetaAnuncio } from "./TarjetaAnuncio.jsx";
+import estilos from "./catalogo.module.css";
 
 const LIMITE = 12;
 
@@ -15,13 +15,13 @@ export function Catalogo() {
   const { cliente, sesion, estado } = useSesion();
   const navegar = useNavigate();
   const [params, setParams] = useSearchParams();
-  const autenticado = estado.estado === 'autenticado';
+  const autenticado = estado.estado === "autenticado";
 
   const [categorias, setCategorias] = useState([]);
   const [filtros, setFiltros] = useState({
-    q: params.get('q') ?? '',
-    categoriaId: '',
-    orden: 'fechaCreacion',
+    q: params.get("q") ?? "",
+    categoriaId: "",
+    orden: "fechaCreacion",
   });
   const [anuncios, setAnuncios] = useState([]);
   const [cursor, setCursor] = useState(null);
@@ -30,11 +30,14 @@ export function Catalogo() {
   const [error, setError] = useState(null);
   const [errorMas, setErrorMas] = useState(null);
   const [recarga, setRecarga] = useState(0);
+  const solicitud = useRef(0);
 
-  const qUrl = params.get('q') ?? '';
+  const qUrl = params.get("q") ?? "";
 
   useEffect(() => {
-    setFiltros((actuales) => (actuales.q === qUrl ? actuales : { ...actuales, q: qUrl }));
+    setFiltros((actuales) =>
+      actuales.q === qUrl ? actuales : { ...actuales, q: qUrl },
+    );
   }, [qUrl]);
 
   useEffect(() => {
@@ -45,51 +48,53 @@ export function Catalogo() {
   }, [cliente]);
 
   useEffect(() => {
-    let vigente = true;
+    const id = ++solicitud.current;
     setCargando(true);
     setError(null);
 
     const parametros = { orden: filtros.orden, limite: LIMITE };
     if (filtros.q) parametros.q = filtros.q;
-    if (filtros.categoriaId) parametros.categoriaId = Number(filtros.categoriaId);
+    if (filtros.categoriaId)
+      parametros.categoriaId = Number(filtros.categoriaId);
 
     cliente.catalogo
       .buscarCatalogo(parametros)
       .then((pagina) => {
-        if (!vigente) return;
+        if (solicitud.current !== id) return;
         setAnuncios(pagina.datos ?? []);
         setCursor(pagina.paginacion?.cursorSiguiente ?? null);
       })
       .catch((fallo) => {
-        if (!vigente) return;
+        if (solicitud.current !== id) return;
         setError(mapearProblema(fallo).mensaje);
       })
       .finally(() => {
-        if (vigente) setCargando(false);
+        if (solicitud.current === id) setCargando(false);
       });
-
-    return () => {
-      vigente = false;
-    };
   }, [cliente, filtros, recarga]);
 
-  const porId = new Map(categorias.map((categoria) => [String(categoria.id), categoria]));
+  const porId = new Map(
+    categorias.map((categoria) => [String(categoria.id), categoria]),
+  );
 
   async function cargarMas() {
-    if (!cursor || cargandoMas) return;
+    if (!cursor || cargandoMas || cargando) return;
+    const id = ++solicitud.current;
     setCargandoMas(true);
     setErrorMas(null);
 
     const parametros = { orden: filtros.orden, limite: LIMITE, cursor };
     if (filtros.q) parametros.q = filtros.q;
-    if (filtros.categoriaId) parametros.categoriaId = Number(filtros.categoriaId);
+    if (filtros.categoriaId)
+      parametros.categoriaId = Number(filtros.categoriaId);
 
     try {
       const pagina = await cliente.catalogo.buscarCatalogo(parametros);
+      if (solicitud.current !== id) return;
       setAnuncios((vigentes) => fusionarPagina(vigentes, pagina.datos ?? []));
       setCursor(pagina.paginacion?.cursorSiguiente ?? null);
     } catch (fallo) {
-      setErrorMas(mapearProblema(fallo).mensaje);
+      if (solicitud.current === id) setErrorMas(mapearProblema(fallo).mensaje);
     } finally {
       setCargandoMas(false);
     }
@@ -102,26 +107,31 @@ export function Catalogo() {
 
   function limpiarFiltros() {
     setParams({}, { replace: true });
-    setFiltros({ q: '', categoriaId: '', orden: 'fechaCreacion' });
+    setFiltros({ q: "", categoriaId: "", orden: "fechaCreacion" });
   }
 
   async function salir() {
     await sesion.cerrarSesion();
-    navegar('/entrar');
+    navegar("/entrar");
   }
 
-  const hayFiltros = Boolean(filtros.q || filtros.categoriaId || filtros.orden !== 'fechaCreacion');
+  const hayFiltros = Boolean(
+    filtros.q || filtros.categoriaId || filtros.orden !== "fechaCreacion",
+  );
 
   return (
     <div className={estilos.pagina}>
-      <CabeceraPublica
-        inicial={filtros.q}
-        onBuscar={aplicarBusqueda}
-      >
+      <CabeceraPublica inicial={filtros.q} onBuscar={aplicarBusqueda}>
         {autenticado ? (
           <>
-            <span className={estilos.saludo}>Hola, {estado.usuario?.nombre}</span>
-            <Boton variante="secundario" className={estilos.botonCuenta} onClick={salir}>
+            <span className={estilos.saludo}>
+              Hola, {estado.usuario?.nombre}
+            </span>
+            <Boton
+              variante="secundario"
+              className={estilos.botonCuenta}
+              onClick={salir}
+            >
               Cerrar sesión
             </Boton>
           </>
@@ -152,7 +162,10 @@ export function Catalogo() {
               className={estilos.selector}
               value={filtros.orden}
               onChange={(evento) =>
-                setFiltros((actuales) => ({ ...actuales, orden: evento.target.value }))
+                setFiltros((actuales) => ({
+                  ...actuales,
+                  orden: evento.target.value,
+                }))
               }
             >
               <option value="fechaCreacion">Más recientes</option>
@@ -161,12 +174,18 @@ export function Catalogo() {
           </label>
         </div>
 
-        <div className={estilos.chips} role="group" aria-label="Filtrar por categoría">
+        <div
+          className={estilos.chips}
+          role="group"
+          aria-label="Filtrar por categoría"
+        >
           <button
             type="button"
             className={estilos.chip}
-            aria-pressed={filtros.categoriaId === ''}
-            onClick={() => setFiltros((actuales) => ({ ...actuales, categoriaId: '' }))}
+            aria-pressed={filtros.categoriaId === ""}
+            onClick={() =>
+              setFiltros((actuales) => ({ ...actuales, categoriaId: "" }))
+            }
           >
             Todas
           </button>
@@ -177,7 +196,10 @@ export function Catalogo() {
               className={estilos.chip}
               aria-pressed={filtros.categoriaId === String(categoria.id)}
               onClick={() =>
-                setFiltros((actuales) => ({ ...actuales, categoriaId: String(categoria.id) }))
+                setFiltros((actuales) => ({
+                  ...actuales,
+                  categoriaId: String(categoria.id),
+                }))
               }
             >
               {categoria.nombre}
@@ -187,14 +209,19 @@ export function Catalogo() {
 
         {cargando && (
           <p className={estilos.estado} role="status">
-            Cargando anuncios…
+            {anuncios.length > 0
+              ? "Actualizando anuncios…"
+              : "Cargando anuncios…"}
           </p>
         )}
 
-        {!cargando && error && (
+        {error && (
           <div className={estilos.estadoError}>
             <Aviso>{error}</Aviso>
-            <Boton variante="secundario" onClick={() => setRecarga((n) => n + 1)}>
+            <Boton
+              variante="secundario"
+              onClick={() => setRecarga((n) => n + 1)}
+            >
               Reintentar
             </Boton>
           </div>
@@ -208,8 +235,8 @@ export function Catalogo() {
             <h2 className={estilos.vacioTitulo}>No encontramos anuncios</h2>
             <p className={estilos.vacioTexto}>
               {hayFiltros
-                ? 'Prueba con otra categoría o cambia la búsqueda.'
-                : 'Cuando alguien publique algo, aparecerá aquí.'}
+                ? "Prueba con otra categoría o cambia la búsqueda."
+                : "Cuando alguien publique algo, aparecerá aquí."}
             </p>
             {hayFiltros && (
               <Boton variante="secundario" onClick={limpiarFiltros}>
@@ -219,9 +246,9 @@ export function Catalogo() {
           </div>
         )}
 
-        {!cargando && !error && anuncios.length > 0 && (
+        {anuncios.length > 0 && (
           <>
-            <div className={estilos.grilla}>
+            <div className={estilos.grilla} aria-busy={cargando || undefined}>
               {anuncios.map((anuncio) => (
                 <TarjetaAnuncio
                   key={anuncio.id}
@@ -235,8 +262,13 @@ export function Catalogo() {
 
             {cursor && (
               <div className={estilos.mas}>
-                <Boton variante="secundario" cargando={cargandoMas} onClick={cargarMas}>
-                  {cargandoMas ? 'Cargando…' : 'Cargar más anuncios'}
+                <Boton
+                  variante="secundario"
+                  cargando={cargandoMas}
+                  disabled={cargando}
+                  onClick={cargarMas}
+                >
+                  {cargandoMas ? "Cargando…" : "Cargar más anuncios"}
                 </Boton>
               </div>
             )}

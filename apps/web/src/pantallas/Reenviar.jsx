@@ -1,17 +1,17 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { mapearProblema } from '@uni-market/core';
-import { Aviso } from '../componentes/Aviso.jsx';
-import { Boton } from '../componentes/Boton.jsx';
-import { Campo } from '../componentes/Campo.jsx';
-import { LayoutAuth } from '../componentes/LayoutAuth.jsx';
-import { useSesion } from '../sesion/SesionContexto.jsx';
-import estilos from './auth.module.css';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { mapearProblema } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
+import { Boton } from "../componentes/Boton.jsx";
+import { Campo } from "../componentes/Campo.jsx";
+import { LayoutAuth } from "../componentes/LayoutAuth.jsx";
+import { useSesion } from "../sesion/SesionContexto.jsx";
+import estilos from "./auth.module.css";
 
 export function Reenviar() {
   const { cliente } = useSesion();
   const navegar = useNavigate();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
@@ -39,9 +39,9 @@ export function Reenviar() {
         titulo="Revisa tu correo"
         subtitulo="Si existe una cuenta sin confirmar con ese correo, te enviamos un enlace. Podrás pedir otro en unos minutos."
         resultado
-        icono={{ nombre: 'correo', tono: 'exito' }}
+        icono={{ nombre: "correo", tono: "exito" }}
       >
-        <Boton variante="secundario" onClick={() => navegar('/entrar')}>
+        <Boton variante="secundario" onClick={() => navegar("/entrar")}>
           Volver a entrar
         </Boton>
       </LayoutAuth>
@@ -68,7 +68,7 @@ export function Reenviar() {
         />
 
         <Boton type="submit" cargando={enviando} disabled={bloqueado}>
-          {enviando ? 'Enviando…' : 'Enviar enlace'}
+          {enviando ? "Enviando…" : "Enviar enlace"}
         </Boton>
       </form>
 

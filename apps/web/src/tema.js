@@ -2,15 +2,15 @@
 // El generador de tokens expone `data-um-theme="light|dark"` para forzar el tema;
 // sin atributo, manda `prefers-color-scheme`.
 
-const CLAVE = 'umi.tema';
-export const TEMAS = ['sistema', 'claro', 'oscuro'];
+const CLAVE = "umi.tema";
+export const TEMAS = ["sistema", "claro", "oscuro"];
 
 export function leerTema() {
   try {
     const guardado = globalThis.localStorage?.getItem(CLAVE);
-    return TEMAS.includes(guardado) ? guardado : 'sistema';
+    return TEMAS.includes(guardado) ? guardado : "sistema";
   } catch {
-    return 'sistema';
+    return "sistema";
   }
 }
 
@@ -26,8 +26,8 @@ export function aplicarTema(tema) {
   const raiz = globalThis.document?.documentElement;
   if (!raiz) return;
 
-  if (tema === 'claro') raiz.dataset.umTheme = 'light';
-  else if (tema === 'oscuro') raiz.dataset.umTheme = 'dark';
+  if (tema === "claro") raiz.dataset.umTheme = "light";
+  else if (tema === "oscuro") raiz.dataset.umTheme = "dark";
   else delete raiz.dataset.umTheme;
 }
 
@@ -37,7 +37,7 @@ export function siguienteTema(tema) {
 }
 
 export const ETIQUETAS = {
-  sistema: 'Tema del sistema',
-  claro: 'Tema claro',
-  oscuro: 'Tema oscuro',
+  sistema: "Tema del sistema",
+  claro: "Tema claro",
+  oscuro: "Tema oscuro",
 };

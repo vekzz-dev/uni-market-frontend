@@ -1,8 +1,12 @@
-import { Link } from 'react-router-dom';
-import { formatearFechaRelativa, formatearPrecio, resolverUrlMedia } from '@uni-market/core';
-import { Icono } from '../componentes/Icono.jsx';
-import { origenApi } from '../config.js';
-import estilos from './TarjetaAnuncio.module.css';
+import { Link } from "react-router-dom";
+import {
+  formatearFechaRelativa,
+  formatearPrecio,
+  resolverUrlMedia,
+} from "@uni-market/core";
+import { Icono } from "../componentes/Icono.jsx";
+import { origenApi } from "../config.js";
+import estilos from "./TarjetaAnuncio.module.css";
 
 const capitalizar = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1);
 
@@ -29,10 +33,12 @@ export function TarjetaAnuncio({ anuncio, categoria }) {
           <p className={estilos.precio}>{formatearPrecio(anuncio.precio)}</p>
           <div className={estilos.meta}>
             <span>
-              {categoria?.nombre ?? 'Sin categoría'}
-              {anuncio.vendedorNombre ? ` · ${anuncio.vendedorNombre}` : ''}
+              {categoria?.nombre ?? "Sin categoría"}
+              {anuncio.vendedorNombre ? ` · ${anuncio.vendedorNombre}` : ""}
             </span>
-            <span>{capitalizar(formatearFechaRelativa(anuncio.fechaCreacion))}</span>
+            <span>
+              {capitalizar(formatearFechaRelativa(anuncio.fechaCreacion))}
+            </span>
           </div>
         </div>
       </Link>

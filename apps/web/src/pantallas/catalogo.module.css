@@ -71,7 +71,7 @@
   cursor: pointer;
 }
 
-.chip[aria-pressed='true'] {
+.chip[aria-pressed="true"] {
   background: var(--um-primary-soft);
   border-color: var(--um-primary-soft);
   color: var(--um-primary-text);

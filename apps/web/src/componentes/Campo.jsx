@@ -1,4 +1,4 @@
-import estilos from './Campo.module.css';
+import estilos from "./Campo.module.css";
 
 export function Campo({ id, etiqueta, ayuda, error, ...props }) {
   const idAyuda = `${id}-ayuda`;
@@ -12,7 +12,7 @@ export function Campo({ id, etiqueta, ayuda, error, ...props }) {
       <input
         id={id}
         className={estilos.input}
-        aria-invalid={error ? 'true' : undefined}
+        aria-invalid={error ? "true" : undefined}
         aria-describedby={descrito}
         {...props}
       />

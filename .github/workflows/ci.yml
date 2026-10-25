@@ -35,6 +35,9 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      - name: Formato
+        run: pnpm format:check
+
       - name: Build de la web
         run: pnpm build:web
 

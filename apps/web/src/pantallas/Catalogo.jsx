@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { fusionarPagina, mapearProblema } from '@uni-market/core';
-import { Aviso } from '../componentes/Aviso.jsx';
-import { Boton } from '../componentes/Boton.jsx';
-import { CabeceraPublica } from '../componentes/CabeceraPublica.jsx';
-import { Icono } from '../componentes/Icono.jsx';
-import { useSesion } from '../sesion/SesionContexto.jsx';
-import { TarjetaAnuncio } from './TarjetaAnuncio.jsx';
-import estilos from './catalogo.module.css';
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { fusionarPagina, mapearProblema } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
+import { Boton } from "../componentes/Boton.jsx";
+import { CabeceraPublica } from "../componentes/CabeceraPublica.jsx";
+import { Icono } from "../componentes/Icono.jsx";
+import { useSesion } from "../sesion/SesionContexto.jsx";
+import { TarjetaAnuncio } from "./TarjetaAnuncio.jsx";
+import estilos from "./catalogo.module.css";
 
 const LIMITE = 12;
 
@@ -15,13 +15,13 @@ export function Catalogo() {
   const { cliente, sesion, estado } = useSesion();
   const navegar = useNavigate();
   const [params, setParams] = useSearchParams();
-  const autenticado = estado.estado === 'autenticado';
+  const autenticado = estado.estado === "autenticado";
 
   const [categorias, setCategorias] = useState([]);
   const [filtros, setFiltros] = useState({
-    q: params.get('q') ?? '',
-    categoriaId: '',
-    orden: 'fechaCreacion',
+    q: params.get("q") ?? "",
+    categoriaId: "",
+    orden: "fechaCreacion",
   });
   const [anuncios, setAnuncios] = useState([]);
   const [cursor, setCursor] = useState(null);
@@ -32,10 +32,12 @@ export function Catalogo() {
   const [recarga, setRecarga] = useState(0);
   const solicitud = useRef(0);
 
-  const qUrl = params.get('q') ?? '';
+  const qUrl = params.get("q") ?? "";
 
   useEffect(() => {
-    setFiltros((actuales) => (actuales.q === qUrl ? actuales : { ...actuales, q: qUrl }));
+    setFiltros((actuales) =>
+      actuales.q === qUrl ? actuales : { ...actuales, q: qUrl },
+    );
   }, [qUrl]);
 
   useEffect(() => {
@@ -52,7 +54,8 @@ export function Catalogo() {
 
     const parametros = { orden: filtros.orden, limite: LIMITE };
     if (filtros.q) parametros.q = filtros.q;
-    if (filtros.categoriaId) parametros.categoriaId = Number(filtros.categoriaId);
+    if (filtros.categoriaId)
+      parametros.categoriaId = Number(filtros.categoriaId);
 
     cliente.catalogo
       .buscarCatalogo(parametros)
@@ -70,7 +73,9 @@ export function Catalogo() {
       });
   }, [cliente, filtros, recarga]);
 
-  const porId = new Map(categorias.map((categoria) => [String(categoria.id), categoria]));
+  const porId = new Map(
+    categorias.map((categoria) => [String(categoria.id), categoria]),
+  );
 
   async function cargarMas() {
     if (!cursor || cargandoMas || cargando) return;
@@ -80,7 +85,8 @@ export function Catalogo() {
 
     const parametros = { orden: filtros.orden, limite: LIMITE, cursor };
     if (filtros.q) parametros.q = filtros.q;
-    if (filtros.categoriaId) parametros.categoriaId = Number(filtros.categoriaId);
+    if (filtros.categoriaId)
+      parametros.categoriaId = Number(filtros.categoriaId);
 
     try {
       const pagina = await cliente.catalogo.buscarCatalogo(parametros);
@@ -101,26 +107,31 @@ export function Catalogo() {
 
   function limpiarFiltros() {
     setParams({}, { replace: true });
-    setFiltros({ q: '', categoriaId: '', orden: 'fechaCreacion' });
+    setFiltros({ q: "", categoriaId: "", orden: "fechaCreacion" });
   }
 
   async function salir() {
     await sesion.cerrarSesion();
-    navegar('/entrar');
+    navegar("/entrar");
   }
 
-  const hayFiltros = Boolean(filtros.q || filtros.categoriaId || filtros.orden !== 'fechaCreacion');
+  const hayFiltros = Boolean(
+    filtros.q || filtros.categoriaId || filtros.orden !== "fechaCreacion",
+  );
 
   return (
     <div className={estilos.pagina}>
-      <CabeceraPublica
-        inicial={filtros.q}
-        onBuscar={aplicarBusqueda}
-      >
+      <CabeceraPublica inicial={filtros.q} onBuscar={aplicarBusqueda}>
         {autenticado ? (
           <>
-            <span className={estilos.saludo}>Hola, {estado.usuario?.nombre}</span>
-            <Boton variante="secundario" className={estilos.botonCuenta} onClick={salir}>
+            <span className={estilos.saludo}>
+              Hola, {estado.usuario?.nombre}
+            </span>
+            <Boton
+              variante="secundario"
+              className={estilos.botonCuenta}
+              onClick={salir}
+            >
               Cerrar sesión
             </Boton>
           </>
@@ -151,7 +162,10 @@ export function Catalogo() {
               className={estilos.selector}
               value={filtros.orden}
               onChange={(evento) =>
-                setFiltros((actuales) => ({ ...actuales, orden: evento.target.value }))
+                setFiltros((actuales) => ({
+                  ...actuales,
+                  orden: evento.target.value,
+                }))
               }
             >
               <option value="fechaCreacion">Más recientes</option>
@@ -160,12 +174,18 @@ export function Catalogo() {
           </label>
         </div>
 
-        <div className={estilos.chips} role="group" aria-label="Filtrar por categoría">
+        <div
+          className={estilos.chips}
+          role="group"
+          aria-label="Filtrar por categoría"
+        >
           <button
             type="button"
             className={estilos.chip}
-            aria-pressed={filtros.categoriaId === ''}
-            onClick={() => setFiltros((actuales) => ({ ...actuales, categoriaId: '' }))}
+            aria-pressed={filtros.categoriaId === ""}
+            onClick={() =>
+              setFiltros((actuales) => ({ ...actuales, categoriaId: "" }))
+            }
           >
             Todas
           </button>
@@ -176,7 +196,10 @@ export function Catalogo() {
               className={estilos.chip}
               aria-pressed={filtros.categoriaId === String(categoria.id)}
               onClick={() =>
-                setFiltros((actuales) => ({ ...actuales, categoriaId: String(categoria.id) }))
+                setFiltros((actuales) => ({
+                  ...actuales,
+                  categoriaId: String(categoria.id),
+                }))
               }
             >
               {categoria.nombre}
@@ -186,14 +209,19 @@ export function Catalogo() {
 
         {cargando && (
           <p className={estilos.estado} role="status">
-            {anuncios.length > 0 ? 'Actualizando anuncios…' : 'Cargando anuncios…'}
+            {anuncios.length > 0
+              ? "Actualizando anuncios…"
+              : "Cargando anuncios…"}
           </p>
         )}
 
         {error && (
           <div className={estilos.estadoError}>
             <Aviso>{error}</Aviso>
-            <Boton variante="secundario" onClick={() => setRecarga((n) => n + 1)}>
+            <Boton
+              variante="secundario"
+              onClick={() => setRecarga((n) => n + 1)}
+            >
               Reintentar
             </Boton>
           </div>
@@ -207,8 +235,8 @@ export function Catalogo() {
             <h2 className={estilos.vacioTitulo}>No encontramos anuncios</h2>
             <p className={estilos.vacioTexto}>
               {hayFiltros
-                ? 'Prueba con otra categoría o cambia la búsqueda.'
-                : 'Cuando alguien publique algo, aparecerá aquí.'}
+                ? "Prueba con otra categoría o cambia la búsqueda."
+                : "Cuando alguien publique algo, aparecerá aquí."}
             </p>
             {hayFiltros && (
               <Boton variante="secundario" onClick={limpiarFiltros}>
@@ -240,7 +268,7 @@ export function Catalogo() {
                   disabled={cargando}
                   onClick={cargarMas}
                 >
-                  {cargandoMas ? 'Cargando…' : 'Cargar más anuncios'}
+                  {cargandoMas ? "Cargando…" : "Cargar más anuncios"}
                 </Boton>
               </div>
             )}

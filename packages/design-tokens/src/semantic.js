@@ -13,44 +13,44 @@
 
 export const light = {
   // Marca
-  primary: '#F97316',
-  primaryHover: '#C2410C',
-  primaryActive: '#9A3412',
-  primaryStrong: '#9A3412',
-  primarySoft: '#FFF7ED',
-  primarySelected: '#FFEDD5',
+  primary: "#F97316",
+  primaryHover: "#C2410C",
+  primaryActive: "#9A3412",
+  primaryStrong: "#9A3412",
+  primarySoft: "#FFF7ED",
+  primarySelected: "#FFEDD5",
 
   // Superficies
-  bg: '#F9FAFB',
-  surface: '#FFFFFF',
-  surfaceHover: '#F3F4F6',
+  bg: "#F9FAFB",
+  surface: "#FFFFFF",
+  surfaceHover: "#F3F4F6",
 
   // Texto
-  text: '#111827',
-  textSecondary: '#4B5563',
-  textInverse: '#FFFFFF',
-  link: '#C2410C',
-  linkHover: '#9A3412',
+  text: "#111827",
+  textSecondary: "#4B5563",
+  textInverse: "#FFFFFF",
+  link: "#C2410C",
+  linkHover: "#9A3412",
 
   // Bordes y foco
-  border: '#E5E7EB',
-  borderStrong: '#D1D5DB',
-  borderField: '#7C8595',
-  focus: '#C2410C',
+  border: "#E5E7EB",
+  borderStrong: "#D1D5DB",
+  borderField: "#7C8595",
+  focus: "#C2410C",
 
   // Estados
-  success: '#16A34A',
-  successSoft: '#F0FDF4',
-  successText: '#166534',
-  warning: '#D97706',
-  warningSoft: '#FFFBEB',
-  warningText: '#92400E',
-  error: '#DC2626',
-  errorSoft: '#FEF2F2',
-  errorText: '#991B1B',
-  info: '#2563EB',
-  infoSoft: '#EFF6FF',
-  infoText: '#1D4ED8',
+  success: "#16A34A",
+  successSoft: "#F0FDF4",
+  successText: "#166534",
+  warning: "#D97706",
+  warningSoft: "#FFFBEB",
+  warningText: "#92400E",
+  error: "#DC2626",
+  errorSoft: "#FEF2F2",
+  errorText: "#991B1B",
+  info: "#2563EB",
+  infoSoft: "#EFF6FF",
+  infoText: "#1D4ED8",
 
   // Texto sobre relleno. Solo existen para los rellenos que lo admiten en AA:
   // error (4.83:1) e info (5.17:1). Éxito y advertencia NO se rellenan en
@@ -58,67 +58,67 @@ export const light = {
   // El botón primario cambia de color de texto al cambiar de relleno: el
   // naranja base lleva tinta oscura (#431407) y los rellenos oscuros de
   // hover/activo llevan blanco.
-  textOnPrimary: '#431407',
-  textOnPrimaryStrong: '#FFFFFF',
-  textOnError: '#FFFFFF',
-  textOnInfo: '#FFFFFF',
+  textOnPrimary: "#431407",
+  textOnPrimaryStrong: "#FFFFFF",
+  textOnError: "#FFFFFF",
+  textOnInfo: "#FFFFFF",
 
   // Deshabilitado: por encima de AA (4.90:1). El estado se comunica con el
   // relleno gris y la ausencia de interacción, no con texto ilegible.
-  disabledBg: '#E5E7EB',
-  disabledText: '#5B6370',
+  disabledBg: "#E5E7EB",
+  disabledText: "#5B6370",
 };
 
 export const dark = {
   // Marca: en oscuro el naranja se ACLARA, no se oscurece.
-  primary: '#FB923C',
-  primaryHover: '#FDBA74',
-  primaryActive: '#F97316',
-  primaryStrong: '#FDBA74',
-  primarySoft: '#431407',
-  primarySelected: '#431407',
+  primary: "#FB923C",
+  primaryHover: "#FDBA74",
+  primaryActive: "#F97316",
+  primaryStrong: "#FDBA74",
+  primarySoft: "#431407",
+  primarySelected: "#431407",
 
   // Superficies
-  bg: '#111827',
-  surface: '#1F2937',
-  surfaceHover: '#2A3341',
+  bg: "#111827",
+  surface: "#1F2937",
+  surfaceHover: "#2A3341",
 
   // Texto
-  text: '#F9FAFB',
-  textSecondary: '#9CA3AF',
-  textInverse: '#111827',
-  link: '#FB923C',
-  linkHover: '#FDBA74',
+  text: "#F9FAFB",
+  textSecondary: "#9CA3AF",
+  textInverse: "#111827",
+  link: "#FB923C",
+  linkHover: "#FDBA74",
 
   // Bordes y foco
-  border: '#374151',
-  borderStrong: '#4B5563',
-  borderField: '#8B93A0',
-  focus: '#FDBA74',
+  border: "#374151",
+  borderStrong: "#4B5563",
+  borderField: "#8B93A0",
+  focus: "#FDBA74",
 
   // Estados (versión clara del tono: los oscuros desaparecen sobre fondo oscuro)
-  success: '#4ADE80',
-  successSoft: '#0F2A1A',
-  successText: '#4ADE80',
-  warning: '#FBBF24',
-  warningSoft: '#33240A',
-  warningText: '#FBBF24',
-  error: '#FCA5A5',
-  errorSoft: '#3A1512',
-  errorText: '#FCA5A5',
-  info: '#93C5FD',
-  infoSoft: '#10233F',
-  infoText: '#93C5FD',
+  success: "#4ADE80",
+  successSoft: "#0F2A1A",
+  successText: "#4ADE80",
+  warning: "#FBBF24",
+  warningSoft: "#33240A",
+  warningText: "#FBBF24",
+  error: "#FCA5A5",
+  errorSoft: "#3A1512",
+  errorText: "#FCA5A5",
+  info: "#93C5FD",
+  infoSoft: "#10233F",
+  infoText: "#93C5FD",
 
   // Texto sobre relleno (recíproco de los pares suaves)
-  textOnPrimary: '#431407',
-  textOnPrimaryStrong: '#431407',
-  textOnError: '#3A1512',
-  textOnInfo: '#10233F',
+  textOnPrimary: "#431407",
+  textOnPrimaryStrong: "#431407",
+  textOnError: "#3A1512",
+  textOnInfo: "#10233F",
 
   // Deshabilitado: por encima de AA (5.09:1).
-  disabledBg: '#374151',
-  disabledText: '#AEB7C4',
+  disabledBg: "#374151",
+  disabledText: "#AEB7C4",
 };
 
 export const themes = { light, dark };

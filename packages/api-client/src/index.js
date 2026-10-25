@@ -2,18 +2,18 @@
 // Toda llamada HTTP de las apps pasa por aquí: el cliente es generado desde el
 // contrato y el transporte es propio (fetch), nunca escrito a mano por dominio.
 
-import ApiClient from './generado/ApiClient.js';
-import AdministracionApi from './generado/api/AdministracionApi.js';
-import AnunciosApi from './generado/api/AnunciosApi.js';
-import AuthApi from './generado/api/AuthApi.js';
-import CatalogoApi from './generado/api/CatalogoApi.js';
-import CategoriasApi from './generado/api/CategoriasApi.js';
-import ConversacionesApi from './generado/api/ConversacionesApi.js';
-import MensajesApi from './generado/api/MensajesApi.js';
-import ModeracionApi from './generado/api/ModeracionApi.js';
-import UsuariosApi from './generado/api/UsuariosApi.js';
+import ApiClient from "./generado/ApiClient.js";
+import AdministracionApi from "./generado/api/AdministracionApi.js";
+import AnunciosApi from "./generado/api/AnunciosApi.js";
+import AuthApi from "./generado/api/AuthApi.js";
+import CatalogoApi from "./generado/api/CatalogoApi.js";
+import CategoriasApi from "./generado/api/CategoriasApi.js";
+import ConversacionesApi from "./generado/api/ConversacionesApi.js";
+import MensajesApi from "./generado/api/MensajesApi.js";
+import ModeracionApi from "./generado/api/ModeracionApi.js";
+import UsuariosApi from "./generado/api/UsuariosApi.js";
 
-export { ApiError, normalizarProblema } from './problemas.js';
+export { ApiError, normalizarProblema } from "./problemas.js";
 export { ApiClient };
 
 /**
@@ -25,8 +25,13 @@ export { ApiClient };
  * @param {typeof fetch} [opciones.fetchImpl]  Inyectable para pruebas o para RN
  * @param {number} [opciones.timeout]
  */
-export function crearCliente({ baseUrl, getAccessToken, fetchImpl, timeout } = {}) {
-  if (!baseUrl) throw new Error('crearCliente necesita baseUrl');
+export function crearCliente({
+  baseUrl,
+  getAccessToken,
+  fetchImpl,
+  timeout,
+} = {}) {
+  if (!baseUrl) throw new Error("crearCliente necesita baseUrl");
 
   const api = new ApiClient(baseUrl);
   if (fetchImpl) api.fetchImpl = fetchImpl;

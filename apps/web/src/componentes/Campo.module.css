@@ -23,7 +23,7 @@
   color: var(--um-text-secondary);
 }
 
-.input[aria-invalid='true'] {
+.input[aria-invalid="true"] {
   border-color: var(--um-error);
 }
 

@@ -84,7 +84,7 @@
   cursor: pointer;
 }
 
-.miniatura[aria-pressed='true'] {
+.miniatura[aria-pressed="true"] {
   border: 2px solid var(--um-primary-active);
 }
 

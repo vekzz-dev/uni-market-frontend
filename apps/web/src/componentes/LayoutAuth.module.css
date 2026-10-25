@@ -95,7 +95,7 @@
   font-size: 22px;
 }
 
-.iconoResultado[data-girando='true'] svg {
+.iconoResultado[data-girando="true"] svg {
   animation: girar 900ms linear infinite;
 }
 
@@ -142,12 +142,12 @@
 
   /* En móvil la marca ya vuelve al catálogo; el enlace extra solo comprime la cabecera. */
   .acciones {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-.enlace {
+  .enlace {
     display: none;
   }
 }

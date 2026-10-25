@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom';
-import { Icono } from './Icono.jsx';
-import { SelectorTema } from './SelectorTema.jsx';
-import estilos from './LayoutAuth.module.css';
+import { Link } from "react-router-dom";
+import { Icono } from "./Icono.jsx";
+import { SelectorTema } from "./SelectorTema.jsx";
+import estilos from "./LayoutAuth.module.css";
 
 /**
  * Marco de las pantallas de sesión: cabecera mínima + tarjeta centrada.
@@ -14,16 +14,22 @@ export function LayoutAuth({
   titulo,
   subtitulo,
   children,
-  idTitulo = 'titulo-auth',
+  idTitulo = "titulo-auth",
   resultado = false,
   icono = null,
 }) {
-  const claseTarjeta = [estilos.tarjeta, resultado ? estilos.tarjetaResultado : '']
+  const claseTarjeta = [
+    estilos.tarjeta,
+    resultado ? estilos.tarjetaResultado : "",
+  ]
     .filter(Boolean)
-    .join(' ');
-  const claseCabecera = [estilos.cabeceraTarjeta, resultado ? estilos.cabeceraResultado : '']
+    .join(" ");
+  const claseCabecera = [
+    estilos.cabeceraTarjeta,
+    resultado ? estilos.cabeceraResultado : "",
+  ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   return (
     <div className={estilos.pagina}>
@@ -46,7 +52,7 @@ export function LayoutAuth({
             {icono && (
               <div
                 className={`${estilos.iconoResultado} ${estilos[icono.tono]}`}
-                data-girando={icono.girando ? 'true' : undefined}
+                data-girando={icono.girando ? "true" : undefined}
                 aria-hidden="true"
               >
                 <Icono nombre={icono.nombre} />

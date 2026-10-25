@@ -1,0 +1,8 @@
+node_modules/
+dist/
+pnpm-lock.yaml
+openapi/
+design/
+packages/api-client/src/generado/
+packages/design-tokens/build/
+*.md

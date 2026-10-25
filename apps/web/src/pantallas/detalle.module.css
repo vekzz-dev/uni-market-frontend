@@ -1,0 +1,265 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.saludo {
+  font-size: 14px;
+  color: var(--um-text-secondary);
+}
+
+.enlace {
+  color: var(--um-text);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.principal {
+  width: 100%;
+  max-width: 1184px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+
+.migas {
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--um-text-secondary);
+}
+
+.migas a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.migas a:hover {
+  text-decoration: underline;
+}
+
+.columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 640px) minmax(0, 424px);
+  gap: 56px;
+  align-items: start;
+}
+
+.galeria {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.imagenPrincipal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 10;
+  background: var(--um-surface-hover);
+  color: var(--um-text-secondary);
+  border-radius: var(--um-radius-card);
+  overflow: hidden;
+}
+
+.imagen {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniaturas {
+  display: flex;
+  gap: 12px;
+}
+
+.miniatura {
+  width: 84px;
+  height: 56px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--um-border);
+  border-radius: 8px;
+  background: var(--um-surface-hover);
+  cursor: pointer;
+}
+
+.miniatura[aria-pressed='true'] {
+  border: 2px solid var(--um-primary-active);
+}
+
+.informacion {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.chip {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--um-primary-soft);
+  color: var(--um-primary-text);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.titulo {
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 38px;
+}
+
+.precio {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.meta {
+  font-size: 14px;
+  color: var(--um-text-secondary);
+}
+
+.separador {
+  width: 100%;
+  height: 1px;
+  background: var(--um-border);
+}
+
+.descripcion {
+  font-size: 16px;
+  line-height: 26px;
+  color: var(--um-text-secondary);
+  white-space: pre-line;
+}
+
+.contacto {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 20px;
+  background: var(--um-surface);
+  border: 1px solid var(--um-border);
+  border-radius: var(--um-radius-card);
+}
+
+.contactoTitulo {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.contactoTexto {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--um-text-secondary);
+}
+
+.primario,
+.secundario {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: var(--um-radius-control);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.primario {
+  background: var(--um-primary);
+  color: var(--um-text-on-primary);
+}
+
+.primario:hover {
+  background: var(--um-primary-hover);
+  color: var(--um-text-on-primary-strong);
+}
+
+.secundario {
+  background: var(--um-surface);
+  color: var(--um-text);
+  border: 1px solid var(--um-border-field);
+}
+
+.secundario:hover {
+  background: var(--um-surface-hover);
+}
+
+.estado {
+  padding: 64px 0;
+  text-align: center;
+  color: var(--um-text-secondary);
+}
+
+.desenlace {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: 440px;
+  margin: 48px auto;
+  padding: 32px;
+  text-align: center;
+  background: var(--um-surface);
+  border: 1px solid var(--um-border);
+  border-radius: var(--um-radius-card);
+}
+
+.icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+}
+
+.error {
+  background: var(--um-error-soft);
+  color: var(--um-error-text);
+}
+
+.advertencia {
+  background: var(--um-warning-soft);
+  color: var(--um-warning-text);
+}
+
+.desenlaceTitulo {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+}
+
+.desenlaceTexto {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--um-text-secondary);
+}
+
+.accionesDesenlace {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .columnas {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .principal {
+    padding: 20px 16px 40px;
+  }
+
+  .titulo,
+  .precio {
+    font-size: 24px;
+    line-height: 30px;
+  }
+}

@@ -6,7 +6,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { useTema } from "../tema.js";
+import { SelectorTema, useTema } from "../tema.js";
 
 export function Boton({
   titulo,
@@ -121,6 +121,7 @@ export function Cabecera({ children }) {
         Uni Market
       </Text>
       <View style={{ flex: 1 }} />
+      <SelectorTema />
       {children}
     </View>
   );

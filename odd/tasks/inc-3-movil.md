@@ -18,9 +18,11 @@
 - [x] **T2 — Sesión**: provider, almacén seguro y pantallas de sesión.
 - [x] **T3 — Catálogo y detalle**: pantallas y navegación.
 - [x] **T4 — Verificación visual**: Expo web a 390 con la API real (catálogo y detalle).
-- [ ] **T5 — Suite móvil**: jest-expo + Testing Library.
+- [ ] **T5 — Suite móvil**: bloqueada. `jest-expo` 58 no arranca con el setup ESM de `@react-native/jest-preset` 0.88 en este entorno (`Must use import to load ES Module`); requiere revisar la compatibilidad Jest/RN antes de añadirla.
 
 ## Log
 
 - **L1 (2026-10-24, verbatim)**: "sigamos con la inc 3"
 - **Shell y paridad (2026-10-24)**: `apps/mobile` con Expo 58/React Native 0.88, Expo Router 58 y Metro configurado para el monorepo pnpm. Tokens por `themeFor`, sesión con SecureStore (localStorage en web) y las seis pantallas de sesión más catálogo y detalle. Verificado con `expo export --web` (10 rutas) y capturas a 390 contra la API real: el catálogo muestra `Sin categoría · Reporte D.` y el detalle la fila del vendedor. La suite móvil queda pendiente; el resto del Inc 3 es paridad de calidad, no de funcionalidad.
+
+- **Cierre (2026-10-25)**: conmutador de tema propio (sistema/claro/oscuro persistido) en la cabecera, gate `expo export --web` en CI y verificación de `Entrar` a 390. La suite móvil queda bloqueada por el arranque ESM de jest-expo; no se añadieron dependencias de test para no dejar un gate roto.

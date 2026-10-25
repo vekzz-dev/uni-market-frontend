@@ -41,6 +41,9 @@ jobs:
       - name: Build de la web
         run: pnpm build:web
 
+      - name: Build de la móvil (web)
+        run: pnpm --filter @uni-market/mobile export:web
+
       - name: Contrato vendorizado
         run: pnpm contract:check
 

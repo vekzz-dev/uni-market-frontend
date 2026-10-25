@@ -18,7 +18,8 @@
     "build:web": "pnpm --filter @uni-market/web build",
     "test": "pnpm -r test",
     "lint": "eslint .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "dev:mobile": "pnpm --filter @uni-market/mobile start"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

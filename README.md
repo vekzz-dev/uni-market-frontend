@@ -9,7 +9,7 @@ Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplica
 ```
 apps/
   web/        ✅ (Inc 1–2) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · sesión, catálogo y detalle
-  mobile/     (Inc 3) React Native + Expo (Expo Router) · JavaScript
+  mobile/     ✅ (Inc 3) Expo 58 + Expo Router · JavaScript · sesión y catálogo con paridad
 packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
   core/       ✅ sesión, errores, paginación, validación espejo, capacidades, formato y medios
@@ -48,6 +48,7 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm test` | Suite de todos los paquetes (hoy: tokens, api-client, core y web) |
 | `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
 | `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
+| `pnpm dev:mobile` | Expo (Metro) para la app móvil |
 | `pnpm lint` | ESLint sobre el monorepo, con las reglas de frontera |
 | `pnpm format:check` | Comprueba el formato con Prettier |
 

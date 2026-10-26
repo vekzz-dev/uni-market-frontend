@@ -62,5 +62,9 @@ export const web = [
       'no-restricted-imports': ['error', { paths: ['react', 'react-dom', 'react-native'] }],
     },
   },
+  {
+    files: ['**/test/**/*.{js,jsx}', '**/*.test.{js,jsx}'],
+    languageOptions: { globals: { ...globals.jest } },
+  },
   prettier,
 ];

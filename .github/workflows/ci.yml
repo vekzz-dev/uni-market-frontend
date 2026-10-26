@@ -27,7 +27,7 @@ jobs:
           java-version: 21
 
       - name: Instalar workspaces
-        run: pnpm install --frozen-lockfile --ignore-scripts
+        run: pnpm install --frozen-lockfile
 
       - name: Pruebas
         run: pnpm test
@@ -40,6 +40,9 @@ jobs:
 
       - name: Build de la web
         run: pnpm build:web
+
+      - name: Build de la móvil (web)
+        run: pnpm --filter @uni-market/mobile export:web
 
       - name: Contrato vendorizado
         run: pnpm contract:check

@@ -18,7 +18,7 @@
 - [x] **T2 — Sesión**: provider, almacén seguro y pantallas de sesión.
 - [x] **T3 — Catálogo y detalle**: pantallas y navegación.
 - [x] **T4 — Verificación visual**: Expo web a 390 con la API real (catálogo y detalle).
-- [ ] **T5 — Suite móvil**: bloqueada. `jest-expo` 58 no arranca con el setup ESM de `@react-native/jest-preset` 0.88 en este entorno (`Must use import to load ES Module`); requiere revisar la compatibilidad Jest/RN antes de añadirla.
+- [x] **T5 — Suite móvil**: `jest-expo` 58 con **Jest 29** y `transformIgnorePatterns: []` (el setup ESM de `@react-native/jest-preset` 0.88 se transpila). Pruebas de tema y catálogo con Testing Library.
 
 ## Log
 
@@ -26,3 +26,5 @@
 - **Shell y paridad (2026-10-24)**: `apps/mobile` con Expo 58/React Native 0.88, Expo Router 58 y Metro configurado para el monorepo pnpm. Tokens por `themeFor`, sesión con SecureStore (localStorage en web) y las seis pantallas de sesión más catálogo y detalle. Verificado con `expo export --web` (10 rutas) y capturas a 390 contra la API real: el catálogo muestra `Sin categoría · Reporte D.` y el detalle la fila del vendedor. La suite móvil queda pendiente; el resto del Inc 3 es paridad de calidad, no de funcionalidad.
 
 - **Cierre (2026-10-25)**: conmutador de tema propio (sistema/claro/oscuro persistido) en la cabecera, gate `expo export --web` en CI y verificación de `Entrar` a 390. La suite móvil queda bloqueada por el arranque ESM de jest-expo; no se añadieron dependencias de test para no dejar un gate roto.
+
+- **Límites cerrados (2026-10-26)**: Jest 30 no arranca con el setup ESM de RN 0.88; con Jest 29 y transformar todo `node_modules` la suite pasa (2 pruebas). El gate `expo export --web` vuelve a CI; `dangerouslyAllowAllBuilds` en `pnpm-workspace.yaml` deja que pnpm ejecute los builds nativos (se quitó `--ignore-scripts`).

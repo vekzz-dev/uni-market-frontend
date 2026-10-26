@@ -9,6 +9,7 @@ import { Catalogo } from "./pantallas/Catalogo.jsx";
 import { Detalle } from "./pantallas/Detalle.jsx";
 import { NoEncontrado } from "./pantallas/NoEncontrado.jsx";
 import { Publicar } from "./pantallas/Publicar.jsx";
+import { MisAnuncios } from "./pantallas/MisAnuncios.jsx";
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
       <Route path="/" element={<Catalogo />} />
       <Route path="/anuncios/:id" element={<Detalle />} />
       <Route path="/publicar" element={<Publicar />} />
+      <Route path="/mis-anuncios" element={<MisAnuncios />} />
       <Route path="/entrar" element={<Entrar />} />
       <Route path="/registro" element={<Registro />} />
       <Route path="/confirmar-email" element={<Confirmar />} />

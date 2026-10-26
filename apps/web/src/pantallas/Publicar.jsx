@@ -149,7 +149,10 @@ export function Publicar() {
               Queda pendiente de revisión. Cuando se apruebe, aparecerá en el
               catálogo.
             </p>
-            <Link to="/" className={estilos.primario}>
+            <Link to="/mis-anuncios" className={estilos.primario}>
+              Ver mis anuncios
+            </Link>
+            <Link to="/" className={estilos.secundario}>
               Volver al catálogo
             </Link>
           </section>

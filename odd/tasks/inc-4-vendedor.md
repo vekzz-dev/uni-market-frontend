@@ -13,7 +13,7 @@
 ## Tareas
 
 - [x] **T1 — Diseño**: `09 · Publicar` (default, subiendo, error 422) y `10 · Mis anuncios` (datos, vacío, error) en web.
-- [ ] **T2 — Publicar**: formulario multipart y estados.
+- [x] **T2 — Publicar**: formulario multipart y estados.
 - [ ] **T3 — Mis anuncios**: listado offset, badges y motivo.
 - [ ] **T4 — Gestión**: editar, visibilidad, vendido y baja.
 - [ ] **T5 — Pruebas y verificación** con la API real.
@@ -27,3 +27,4 @@
 - **Anchos (2026-10-26)**: medido por nodo: en móvil el formulario y la tarjeta de ayuda no tenían `w="fill"` y se encogían a 283; quedaron en 358 con campos de 326 (16 px de margen y padding). En web, tarjeta 720 y campos 672. Reexportados los seis PNG de Publicar.
 - **Web medido (2026-10-26)**: Publicar tiene tarjeta de 720 y campos de 672 (24 de padding), sin desborde. En Mis anuncios la columna de estado/acciones variaba (135 vs 289 en la fila aprobada); se normalizó a 289 en las cuatro filas: 72 + 16 + 951 + 16 + 289 + 32 = 1376 exactos. Reexportado el PNG web.
 - **Alturas (2026-10-26)**: el formulario web medía 733 y el contenido necesitaba 868 dentro de 828, así que se salía 40 px; los frames pasaron a 940 (default/publicando) y 1000 (error). En móvil se quitó la tarjeta de ayuda de Publicar (redundante con el subtítulo y el dropzone): 1011 → 885, error 1060 → 934.
+- **Publicar implementado (2026-10-26)**: ruta `/publicar` con guard de sesión, formulario (nombre, precio, categoría, descripción, 1–5 imágenes), validación espejo y `POST /v1/anuncios` multipart por el cliente generado con `sesion.ejecutar`. Desenlace "Anuncio publicado" (pendiente de revisión), 422 visible y 401 a entrar. CTA "Publicar anuncio" en el header del catálogo cuando hay sesión. 4 pruebas nuevas (38 en la web).

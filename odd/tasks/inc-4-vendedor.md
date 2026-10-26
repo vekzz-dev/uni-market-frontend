@@ -22,4 +22,5 @@
 
 - **L1 (2026-10-26, verbatim)**: "arranca"
 
-- **Diseño (2026-10-26)**: páginas `09 · Publicar` (default, publicando, error 422) y `10 · Mis anuncios` (datos con badges y motivo de rechazo, vacío, error), solo web; los frames móviles corresponden al Inc 9. Seis PNG en `design/preview/`. Lint de ambas páginas en 0 hallazgos.
+- **Diseño (2026-10-26)**: páginas `09 · Publicar` (default, publicando, error 422) y `10 · Mis anuncios` (datos con badges y motivo de rechazo, vacío, error), web y móvil. Doce PNG en `design/preview/`. Lint de ambas páginas en 0 hallazgos.
+- **Frames móviles (2026-10-26)**: añadidos los tres estados de `Publicar` y `Mis anuncios` a 390. Nota de implementación: aunque el frame muestra Editar/Ocultar/Eliminar en todas las filas, la UI solo ofrecerá las acciones válidas por estado (Ocultar solo en aprobados).

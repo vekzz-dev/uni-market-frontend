@@ -24,3 +24,4 @@
 
 - **Diseño (2026-10-26)**: páginas `09 · Publicar` (default, publicando, error 422) y `10 · Mis anuncios` (datos con badges y motivo de rechazo, vacío, error), web y móvil. Doce PNG en `design/preview/`. Lint de ambas páginas en 0 hallazgos.
 - **Frames móviles (2026-10-26)**: añadidos los tres estados de `Publicar` y `Mis anuncios` a 390. Publicar: el estado `publicando` ya no atenúa el formulario (etiquetas legibles) y el header lleva a "Mis anuncios" para no duplicar el CTA. Acciones del panel por estado: pendiente y rechazado → Editar/Eliminar; aprobado → Editar/Ocultar/Vendido/Eliminar; vendido → Editar/Eliminar. Los estados vacío y error web quedaron centrados.
+- **Anchos (2026-10-26)**: medido por nodo: en móvil el formulario y la tarjeta de ayuda no tenían `w="fill"` y se encogían a 283; quedaron en 358 con campos de 326 (16 px de margen y padding). En web, tarjeta 720 y campos 672. Reexportados los seis PNG de Publicar.

@@ -201,6 +201,8 @@ El diseño visual vive en OpenPencil, en **`design/uni-market.fig`**, organizado
 | `06 · Nueva contraseña` | default, `inválido`, `listo` |
 | `07 · Reenviar` | default, `enviado`, `límite` |
 | `08 · Detalle` | default, `no disponible`, `error` en web y móvil |
+| `09 · Publicar` | default, `publicando`, `error 422` (web) |
+| `10 · Mis anuncios` | datos, `vacío`, `error` (web) |
 
 **Convención**: una página por vista; cada página contiene el frame web a la izquierda, el móvil a la derecha y los estados debajo de cada uno. Nombres de frame: `Vista · plataforma · estado`.
 

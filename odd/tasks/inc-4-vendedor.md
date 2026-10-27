@@ -15,7 +15,7 @@
 - [x] **T1 — Diseño**: `09 · Publicar` (default, subiendo, error 422) y `10 · Mis anuncios` (datos, vacío, error) en web.
 - [x] **T2 — Publicar**: formulario multipart y estados.
 - [x] **T3 — Mis anuncios**: listado offset, badges y motivo.
-- [ ] **T4 — Gestión**: visibilidad, vendido y baja resueltos; **falta editar** (PATCH de contenido).
+- [x] **T4 — Gestión**: editar (PATCH de contenido con reset a revisión), visibilidad, vendido y baja.
 - [ ] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
@@ -29,3 +29,4 @@
 - **Alturas (2026-10-26)**: el formulario web medía 733 y el contenido necesitaba 868 dentro de 828, así que se salía 40 px; los frames pasaron a 940 (default/publicando) y 1000 (error). En móvil se quitó la tarjeta de ayuda de Publicar (redundante con el subtítulo y el dropzone): 1011 → 885, error 1060 → 934.
 - **Publicar implementado (2026-10-26)**: ruta `/publicar` con guard de sesión, formulario (nombre, precio, categoría, descripción, 1–5 imágenes), validación espejo y `POST /v1/anuncios` multipart por el cliente generado con `sesion.ejecutar`. Desenlace "Anuncio publicado" (pendiente de revisión), 422 visible y 401 a entrar. CTA "Publicar anuncio" en el header del catálogo cuando hay sesión. 4 pruebas nuevas (38 en la web).
 - **Mis anuncios (2026-10-26)**: `/mis-anuncios` con offset, badges priorizados por revisión (pendiente/rechazado) y estado (vendido/inactivo/aprobado), `motivoRechazo`, acciones Ocultar/Mostrar, Vendido y Eliminar con confirmación, paginación Anterior/Siguiente y estados vacío/error. Enlace desde el header del catálogo y desde el desenlace de Publicar. 5 pruebas nuevas (43 en la web).
+- **Editar (2026-10-26)**: `/mis-anuncios/:id/editar` recibe el anuncio por estado de navegación (el panel no tiene GET por id), precarga nombre/precio/categoría/descripción y hace `PATCH /anuncios/{id}/contenido`; al guardar vuelve a revisión. Las imágenes se editan por separado (endpoint propio). Si se recarga la URL sin estado, muestra un desenlace para volver al panel. 3 pruebas nuevas (46 en la web).

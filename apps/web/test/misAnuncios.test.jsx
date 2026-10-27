@@ -76,6 +76,7 @@ describe("pantalla Mis anuncios", () => {
     expect(screen.getByText("Aprobado")).toBeTruthy();
     expect(screen.getByText("Rechazado")).toBeTruthy();
     expect(screen.getByText("Las fotos no muestran el producto.")).toBeTruthy();
+    expect(screen.getByText("En revisión")).toBeTruthy();
   });
 
   it("oculta un anuncio aprobado y recarga", async () => {

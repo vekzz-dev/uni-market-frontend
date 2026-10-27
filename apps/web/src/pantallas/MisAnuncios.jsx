@@ -214,9 +214,13 @@ export function MisAnuncios() {
                         </p>
                       ) : (
                         <p className={estilos.meta}>
-                          {disponible
-                            ? "Visible en el catálogo"
-                            : "No visible en el catálogo"}
+                          {anuncio.estado === "vendido"
+                            ? "Marcado como vendido"
+                            : anuncio.estadoRevision === "pendiente"
+                              ? "En revisión"
+                              : disponible
+                                ? "Visible en el catálogo"
+                                : "No visible en el catálogo"}
                         </p>
                       )}
                     </div>

@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { mapearProblema, validarPrecio } from "@uni-market/core";
+import {
+  mapearProblema,
+  resolverUrlMedia,
+  validarImagenes,
+  validarPrecio,
+} from "@uni-market/core";
 import { Aviso } from "../componentes/Aviso.jsx";
 import { Boton } from "../componentes/Boton.jsx";
 import { CabeceraPublica } from "../componentes/CabeceraPublica.jsx";
 import { Campo } from "../componentes/Campo.jsx";
+import { origenApi } from "../config.js";
 import { useSesion } from "../sesion/SesionContexto.jsx";
 import estilos from "./publicar.module.css";
 
@@ -24,6 +30,8 @@ export function EditarAnuncio() {
     categoriaId:
       anuncio?.categoriaId != null ? String(anuncio.categoriaId) : "",
   });
+  const [archivos, setArchivos] = useState([]);
+  const [previews, setPreviews] = useState([]);
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
@@ -40,6 +48,26 @@ export function EditarAnuncio() {
       .catch(() => setCategorias([]));
   }, [cliente]);
 
+  useEffect(() => {
+    if (typeof URL.createObjectURL !== "function") {
+      setPreviews([]);
+      return undefined;
+    }
+    const urls = archivos.map((archivo) => URL.createObjectURL(archivo));
+    setPreviews(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [archivos]);
+
+  const actuales = anuncio?.imagenUrls ?? [];
+
+  function elegirArchivos(evento) {
+    setArchivos(Array.from(evento.target.files ?? []));
+    setErrores((actualesErrores) => ({
+      ...actualesErrores,
+      imagenes: undefined,
+    }));
+  }
+
   const cambiar = (campo) => (evento) =>
     setFormulario((actual) => ({ ...actual, [campo]: evento.target.value }));
 
@@ -51,6 +79,10 @@ export function EditarAnuncio() {
     if (!formulario.nombre.trim()) problemas.nombre = "Escribe un nombre.";
     const precioError = validarPrecio(formulario.precio);
     if (precioError) problemas.precio = precioError;
+    if (archivos.length > 0) {
+      const imagenesError = validarImagenes(archivos);
+      if (imagenesError) problemas.imagenes = imagenesError;
+    }
     if (Object.keys(problemas).length > 0) {
       setErrores(problemas);
       return;
@@ -66,9 +98,14 @@ export function EditarAnuncio() {
           descripcion: formulario.descripcion.trim() || undefined,
           categoriaId: formulario.categoriaId
             ? Number(formulario.categoriaId)
-            : undefined,
+            : null,
         }),
       );
+      if (archivos.length > 0) {
+        await sesion.ejecutar(() =>
+          cliente.anuncios.reemplazarImagenes(id, archivos),
+        );
+      }
       setGuardado(true);
     } catch (fallo) {
       const problema = mapearProblema(fallo);
@@ -206,6 +243,52 @@ export function EditarAnuncio() {
               value={formulario.descripcion}
               onChange={cambiar("descripcion")}
             />
+          </div>
+
+          <div className={estilos.campo}>
+            <span className={estilos.etiqueta}>Imágenes</span>
+            {archivos.length === 0 && actuales.length > 0 && (
+              <ul className={estilos.miniaturas}>
+                {actuales.map((url, posicion) => (
+                  <li key={url}>
+                    <img
+                      src={resolverUrlMedia(url, origenApi)}
+                      alt={`Imagen actual ${posicion + 1}`}
+                    />
+                  </li>
+                ))}
+              </ul>
+            )}
+            {previews.length > 0 && (
+              <ul className={estilos.miniaturas}>
+                {previews.map((url, posicion) => (
+                  <li key={url}>
+                    <img src={url} alt={`Imagen nueva ${posicion + 1}`} />
+                  </li>
+                ))}
+              </ul>
+            )}
+            <label className={estilos.dropzone} htmlFor="imagenes">
+              <input
+                id="imagenes"
+                className={estilos.archivo}
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                aria-label="Imágenes"
+                onChange={elegirArchivos}
+              />
+              <span aria-hidden="true">↑</span>
+              <strong>
+                {archivos.length > 0
+                  ? "Cambiar selección"
+                  : "Reemplazar imágenes"}
+              </strong>
+              <span>1–5 imágenes · máximo 5 MB cada una</span>
+            </label>
+            {errores.imagenes && (
+              <p className={estilos.error}>{errores.imagenes}</p>
+            )}
           </div>
 
           <div className={estilos.acciones}>

@@ -16,14 +16,14 @@ const anuncio = {
   estadoRevision: "aprobado",
 };
 
-function montar({ editarAnuncio, conAnuncio = true } = {}) {
+function montar({ editarAnuncio, reemplazarImagenes, conAnuncio = true } = {}) {
   const cliente = {
     categorias: {
       listarCategorias: vi.fn().mockResolvedValue({
         datos: [{ id: 3, nombre: "Deportes", orden: 1 }],
       }),
     },
-    anuncios: { editarAnuncio },
+    anuncios: { editarAnuncio, reemplazarImagenes },
   };
   const sesion = {
     ejecutar: (operacion) => operacion(),
@@ -51,7 +51,8 @@ describe("pantalla Editar anuncio", () => {
   it("precarga el anuncio y guarda los cambios", async () => {
     const usuario = userEvent.setup();
     const editarAnuncio = vi.fn().mockResolvedValue({});
-    montar({ editarAnuncio });
+    const reemplazarImagenes = vi.fn().mockResolvedValue({});
+    montar({ editarAnuncio, reemplazarImagenes });
 
     const precio = screen.getByLabelText("Precio (USD)");
     expect(precio.value).toBe("210");
@@ -92,6 +93,26 @@ describe("pantalla Editar anuncio", () => {
 
     expect(
       screen.getByRole("heading", { name: "No pudimos abrir el anuncio" }),
+    ).toBeTruthy();
+  });
+
+  it("reemplaza las imágenes cuando se eligen nuevas", async () => {
+    const usuario = userEvent.setup();
+    const editarAnuncio = vi.fn().mockResolvedValue({});
+    const reemplazarImagenes = vi.fn().mockResolvedValue({});
+    montar({ editarAnuncio, reemplazarImagenes });
+
+    const archivo = new File(["x"], "nueva.png", { type: "image/png" });
+    await usuario.upload(screen.getByLabelText("Imágenes"), archivo);
+    await usuario.click(
+      screen.getByRole("button", { name: "Guardar cambios" }),
+    );
+
+    await waitFor(() => expect(reemplazarImagenes).toHaveBeenCalled());
+    expect(reemplazarImagenes.mock.calls[0][0]).toBe("a2");
+    expect(reemplazarImagenes.mock.calls[0][1]).toHaveLength(1);
+    expect(
+      await screen.findByRole("heading", { name: "Anuncio actualizado" }),
     ).toBeTruthy();
   });
 });

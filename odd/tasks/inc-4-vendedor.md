@@ -16,7 +16,7 @@
 - [x] **T2 — Publicar**: formulario multipart y estados.
 - [x] **T3 — Mis anuncios**: listado offset, badges y motivo.
 - [x] **T4 — Gestión**: editar (PATCH de contenido con reset a revisión), visibilidad, vendido y baja.
-- [ ] **T5 — Pruebas y verificación** con la API real.
+- [x] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
 
@@ -30,3 +30,4 @@
 - **Publicar implementado (2026-10-26)**: ruta `/publicar` con guard de sesión, formulario (nombre, precio, categoría, descripción, 1–5 imágenes), validación espejo y `POST /v1/anuncios` multipart por el cliente generado con `sesion.ejecutar`. Desenlace "Anuncio publicado" (pendiente de revisión), 422 visible y 401 a entrar. CTA "Publicar anuncio" en el header del catálogo cuando hay sesión. 4 pruebas nuevas (38 en la web).
 - **Mis anuncios (2026-10-26)**: `/mis-anuncios` con offset, badges priorizados por revisión (pendiente/rechazado) y estado (vendido/inactivo/aprobado), `motivoRechazo`, acciones Ocultar/Mostrar, Vendido y Eliminar con confirmación, paginación Anterior/Siguiente y estados vacío/error. Enlace desde el header del catálogo y desde el desenlace de Publicar. 5 pruebas nuevas (43 en la web).
 - **Editar (2026-10-26)**: `/mis-anuncios/:id/editar` recibe el anuncio por estado de navegación (el panel no tiene GET por id), precarga nombre/precio/categoría/descripción y hace `PATCH /anuncios/{id}/contenido`; al guardar vuelve a revisión. Las imágenes se editan por separado (endpoint propio). Si se recarga la URL sin estado, muestra un desenlace para volver al panel. 3 pruebas nuevas (46 en la web).
+- **Verificación real (2026-10-26)**: con Postgres + jar se registró y confirmó un vendedor, se publicó un anuncio con PNG (201, `pendiente`), el panel lo listó, el PATCH de contenido devolvió a `pendiente`, y tras aprobar por SQL se probaron visibilidad (`inactivo`/`disponible`) y vendido (`vendido`) con 200. La UI usa el cliente generado (visibilidad y vendido son `POST`, no `PATCH`). Servicios detenidos al terminar.

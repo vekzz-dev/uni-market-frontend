@@ -58,7 +58,12 @@ export function MisAnuncios() {
       )
       .then((respuesta) => {
         if (!vigente) return;
-        setAnuncios(respuesta.datos ?? []);
+        const datos = respuesta.datos ?? [];
+        if (datos.length === 0 && pagina > 0) {
+          setPagina((actual) => Math.max(0, actual - 1));
+          return;
+        }
+        setAnuncios(datos);
         setPaginacion(respuesta.paginacion ?? null);
       })
       .catch((fallo) => {

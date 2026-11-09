@@ -3,6 +3,7 @@ import { crearCliente } from "@uni-market/api-client";
 import { crearGestorSesion } from "@uni-market/core";
 import { apiBaseUrl } from "../config.js";
 import { crearAlmacenWeb } from "./almacenWeb.js";
+import { crearCanalWeb } from "./canalWeb.js";
 
 // Se exporta para poder inyectar un valor falso en las pruebas.
 export const SesionContexto = createContext(null);
@@ -24,6 +25,7 @@ export function SesionProvider({ children }) {
     gestor = crearGestorSesion({
       auth: cliente.auth,
       almacen: crearAlmacenWeb(),
+      canal: crearCanalWeb(),
       alCambiar: setEstado,
     });
     return { cliente, sesion: gestor };

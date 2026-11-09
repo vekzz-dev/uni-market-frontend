@@ -9,6 +9,9 @@ export const SesionContexto = createContext(null);
 
 export function SesionProvider({ children }) {
   const [estado, setEstado] = useState({ estado: "anonimo", usuario: null });
+  // `false` hasta que la restauración al arrancar termina: los guards de ruta
+  // esperan a este flag para no expulsar a entrar con un refresh válido guardado.
+  const [restaurado, setRestaurado] = useState(false);
 
   // Se crea una sola vez. `gestor` se asigna dentro del inicializador para que la
   // closure de `getAccessToken` lo vea sin tocar refs durante el render.
@@ -26,18 +29,26 @@ export function SesionProvider({ children }) {
     return { cliente, sesion: gestor };
   });
 
-  const restaurado = useRef(false);
+  const restauracionIniciada = useRef(false);
 
   useEffect(() => {
     // StrictMode ejecuta el efecto dos veces: restaurar dos veces rotaría dos veces.
-    if (restaurado.current) return;
-    restaurado.current = true;
-    recursos.sesion.restaurar().catch(() => {});
+    if (restauracionIniciada.current) return;
+    restauracionIniciada.current = true;
+    recursos.sesion
+      .restaurar()
+      .catch(() => {})
+      .finally(() => setRestaurado(true));
   }, [recursos]);
 
   return (
     <SesionContexto.Provider
-      value={{ cliente: recursos.cliente, sesion: recursos.sesion, estado }}
+      value={{
+        cliente: recursos.cliente,
+        sesion: recursos.sesion,
+        estado,
+        restaurado,
+      }}
     >
       {children}
     </SesionContexto.Provider>

@@ -8,12 +8,18 @@ import { Reenviar } from "./pantallas/Reenviar.jsx";
 import { Catalogo } from "./pantallas/Catalogo.jsx";
 import { Detalle } from "./pantallas/Detalle.jsx";
 import { NoEncontrado } from "./pantallas/NoEncontrado.jsx";
+import { Publicar } from "./pantallas/Publicar.jsx";
+import { MisAnuncios } from "./pantallas/MisAnuncios.jsx";
+import { EditarAnuncio } from "./pantallas/EditarAnuncio.jsx";
 
 export function App() {
   return (
     <Routes>
       <Route path="/" element={<Catalogo />} />
       <Route path="/anuncios/:id" element={<Detalle />} />
+      <Route path="/publicar" element={<Publicar />} />
+      <Route path="/mis-anuncios" element={<MisAnuncios />} />
+      <Route path="/mis-anuncios/:id/editar" element={<EditarAnuncio />} />
       <Route path="/entrar" element={<Entrar />} />
       <Route path="/registro" element={<Registro />} />
       <Route path="/confirmar-email" element={<Confirmar />} />

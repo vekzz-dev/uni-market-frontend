@@ -3,8 +3,12 @@ import { render, screen } from "@testing-library/react";
 import { SesionProvider, useSesion } from "../src/sesion/SesionContexto.jsx";
 
 function Sonda() {
-  const { estado } = useSesion();
-  return <p>estado: {estado.estado}</p>;
+  const { estado, restaurado } = useSesion();
+  return (
+    <p>
+      estado: {estado.estado} · restaurado: {String(restaurado)}
+    </p>
+  );
 }
 
 describe("SesionProvider", () => {
@@ -15,6 +19,8 @@ describe("SesionProvider", () => {
       </SesionProvider>,
     );
 
-    expect(await screen.findByText("estado: anonimo")).toBeTruthy();
+    expect(
+      await screen.findByText(/estado: anonimo · restaurado: true/),
+    ).toBeTruthy();
   });
 });

@@ -26,6 +26,8 @@ Cada carpeta corresponde a una **página del `.fig`**; dentro, un PNG por frame.
 | `06-nueva-contrasena/` | default, inválido, listo | 1× web / 2× móvil |
 | `07-reenviar/` | default, enviado, límite | 1× web / 2× móvil |
 | `08-detalle/` | default, no disponible, error | 1× web / 2× móvil |
+| `09-publicar/` | default, publicando, error 422 (ambas plataformas) | 1× web / 2× móvil |
+| `10-mis-anuncios/` | datos, vacío, error (ambas plataformas) | 1× web / 2× móvil |
 
 Convención de nombre: **`<vista>-<plataforma>[-<estado>].png`** — `entrar-web.png`, `entrar-movil-credenciales.png`. El estado se omite cuando es el default.
 

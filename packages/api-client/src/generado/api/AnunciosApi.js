@@ -267,9 +267,58 @@ export default class AnunciosApi {
 
 
     /**
+     * Un anuncio propio por id
+     * Recupera el anuncio del vendedor autenticado aunque NO sea visible públicamente (pendiente o rechazado), que es justo lo que el detalle público oculta (R4). Ownership como predicado de repositorio (R7): un anuncio ajeno y uno inexistente responden el MISMO `404`, sin revelar existencia. 
+     * @param {String} anuncioId 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/AnuncioPanel} and HTTP response
+     */
+    leerMiAnuncioWithHttpInfo(anuncioId) {
+      let postBody = null;
+      // verify the required parameter 'anuncioId' is set
+      if (anuncioId === undefined || anuncioId === null) {
+        throw new Error("Missing the required parameter 'anuncioId' when calling leerMiAnuncio");
+      }
+
+      let pathParams = {
+        'anuncioId': anuncioId
+      };
+      let queryParams = {
+      };
+      let headerParams = {
+      };
+      let formParams = {
+      };
+
+      let authNames = ['bearerAuth'];
+      let contentTypes = [];
+      let accepts = ['application/json', 'application/problem+json'];
+      let returnType = AnuncioPanel;
+      return this.apiClient.callApi(
+        '/mis-anuncios/{anuncioId}', 'GET',
+        pathParams, queryParams, headerParams, formParams, postBody,
+        authNames, contentTypes, accepts, returnType, null
+      );
+    }
+
+    /**
+     * Un anuncio propio por id
+     * Recupera el anuncio del vendedor autenticado aunque NO sea visible públicamente (pendiente o rechazado), que es justo lo que el detalle público oculta (R4). Ownership como predicado de repositorio (R7): un anuncio ajeno y uno inexistente responden el MISMO `404`, sin revelar existencia. 
+     * @param {String} anuncioId 
+     * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/AnuncioPanel}
+     */
+    leerMiAnuncio(anuncioId) {
+      return this.leerMiAnuncioWithHttpInfo(anuncioId)
+        .then(function(response_and_data) {
+          return response_and_data.data;
+        });
+    }
+
+
+    /**
      * Panel de anuncios del vendedor
      * Ownership garantizado como predicado de repositorio (R7): jamás devuelve filas ajenas aunque el filtro se manipule. Offset + total. Cada ítem incluye `estadoRevision` y `motivoRechazo` (badge del panel). 
      * @param {Object} opts Optional parameters
+     * @param {module:model/String} [estadoRevision] Filtro aditivo del panel (R7). Sin el parámetro se devuelve el panel completo. Cada valor es excluyente: `rechazado` son los rechazos de revisión y `retraido` las aprobaciones revocadas por moderación (misma `estadoRevision='rechazado'`, distinta procedencia). Valor fuera del dominio → `400`. 
      * @param {Number} [pagina = 0)] Índice de página desde 0 (paneles con conteo total).
      * @param {Number} [limite = 20)] Elementos por página (default 20, máximo 100).
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/ColeccionAnunciosPanel} and HTTP response
@@ -281,6 +330,7 @@ export default class AnunciosApi {
       let pathParams = {
       };
       let queryParams = {
+        'estadoRevision': opts['estadoRevision'],
         'pagina': opts['pagina'],
         'limite': opts['limite']
       };
@@ -304,6 +354,7 @@ export default class AnunciosApi {
      * Panel de anuncios del vendedor
      * Ownership garantizado como predicado de repositorio (R7): jamás devuelve filas ajenas aunque el filtro se manipule. Offset + total. Cada ítem incluye `estadoRevision` y `motivoRechazo` (badge del panel). 
      * @param {Object} opts Optional parameters
+     * @param {module:model/String} opts.estadoRevision Filtro aditivo del panel (R7). Sin el parámetro se devuelve el panel completo. Cada valor es excluyente: `rechazado` son los rechazos de revisión y `retraido` las aprobaciones revocadas por moderación (misma `estadoRevision='rechazado'`, distinta procedencia). Valor fuera del dominio → `400`. 
      * @param {Number} opts.pagina Índice de página desde 0 (paneles con conteo total). (default to 0)
      * @param {Number} opts.limite Elementos por página (default 20, máximo 100). (default to 20)
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/ColeccionAnunciosPanel}

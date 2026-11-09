@@ -124,6 +124,12 @@ export function Catalogo() {
       <CabeceraPublica inicial={filtros.q} onBuscar={aplicarBusqueda}>
         {autenticado ? (
           <>
+            <Link to="/mis-anuncios" className={estilos.enlace}>
+              Mis anuncios
+            </Link>
+            <Link to="/publicar" className={estilos.enlaceDestacado}>
+              Publicar anuncio
+            </Link>
             <span className={estilos.saludo}>
               Hola, {estado.usuario?.nombre}
             </span>

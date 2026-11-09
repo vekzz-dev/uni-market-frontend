@@ -160,8 +160,8 @@ Cada decisión nombra el problema, la elección, la alternativa y su costo. Las 
 | `/entrar`, `/registro` | Login y registro | Pública |
 | `/confirmar-email` | Confirmación por token (lee el token de la URL) | Pública |
 | `/restablecer` | Solicitar y confirmar restablecimiento | Pública |
-| `/mis-anuncios` | Panel offset con badge de revisión y `motivoRechazo` | `miembro`+ |
-| `/mis-anuncios/nuevo`, `/mis-anuncios/:id/editar` | Alta y edición multipart | `miembro`+ |
+| `/mis-anuncios` | Panel offset con filtro por estado de revisión, badge (incl. retraído) y `motivoRechazo` | `miembro`+ |
+| `/publicar`, `/mis-anuncios/:id/editar` | Alta y edición multipart; la edición relee el anuncio por id, así que sobrevive a recargar | `miembro`+ |
 | `/mensajes`, `/mensajes/:id` | Lista de conversaciones e hilo con envío y marcado de lectura explícito | `miembro`+ |
 | `/perfil` | Nombre, avatar, contraseña, baja | `miembro`+ |
 | `/moderacion` | Cola FIFO y decisión con motivo | `moderador`+ |
@@ -201,6 +201,8 @@ El diseño visual vive en OpenPencil, en **`design/uni-market.fig`**, organizado
 | `06 · Nueva contraseña` | default, `inválido`, `listo` |
 | `07 · Reenviar` | default, `enviado`, `límite` |
 | `08 · Detalle` | default, `no disponible`, `error` en web y móvil |
+| `09 · Publicar` | default, `publicando`, `error 422` en web y móvil |
+| `10 · Mis anuncios` | datos, `vacío`, `error` en web y móvil |
 
 **Convención**: una página por vista; cada página contiene el frame web a la izquierda, el móvil a la derecha y los estados debajo de cada uno. Nombres de frame: `Vista · plataforma · estado`.
 

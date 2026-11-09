@@ -47,6 +47,8 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm api:check` | Regenera en un temporal y falla si el cliente deriva del contrato |
 | `pnpm tokens:build` | Regenera `tokens.css` desde los tokens |
 | `pnpm test` | Suite de todos los paquetes (tokens, api-client, core, web y móvil) |
+| `pnpm test:coverage` | Cobertura de `core` y `api-client` con umbral del 80 % de líneas |
+| `pnpm e2e` | Humo con Playwright contra la API local (requiere `E2E_EMAIL` y `E2E_PASSWORD`) |
 | `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
 | `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
 | `pnpm dev:mobile` | Expo (Metro) para la app móvil |

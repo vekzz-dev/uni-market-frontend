@@ -2,13 +2,13 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0, Inc 1 e Inc 2 web completos** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo público, detalle, 404, tema claro/oscuro con conmutador y auditoría `axe`. **105 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 12 páginas y 62 PNG en `design/preview/`. Falta el móvil (Inc 3).
+> **Estado actual**: **Inc 0–4 completos** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo público, detalle, vendedor (publicar con imágenes, panel con filtro por estado de revisión, editar, visibilidad, vendido y baja), 404, tema claro/oscuro con conmutador y auditoría `axe`; la **app móvil** (Expo) tiene paridad de sesión y catálogo. **124 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 12 páginas y 62 PNG en `design/preview/`. Siguiente: Inc 5, mensajería web.
 
 ## Estructura
 
 ```
 apps/
-  web/        ✅ (Inc 1–2) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · sesión, catálogo y detalle
+  web/        ✅ (Inc 1–4) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · sesión, catálogo, detalle y vendedor
   mobile/     ✅ (Inc 3) Expo 58 + Expo Router · JavaScript · sesión y catálogo con paridad
 packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
@@ -45,7 +45,7 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm api:generate` | Regenera el cliente HTTP (requiere Java) |
 | `pnpm api:check` | Regenera en un temporal y falla si el cliente deriva del contrato |
 | `pnpm tokens:build` | Regenera `tokens.css` desde los tokens |
-| `pnpm test` | Suite de todos los paquetes (hoy: tokens, api-client, core y web) |
+| `pnpm test` | Suite de todos los paquetes (tokens, api-client, core, web y móvil) |
 | `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
 | `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
 | `pnpm dev:mobile` | Expo (Metro) para la app móvil |

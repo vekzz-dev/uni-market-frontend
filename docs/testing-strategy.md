@@ -14,13 +14,13 @@ Qué se prueba, con qué herramienta y qué se exige para dar algo por terminado
 
 | Nivel | Qué prueba | Herramienta | Dónde |
 |---|---|---|---|
-| Unitario de dominio | Reglas puras: mapeo de errores, validación espejo, capacidades por rol, formateo, resolver de medios, lógica de cursor/offset | **Vitest** (entorno `node`) | `packages/core`, `packages/api-client` |
-| Transporte / contrato del cliente | Que la envoltura arme bien rutas, query params, multipart y refresco de sesión | **Vitest** con transporte inyectado | `packages/api-client` |
-| Componente y hook | Render, estados, accesibilidad básica, adaptadores de paginación | **Vitest + Testing Library** (`jsdom`) en web · **Jest (`jest-expo`) + React Native Testing Library** en móvil | `apps/web/src/**/__tests__`, `apps/mobile/src/**/__tests__` |
-| Flujo integrado | Un recorrido completo con red simulada: registro → confirmar → login → refresh transparente → logout; catálogo con cursor; envío de mensaje + marcado de lectura | **MSW** (web) interceptando `fetch` · transporte falso inyectado (móvil) | `apps/*/src/**/__tests__/flujos` |
-| Contrato | Que el cliente generado corresponda al `openapi.yaml` vendorizado y que este corresponda al origen fijado | `pnpm contract:check` (script propio + `openapi-generator-cli validate`) | CI y local |
-| Extremo a extremo | Humo real navegador ↔ API local: explorar catálogo y completar un login | **Playwright** (opt-in, etiquetado) | `apps/web/e2e` |
-| Accesibilidad | Automática (roles, etiquetas, contraste de componentes) y manual (teclado, foco, lector de pantalla) | `vitest-axe` en web · aserciones de `accessibilityRole`/`Label` en móvil · lista manual de `design-system.md` §7 | Ambas apps |
+| Unitario de dominio | Reglas puras: mapeo de errores, validación espejo, capacidades por rol, formateo, resolver de medios, lógica de cursor/offset | **`node --test`** | `packages/core/test`, `packages/api-client/test` |
+| Transporte / contrato del cliente | Que la envoltura arme bien rutas, query params, multipart y refresco de sesión | **`node --test`** con transporte inyectado | `packages/api-client/test` |
+| Componente y hook | Render, estados, accesibilidad básica, adaptadores de paginación | **Vitest + Testing Library** (`jsdom`) en web · **Jest (`jest-expo`) + React Native Testing Library** en móvil | `apps/web/test`, `apps/mobile/test` |
+| Flujo integrado | Un recorrido completo con red simulada: login → refresh transparente → logout; catálogo con cursor | **MSW** (web) interceptando `fetch` · transporte falso inyectado (móvil) | `apps/web/test/flujos` |
+| Contrato | Que el cliente generado corresponda al `openapi.yaml` vendorizado y que este corresponda al origen fijado | `pnpm contract:check` (vendorizado ↔ lock) · `pnpm contract:drift` (lock ↔ repositorio de la API) | CI y local |
+| Extremo a extremo | Humo real navegador ↔ API local: login y panel del vendedor | **Playwright** (opt-in; requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta confirmada) | `apps/web/e2e` |
+| Accesibilidad | Automática en todas las pantallas web y manual (teclado, foco, lector de pantalla) | `vitest-axe` en las nueve pantallas web · lista manual de `design-system.md` §7 | `apps/web/test` |
 | Visual / responsive | Que no haya desbordes ni jerarquía rota a 1440×900 y 390×844 | Inspección manual con contenido real (largo, faltante, imágenes rotas) | Antes de cerrar cada incremento |
 
 ### 1.1 La costura que hace todo esto barato: transporte inyectable
@@ -54,13 +54,16 @@ No se exige un test por cada línea de JSX. Se exige que **cada afirmación sobr
 
 | Comando | Qué hace |
 |---|---|
-| `pnpm -r test` | Suite de todos los paquetes y apps |
-| `pnpm --filter web test` | Vitest en web (unitario + componente + flujo con MSW) |
-| `pnpm --filter mobile test` | Jest con `jest-expo` |
-| `pnpm --filter core test` | Vitest del dominio compartido (sin React) |
-| `pnpm e2e` | Playwright contra la API local (requiere la API arriba; etiquetado, no obligatorio para cada commit) |
+| `pnpm test` | Suite de todos los paquetes y apps |
+| `pnpm test:coverage` | Cobertura del núcleo con umbral de 80 % de líneas (`core` y `api-client`, sin el cliente generado) |
+| `pnpm --filter @uni-market/web test` | Vitest en web (unitario + componente + flujo con MSW) |
+| `pnpm --filter @uni-market/mobile test` | Jest con `jest-expo` |
+| `pnpm --filter @uni-market/core test` | `node --test` del dominio compartido (sin React) |
+| `pnpm e2e` | Playwright contra la API local; requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta confirmada. No es obligatorio para cada commit |
 | `pnpm lint` | ESLint (config compartida en `packages/config`), incluidas las reglas de frontera de dependencias (§4) |
-| `pnpm contract:check` | Valida el contrato vendorizado y detecta deriva del cliente generado |
+| `pnpm contract:check` | Valida que el contrato vendorizado coincide con su lock |
+| `pnpm contract:drift` | Compara el contrato con el repositorio de la API; sin el repo vecino se omite |
+| `pnpm api:check` | Regenera el cliente en un temporal y falla si deriva del contrato |
 | `pnpm tokens:build` | Regenera `tokens.css` desde `design-tokens` |
 
 ---
@@ -69,14 +72,19 @@ No se exige un test por cada línea de JSX. Se exige que **cada afirmación sobr
 
 | Gate | Falla si |
 |---|---|
-| `test` | `pnpm test` falla (tokens + api-client) |
+| `test` | `pnpm test` falla (tokens, api-client, core, web y móvil) |
+| `coverage` | La cobertura de líneas del núcleo baja del 80 % (`pnpm test:coverage`) |
 | `contract` | El contrato vendorizado no coincide con `openapi/CONTRACT.lock.json` (`pnpm contract:check`) |
 | `api-drift` | Regenerar produce diferencias con `src/generado` (`pnpm api:check`, requiere Java) |
 | `tokens-drift` | `pnpm tokens:build` produce un `tokens.css` distinto del commiteado |
-| `lint` | **Previsto para Inc 1**: ESLint, fronteras entre paquetes y `no-hand-rolled-client` (hoy no hay apps ni ESLint instalado) |
-| `build-web` | **Previsto para Inc 1**: Vite no compila o el bundle inicial supera el presupuesto de §5 |
+| `lint` | ESLint, fronteras entre paquetes y `no-hand-rolled-client` (`pnpm lint`) |
+| `format` | Prettier detecta formato distinto (`pnpm format:check`) |
+| `build-web` | Vite no compila la web (`pnpm build:web`) |
+| `build-mobile` | Expo no exporta la app para web (`pnpm --filter @uni-market/mobile export:web`) |
 
-Los gates de UI **no** imponen un porcentaje de cobertura: exigir 80 % de cobertura en pantallas produce pruebas de render sin valor. Lo que se exige a la UI es la lista de §2 y la resolución de todos los estados de `design-system.md` §6.
+El e2e **no** corre en CI: necesita la API y una cuenta confirmada. Se ejecuta a mano antes de cerrar un incremento.
+
+Los gates de UI **no** imponen un porcentaje de cobertura: exigir 80 % en pantallas produce pruebas de render sin valor. El umbral del 80 % aplica al núcleo. Lo que se exige a la UI es la lista de §2 y la resolución de todos los estados de `design-system.md` §6.
 
 ---
 

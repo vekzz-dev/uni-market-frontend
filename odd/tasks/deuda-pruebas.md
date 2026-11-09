@@ -15,14 +15,21 @@
 
 ## Tareas
 
-- [ ] **T1 — Cobertura del núcleo (#30)**: scripts `test:coverage` en `core` y `api-client`, script raíz y paso en CI.
-- [ ] **T2 — Deriva del contrato (#29)**: `scripts/contract-drift.mjs` + `pnpm contract:drift`.
-- [ ] **T3 — axe (#27)**: pruebas de accesibilidad en las siete pantallas restantes.
-- [ ] **T4 — Refresh entre pestañas (#28)**: canal `BroadcastChannel` cableado en la web y prueba de dos gestores.
-- [ ] **T5 — Móvil (#26)**: pruebas de catálogo y sesión con transporte falso.
-- [ ] **T6 — MSW y e2e (#25)**: dependencias, flujos y directorio `apps/web/e2e` con script `pnpm e2e`.
-- [ ] **T7 — Doc (#31)**: rutas y afirmaciones de `docs/testing-strategy.md`.
+- [x] **T1 — Cobertura del núcleo (#30)**: scripts `test:coverage` en `core` y `api-client`, script raíz y paso en CI.
+- [x] **T2 — Deriva del contrato (#29)**: `scripts/contract-drift.mjs` + `pnpm contract:drift`.
+- [x] **T3 — axe (#27)**: pruebas de accesibilidad en las siete pantallas restantes.
+- [x] **T4 — Refresh entre pestañas (#28)**: canal `BroadcastChannel` cableado en la web y prueba de dos gestores.
+- [x] **T5 — Móvil (#26)**: pruebas de catálogo y sesión con transporte falso.
+- [x] **T6 — MSW y e2e (#25)**: dependencias, flujos y directorio `apps/web/e2e` con script `pnpm e2e`.
+- [x] **T7 — Doc (#31)**: rutas y afirmaciones de `docs/testing-strategy.md`.
 
 ## Log
 
 - **L1 (2026-11-09, verbatim)**: "resuelta todas las issues"
+- **T1 (#30)**: `test:coverage` mide core y api-client con `--test-coverage-lines=80` y el CI lo corre. Hoy 89,85 % en core y 100 % en api-client (sin el cliente generado).
+- **T2 (#29)**: `pnpm contract:drift` compara el sha256 con el origen y cita commit y hashes; sin el repo de la API se omite.
+- **T3 (#27)**: axe en entrar, registro, publicar, mis anuncios, editar, las tres de recuperación y la 404. 9 pruebas nuevas, 0 violaciones.
+- **T4 (#28)**: ante un 401, si el almacén tiene otro refresh se adopta y se reintenta; la web cablea `BroadcastChannel`. Prueba con dos gestores: un solo refresh y ninguna sesión perdida.
+- **T5 (#26)**: 6 pruebas en móvil (tema, almacén seguro y catálogo). La inestabilidad era que RTL 14 devuelve promesa en `render`: sin `await` se consultaba `screen` antes de tiempo.
+- **T6 (#25)**: flujos MSW de sesión y catálogo, e2e con Playwright (`pnpm e2e`) verificado contra la API real con Chromium.
+- **T7 (#31)**: la estrategia de pruebas describe rutas y niveles reales, y los gates de CI incluyen cobertura, formato y builds.

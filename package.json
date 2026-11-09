@@ -12,11 +12,13 @@
     "tokens:build": "node packages/design-tokens/build.mjs",
     "contract:sync": "node scripts/contract-sync.mjs",
     "contract:check": "node scripts/contract-check.mjs",
+    "contract:drift": "node scripts/contract-drift.mjs",
     "api:generate": "node scripts/api-generate.mjs",
     "api:check": "node scripts/api-check.mjs",
     "dev:web": "pnpm --filter @uni-market/web dev",
     "build:web": "pnpm --filter @uni-market/web build",
     "test": "pnpm -r test",
+    "test:coverage": "pnpm -r --if-present test:coverage",
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "dev:mobile": "pnpm --filter @uni-market/mobile start"

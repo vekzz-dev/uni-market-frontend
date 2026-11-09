@@ -74,8 +74,9 @@ export function crearGestorSesion({
     if (refrescoEnVuelo) return refrescoEnVuelo;
 
     refrescoEnVuelo = (async () => {
+      let refreshToken = null;
       try {
-        const refreshToken = await almacen.leer();
+        refreshToken = await almacen.leer();
         if (!refreshToken) {
           await expirar();
           return null;
@@ -87,6 +88,24 @@ export function crearGestorSesion({
         canal?.publicar?.({ tipo: "sesion-renovada", sesion });
         return sesion;
       } catch (error) {
+        // Otra pestaña pudo rotar el token mientras esta petición viajaba: si el
+        // almacén ya tiene uno distinto, se adopta en vez de cerrar la sesión.
+        if (error?.status === 401) {
+          const actual = await almacen.leer().catch(() => null);
+          if (actual && actual !== refreshToken) {
+            try {
+              const sesion = await auth.refrescarSesion({
+                refreshToken: actual,
+              });
+              await guardarRefresh(sesion.refreshToken);
+              aplicar(sesion);
+              canal?.publicar?.({ tipo: "sesion-renovada", sesion });
+              return sesion;
+            } catch {
+              // El token del almacén tampoco sirve: se cierra abajo.
+            }
+          }
+        }
         await expirar();
         throw error;
       } finally {

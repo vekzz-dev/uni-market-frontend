@@ -65,6 +65,7 @@ packages/core/                       ← dominio compartido; depende de api-clie
 | `pnpm contract:sync` | Copia el `openapi.yaml` de origen (`OPENAPI_SOURCE` o `../uni-market-api/openapi.yaml`) a `openapi/uni-market.yaml` y escribe `openapi/CONTRACT.lock.json` con la etiqueta de origen, el commit de la API, `info.version`, el **sha256** y la fecha |
 | `pnpm api:generate` | Genera con `openapi-generator-cli` en un temporal, copia solo `src/api` y `src/model`, **normaliza los imports a ESM con `.js`** (el generador los emite sin extensión y Node no los resuelve) y descarta el `ApiClient.js` de superagent |
 | `pnpm contract:check` | Compara el **sha256** del contrato vendorizado con el lock. No necesita red ni el repo de la API |
+| `pnpm contract:drift` | Compara el contrato vendorizado con el **origen** (`OPENAPI_SOURCE` o `../uni-market-api/openapi.yaml`). Si el origen no está disponible se omite sin fallar, que es el caso del CI |
 | `pnpm api:check` | Regenera en un temporal y compara **archivo por archivo** con lo commiteado; falla ante cualquier deriva. No depende de git ni modifica el árbol |
 
 Reglas:

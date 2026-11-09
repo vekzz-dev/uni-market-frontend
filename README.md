@@ -42,6 +42,7 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm install` | Instala los workspaces |
 | `pnpm contract:sync` | Copia el contrato de la API y registra su origen (commit + sha256) en el lock |
 | `pnpm contract:check` | Verifica que el contrato vendorizado coincide con su lock |
+| `pnpm contract:drift` | Compara el contrato vendorizado con el repositorio de la API; se omite si no está disponible |
 | `pnpm api:generate` | Regenera el cliente HTTP (requiere Java) |
 | `pnpm api:check` | Regenera en un temporal y falla si el cliente deriva del contrato |
 | `pnpm tokens:build` | Regenera `tokens.css` desde los tokens |

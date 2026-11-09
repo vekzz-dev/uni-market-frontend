@@ -6,6 +6,7 @@ import {
   mapearProblema,
   resolverUrlMedia,
 } from "@uni-market/core";
+import { Aviso } from "../componentes/Aviso.jsx";
 import { Boton } from "../componentes/Boton.jsx";
 import { CabeceraPublica } from "../componentes/CabeceraPublica.jsx";
 import { Icono } from "../componentes/Icono.jsx";
@@ -15,7 +16,7 @@ import estilos from "./detalle.module.css";
 
 export function Detalle() {
   const { id } = useParams();
-  const { cliente, estado } = useSesion();
+  const { cliente, sesion, estado } = useSesion();
   const navegar = useNavigate();
   const autenticado = estado.estado === "autenticado";
 
@@ -25,6 +26,8 @@ export function Detalle() {
   const [error, setError] = useState(null);
   const [indice, setIndice] = useState(0);
   const [recarga, setRecarga] = useState(0);
+  const [contactando, setContactando] = useState(false);
+  const [errorContacto, setErrorContacto] = useState(null);
 
   useEffect(() => {
     let vigente = true;
@@ -59,6 +62,23 @@ export function Detalle() {
       vigente = false;
     };
   }, [cliente, id, recarga]);
+
+  async function contactar() {
+    setContactando(true);
+    setErrorContacto(null);
+    try {
+      const conversacion = await sesion.ejecutar(() =>
+        cliente.conversaciones.abrirConversacion({ anuncioId: id }),
+      );
+      navegar(`/mensajes/${conversacion.id}`);
+    } catch (fallo) {
+      const problema = mapearProblema(fallo);
+      if (problema.status === 401) navegar("/entrar", { replace: true });
+      else setErrorContacto(problema.mensaje);
+    } finally {
+      setContactando(false);
+    }
+  }
 
   const imagenes = (anuncio?.imagenUrls ?? []).map((url) =>
     resolverUrlMedia(url, origenApi),
@@ -205,6 +225,19 @@ export function Detalle() {
                     <Link to="/entrar" className={estilos.primario}>
                       Entrar
                     </Link>
+                  </div>
+                )}
+
+                {autenticado && (
+                  <div className={estilos.contacto}>
+                    <h2 className={estilos.contactoTitulo}>¿Te interesa?</h2>
+                    <p className={estilos.contactoTexto}>
+                      Escríbele al vendedor para acordar la entrega.
+                    </p>
+                    <Boton onClick={contactar} cargando={contactando}>
+                      Contactar al vendedor
+                    </Boton>
+                    {errorContacto && <Aviso>{errorContacto}</Aviso>}
                   </div>
                 )}
               </div>

@@ -32,6 +32,9 @@ jobs:
       - name: Pruebas
         run: pnpm test
 
+      - name: Cobertura del núcleo
+        run: pnpm test:coverage
+
       - name: Lint
         run: pnpm lint
 

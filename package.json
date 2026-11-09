@@ -17,6 +17,7 @@
     "dev:web": "pnpm --filter @uni-market/web dev",
     "build:web": "pnpm --filter @uni-market/web build",
     "test": "pnpm -r test",
+    "test:coverage": "pnpm -r --if-present test:coverage",
     "lint": "eslint .",
     "format:check": "prettier --check .",
     "dev:mobile": "pnpm --filter @uni-market/mobile start"

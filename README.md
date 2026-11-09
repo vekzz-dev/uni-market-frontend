@@ -2,7 +2,7 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0–4 completos** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo público, detalle, vendedor (publicar con imágenes, panel con filtro por estado de revisión, editar, visibilidad, vendido y baja), 404, tema claro/oscuro con conmutador y auditoría `axe`; la **app móvil** (Expo) tiene paridad de sesión y catálogo. **124 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 12 páginas y 62 PNG en `design/preview/`. Siguiente: Inc 5, mensajería web.
+> **Estado actual**: **Inc 0–4 completos** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo público, detalle, vendedor (publicar con imágenes, panel con filtro por estado de revisión, editar, visibilidad, vendido y baja), 404, tema claro/oscuro con conmutador y auditoría `axe`; la **app móvil** (Expo) tiene paridad de sesión y catálogo. **133 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 12 páginas y 62 PNG en `design/preview/`. Siguiente: Inc 5, mensajería web.
 
 ## Estructura
 

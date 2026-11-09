@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { axe } from "vitest-axe";
 import { ApiError } from "@uni-market/api-client";
 import { Restablecer } from "../src/pantallas/Restablecer.jsx";
 import { Reenviar } from "../src/pantallas/Reenviar.jsx";
@@ -149,5 +150,31 @@ describe("pantalla Nueva contraseña", () => {
     expect(
       await screen.findByRole("heading", { name: "Contraseña actualizada" }),
     ).toBeTruthy();
+  });
+});
+
+describe("accesibilidad de la recuperación", () => {
+  it("Restablecer no tiene violaciones", async () => {
+    montar(<Restablecer />, "/restablecer", {
+      solicitarRestablecimiento: vi.fn().mockResolvedValue({}),
+    });
+
+    expect((await axe(document.body)).violations).toEqual([]);
+  });
+
+  it("Reenviar no tiene violaciones", async () => {
+    montar(<Reenviar />, "/reenviar", {
+      reenviarConfirmacion: vi.fn().mockResolvedValue({}),
+    });
+
+    expect((await axe(document.body)).violations).toEqual([]);
+  });
+
+  it("Nueva contraseña no tiene violaciones", async () => {
+    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+      confirmarRestablecimiento: vi.fn(),
+    });
+
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });

@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { axe } from "vitest-axe";
 import { EditarAnuncio } from "../src/pantallas/EditarAnuncio.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
 
@@ -141,5 +142,12 @@ describe("pantalla Editar anuncio", () => {
     expect(
       await screen.findByRole("heading", { name: "Anuncio actualizado" }),
     ).toBeTruthy();
+  });
+
+  it("no tiene violaciones de accesibilidad", async () => {
+    montar();
+
+    await screen.findByLabelText("Precio (USD)");
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });

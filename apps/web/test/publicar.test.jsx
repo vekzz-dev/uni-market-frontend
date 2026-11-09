@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { axe } from "vitest-axe";
 import { ApiError } from "@uni-market/api-client";
 import { Publicar } from "../src/pantallas/Publicar.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
@@ -107,5 +108,12 @@ describe("pantalla Publicar", () => {
     montar({ estadoSesion: "anonimo", crearAnuncio: vi.fn() });
 
     expect(await screen.findByRole("heading", { name: "Entrar" })).toBeTruthy();
+  });
+
+  it("no tiene violaciones de accesibilidad", async () => {
+    montar({ crearAnuncio: vi.fn() });
+
+    await screen.findByRole("heading", { name: "Publicar anuncio" });
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });

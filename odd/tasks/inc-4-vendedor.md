@@ -17,7 +17,7 @@
 - [x] **T3 — Mis anuncios**: listado offset, badges y motivo.
 - [x] **T4 — Gestión**: editar (PATCH de contenido con reset a revisión), visibilidad, vendido y baja.
 - [x] **T5 — Pruebas y verificación** con la API real.
-- [x] **T6 — Panel por id y filtro** (issue `uni-market-api#3`): contrato resincronizado, `GET /mis-anuncios/{id}` en la edición y filtro por `estadoRevision` con chip de retraído.
+- [x] **T6 — Panel por id y filtro** (issue `uni-market-api#3`): contrato resincronizado, `GET /mis-anuncios/{id}` en la edición y filtro por `estadoRevision` con chip de retraído. Commit `a112569`.
 
 ## Log
 

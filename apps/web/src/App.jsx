@@ -12,6 +12,7 @@ import { Publicar } from "./pantallas/Publicar.jsx";
 import { MisAnuncios } from "./pantallas/MisAnuncios.jsx";
 import { EditarAnuncio } from "./pantallas/EditarAnuncio.jsx";
 import { Mensajes } from "./pantallas/Mensajes.jsx";
+import { Conversacion } from "./pantallas/Conversacion.jsx";
 
 export function App() {
   return (
@@ -22,6 +23,7 @@ export function App() {
       <Route path="/mis-anuncios" element={<MisAnuncios />} />
       <Route path="/mis-anuncios/:id/editar" element={<EditarAnuncio />} />
       <Route path="/mensajes" element={<Mensajes />} />
+      <Route path="/mensajes/:id" element={<Conversacion />} />
       <Route path="/entrar" element={<Entrar />} />
       <Route path="/registro" element={<Registro />} />
       <Route path="/confirmar-email" element={<Confirmar />} />

@@ -199,3 +199,44 @@ test("restaurar sin refresh deja la sesión anónima y no llama a la API", async
   assert.equal(gestor.obtenerEstado().estado, ESTADOS.ANONIMO);
   assert.equal(auth.llamadas.length, 0);
 });
+
+test("dos pestañas que refrescan a la vez no cierran la sesión", async () => {
+  // El refresh rota: la segunda pestaña sale con el token viejo y recibe 401.
+  // Debe adoptar el que la primera dejó en el almacén, no expirar.
+  const almacen = almacenFalso("r0");
+  let valido = "r0";
+
+  const auth = {
+    async refrescarSesion({ refreshToken }) {
+      await new Promise((resolver) => setTimeout(resolver, 5));
+      if (refreshToken !== valido) {
+        const error = new Error("No autorizado");
+        error.status = 401;
+        throw error;
+      }
+      valido = `r${Number(valido.slice(1)) + 1}`;
+      return {
+        accessToken: `a-${valido}`,
+        refreshToken: valido,
+        expiraEnSegundos: 900,
+        usuario: { id: "u1", nombre: "Ana" },
+      };
+    },
+    async iniciarSesion() {},
+    async cerrarSesion() {},
+  };
+
+  const uno = crearGestorSesion({ auth, almacen, reloj: () => 0 });
+  const dos = crearGestorSesion({ auth, almacen, reloj: () => 0 });
+
+  const [primera, segunda] = await Promise.all([
+    uno.refrescar(),
+    dos.refrescar(),
+  ]);
+
+  assert.ok(primera?.accessToken);
+  assert.ok(segunda?.accessToken, "la segunda pestaña debe adoptar el par");
+  assert.equal(almacen.valor, "r2");
+  assert.equal(uno.obtenerEstado().estado, ESTADOS.AUTENTICADO);
+  assert.equal(dos.obtenerEstado().estado, ESTADOS.AUTENTICADO);
+});

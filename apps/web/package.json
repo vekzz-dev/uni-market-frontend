@@ -8,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "e2e": "playwright test"
   },
   "dependencies": {
     "@uni-market/api-client": "workspace:*",
@@ -19,10 +20,12 @@
     "react-router-dom": "^7.18.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@testing-library/react": "^16.3.3",
     "@testing-library/user-event": "^14.6.8",
     "@vitejs/plugin-react": "^6.1.2",
     "jsdom": "^30.1.3",
+    "msw": "^3.0.4",
     "vite": "^8.3.4",
     "vitest": "^5.0.5",
     "vitest-axe": "^0.1.0"

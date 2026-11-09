@@ -35,3 +35,7 @@ web-build/
 # OJO: packages/design-tokens/build/tokens.css SÍ se versiona a propósito
 # (el test de deriva exige el CSS commiteado); no ignorar build/.
 dist/
+
+# Playwright (e2e opt-in)
+test-results/
+playwright-report/

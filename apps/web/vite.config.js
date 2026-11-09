@@ -8,5 +8,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./test/setup.js",
     css: true,
+    // e2e es de Playwright: vitest no debe recoger sus specs.
+    exclude: ["**/node_modules/**", "**/dist/**", "e2e/**"],
   },
 });

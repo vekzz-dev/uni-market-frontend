@@ -39,7 +39,9 @@ function montar({
   // Sin `state` de navegación a propósito: es el caso de recargar la URL.
   render(
     <MemoryRouter initialEntries={["/mis-anuncios/a2/editar"]}>
-      <SesionContexto.Provider value={{ cliente, sesion, estado }}>
+      <SesionContexto.Provider
+        value={{ cliente, sesion, estado, restaurado: true }}
+      >
         <Routes>
           <Route path="/mis-anuncios/:id/editar" element={<EditarAnuncio />} />
           <Route path="/mis-anuncios" element={<h1>Mis anuncios</h1>} />

@@ -48,6 +48,7 @@ function montar({
   datos = [pendiente, aprobado, rechazado, retraido],
   totalPaginas = 1,
   acciones = {},
+  restaurado = true,
 } = {}) {
   const anuncios = {
     listarMisAnuncios: vi.fn().mockResolvedValue({
@@ -67,7 +68,7 @@ function montar({
   const estado = { estado: "autenticado", usuario: { nombre: "Ana" } };
   render(
     <MemoryRouter initialEntries={["/mis-anuncios"]}>
-      <SesionContexto.Provider value={{ cliente, sesion, estado }}>
+      <SesionContexto.Provider value={{ cliente, sesion, estado, restaurado }}>
         <Routes>
           <Route path="/mis-anuncios" element={<MisAnuncios />} />
           <Route path="/entrar" element={<h1>Entrar</h1>} />
@@ -212,6 +213,7 @@ describe("pantalla Mis anuncios", () => {
             cliente,
             sesion: {},
             estado: { estado: "anonimo", usuario: null },
+            restaurado: true,
           }}
         >
           <Routes>
@@ -223,5 +225,29 @@ describe("pantalla Mis anuncios", () => {
     );
 
     expect(await screen.findByRole("heading", { name: "Entrar" })).toBeTruthy();
+  });
+
+  it("no expulsa a entrar mientras la sesión se restaura", async () => {
+    const cliente = { anuncios: { listarMisAnuncios: vi.fn() } };
+    render(
+      <MemoryRouter initialEntries={["/mis-anuncios"]}>
+        <SesionContexto.Provider
+          value={{
+            cliente,
+            sesion: {},
+            estado: { estado: "anonimo", usuario: null },
+            restaurado: false,
+          }}
+        >
+          <Routes>
+            <Route path="/mis-anuncios" element={<MisAnuncios />} />
+            <Route path="/entrar" element={<h1>Entrar</h1>} />
+          </Routes>
+        </SesionContexto.Provider>
+      </MemoryRouter>,
+    );
+
+    await new Promise((resolver) => setTimeout(resolver, 0));
+    expect(screen.queryByRole("heading", { name: "Entrar" })).toBeNull();
   });
 });

@@ -25,7 +25,9 @@ function montar({ estadoSesion = "autenticado", crearAnuncio } = {}) {
   };
   return render(
     <MemoryRouter initialEntries={["/publicar"]}>
-      <SesionContexto.Provider value={{ cliente, sesion, estado }}>
+      <SesionContexto.Provider
+        value={{ cliente, sesion, estado, restaurado: true }}
+      >
         <Routes>
           <Route path="/publicar" element={<Publicar />} />
           <Route path="/entrar" element={<h1>Entrar</h1>} />

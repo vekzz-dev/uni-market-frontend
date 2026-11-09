@@ -13,7 +13,7 @@ import { useSesion } from "../sesion/SesionContexto.jsx";
 import estilos from "./publicar.module.css";
 
 export function Publicar() {
-  const { cliente, sesion, estado } = useSesion();
+  const { cliente, sesion, estado, restaurado } = useSesion();
   const navegar = useNavigate();
   const autenticado = estado.estado === "autenticado";
 
@@ -32,8 +32,8 @@ export function Publicar() {
   const [publicado, setPublicado] = useState(false);
 
   useEffect(() => {
-    if (!autenticado) navegar("/entrar", { replace: true });
-  }, [autenticado, navegar]);
+    if (restaurado && !autenticado) navegar("/entrar", { replace: true });
+  }, [autenticado, navegar, restaurado]);
 
   useEffect(() => {
     cliente.categorias
@@ -102,7 +102,7 @@ export function Publicar() {
     }
   }
 
-  if (!autenticado) {
+  if (!restaurado || !autenticado) {
     return (
       <div className={estilos.pagina}>
         <CabeceraPublica

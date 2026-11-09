@@ -40,7 +40,7 @@ function estadoVisible(anuncio) {
 }
 
 export function MisAnuncios() {
-  const { cliente, sesion, estado } = useSesion();
+  const { cliente, sesion, estado, restaurado } = useSesion();
   const navegar = useNavigate();
   const autenticado = estado.estado === "autenticado";
 
@@ -55,8 +55,8 @@ export function MisAnuncios() {
   const [recarga, setRecarga] = useState(0);
 
   useEffect(() => {
-    if (!autenticado) navegar("/entrar", { replace: true });
-  }, [autenticado, navegar]);
+    if (restaurado && !autenticado) navegar("/entrar", { replace: true });
+  }, [autenticado, navegar, restaurado]);
 
   useEffect(() => {
     if (!autenticado) return undefined;
@@ -134,7 +134,7 @@ export function MisAnuncios() {
     setPagina(0);
   }
 
-  if (!autenticado) {
+  if (!restaurado || !autenticado) {
     return (
       <div className={estilos.pagina}>
         <CabeceraPublica

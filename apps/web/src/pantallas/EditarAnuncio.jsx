@@ -26,7 +26,7 @@ function formularioDesde(anuncio) {
 
 export function EditarAnuncio() {
   const { id } = useParams();
-  const { cliente, sesion, estado } = useSesion();
+  const { cliente, sesion, estado, restaurado } = useSesion();
   const navegar = useNavigate();
   const autenticado = estado.estado === "autenticado";
 
@@ -47,8 +47,8 @@ export function EditarAnuncio() {
   const [guardado, setGuardado] = useState(false);
 
   useEffect(() => {
-    if (!autenticado) navegar("/entrar", { replace: true });
-  }, [autenticado, navegar]);
+    if (restaurado && !autenticado) navegar("/entrar", { replace: true });
+  }, [autenticado, navegar, restaurado]);
 
   useEffect(() => {
     if (!autenticado) return undefined;
@@ -155,7 +155,7 @@ export function EditarAnuncio() {
     }
   }
 
-  if (!autenticado) {
+  if (!restaurado || !autenticado) {
     return (
       <div className={estilos.pagina}>
         <CabeceraPublica

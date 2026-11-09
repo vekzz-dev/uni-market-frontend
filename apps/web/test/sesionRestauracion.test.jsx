@@ -53,22 +53,23 @@ const cliente = () => ({
 });
 const tick = () => act(() => new Promise((r) => setTimeout(r, 30)));
 
-const RUTAS = {
-  mis: [
-    "/mis-anuncios",
-    <Route path="/mis-anuncios" element={<MisAnuncios />} />,
-  ],
-  publicar: ["/publicar", <Route path="/publicar" element={<Publicar />} />],
-  editar: [
-    "/mis-anuncios/a1/editar",
-    <Route path="/mis-anuncios/:id/editar" element={<EditarAnuncio />} />,
-  ],
+const ENTRADAS = {
+  mis: "/mis-anuncios",
+  publicar: "/publicar",
+  editar: "/mis-anuncios/a1/editar",
+};
+
+const rutas = {
+  mis: () => <Route path="/mis-anuncios" element={<MisAnuncios />} />,
+  publicar: () => <Route path="/publicar" element={<Publicar />} />,
+  editar: () => (
+    <Route path="/mis-anuncios/:id/editar" element={<EditarAnuncio />} />
+  ),
 };
 
 function montarGuard(tipo, restaurado) {
-  const [entrada, ruta] = RUTAS[tipo];
   return render(
-    <MemoryRouter initialEntries={[entrada]}>
+    <MemoryRouter initialEntries={[ENTRADAS[tipo]]}>
       <SesionContexto.Provider
         value={{
           cliente: cliente(),
@@ -78,7 +79,7 @@ function montarGuard(tipo, restaurado) {
         }}
       >
         <Routes>
-          {ruta}
+          {rutas[tipo]()}
           <Route path="/entrar" element={<h1>Entrar</h1>} />
         </Routes>
       </SesionContexto.Provider>

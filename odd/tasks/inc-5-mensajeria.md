@@ -15,7 +15,7 @@
 
 ## Tareas
 
-- [ ] **T1 — Diseño**: `11 · Mensajes` (datos, vacío, error) y `12 · Conversación` (default, enviando, vacío) en web; PNG en `design/preview/`. **Bloqueada: OpenPencil cerrado.**
+- [x] **T1 — Diseño**: páginas `11 · Mensajes` (datos, vacío, error en web; datos en móvil) y `12 · Conversación` (default, enviando, vacío en web; default en móvil). Ocho PNG en `design/preview/`.
 - [ ] **T2 — Lista**: `/mensajes` con offset, último mensaje, no leídos y estados.
 - [ ] **T3 — Hilo**: `/mensajes/:id` con cursor hacia atrás, envío y lectura.
 - [ ] **T4 — Contacto**: acción en el detalle que abre o reutiliza la conversación.
@@ -25,4 +25,5 @@
 
 - **L1 (2026-11-09, verbatim)**: "dale arranca"
 - **Alcance (2026-11-09)**: contrato revisado (`/mis-conversaciones`, `/conversaciones/{id}/mensajes` con cursor, `/mensajes`, `/lecturas`, `POST /conversaciones`). El cliente generado ya expone los métodos: no hace falta resincronizar el contrato.
-- **Bloqueo (2026-11-09)**: OpenPencil no está conectado; el incremento sigue la convención de diseño primero (como Inc 4). Se escribe la issue y este track; la implementación de pantallas espera a los frames.
+- **Bloqueo (2026-11-09)**: OpenPencil no estaba conectado; el incremento sigue la convención de diseño primero (como Inc 4). Se escribió la issue y este track.
+- **Diseño (2026-11-09)**: con OpenPencil abierto se crearon las páginas `11 · Mensajes` y `12 · Conversación` reutilizando el header, la tipografía y los tokens de las páginas anteriores. Ocho frames: lista con datos, vacío y error; hilo con default, enviando y vacío; y los dos móviles a 390. PNG exportados por frame (maxEdge 1280, como los existentes).

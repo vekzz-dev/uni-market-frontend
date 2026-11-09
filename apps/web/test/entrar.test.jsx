@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { axe } from "vitest-axe";
 import { ApiError } from "@uni-market/api-client";
 import { Entrar } from "../src/pantallas/Entrar.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
@@ -76,5 +77,12 @@ describe("pantalla Entrar", () => {
 
     await screen.findByRole("alert");
     expect(screen.getByRole("button", { name: "Entrar" }).disabled).toBe(true);
+  });
+
+  it("no tiene violaciones de accesibilidad", async () => {
+    montar({ iniciarSesion: vi.fn() });
+
+    await screen.findByRole("heading", { name: "Entrar" });
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });

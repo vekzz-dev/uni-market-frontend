@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
+import { axe } from "vitest-axe";
 import { MisAnuncios } from "../src/pantallas/MisAnuncios.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
 
@@ -249,5 +250,12 @@ describe("pantalla Mis anuncios", () => {
 
     await new Promise((resolver) => setTimeout(resolver, 0));
     expect(screen.queryByRole("heading", { name: "Entrar" })).toBeNull();
+  });
+
+  it("no tiene violaciones de accesibilidad", async () => {
+    montar();
+
+    await screen.findByText("Calculadora");
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });

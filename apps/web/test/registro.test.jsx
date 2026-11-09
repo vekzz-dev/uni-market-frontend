@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
+import { axe } from "vitest-axe";
 import { ApiError } from "@uni-market/api-client";
 import { Registro } from "../src/pantallas/Registro.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
@@ -72,5 +73,12 @@ describe("pantalla Registro", () => {
     expect(
       await screen.findByRole("heading", { name: "Revisa tu correo" }),
     ).toBeTruthy();
+  });
+
+  it("no tiene violaciones de accesibilidad", async () => {
+    montar(vi.fn());
+
+    await screen.findByRole("heading", { name: "Crear cuenta" });
+    expect((await axe(document.body)).violations).toEqual([]);
   });
 });

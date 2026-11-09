@@ -17,9 +17,9 @@
 
 - [x] **T1 — Diseño**: páginas `11 · Mensajes` (datos, vacío, error en web; datos en móvil) y `12 · Conversación` (default, enviando, vacío en web; default en móvil). Ocho PNG en `design/preview/`.
 - [x] **T2 — Lista**: `/mensajes` con offset, último mensaje, no leídos y estados. Enlace con icono en la cabecera del catálogo.
-- [ ] **T3 — Hilo**: `/mensajes/:id` con cursor hacia atrás, envío y lectura.
-- [ ] **T4 — Contacto**: acción en el detalle que abre o reutiliza la conversación.
-- [ ] **T5 — Pruebas y verificación** con la API real.
+- [x] **T3 — Hilo**: `/mensajes/:id` con cursor hacia atrás, envío y lectura.
+- [x] **T4 — Contacto**: acción en el detalle que abre o reutiliza la conversación.
+- [x] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
 
@@ -28,3 +28,7 @@
 - **Bloqueo (2026-11-09)**: OpenPencil no estaba conectado; el incremento sigue la convención de diseño primero (como Inc 4). Se escribió la issue y este track.
 - **Diseño (2026-11-09)**: con OpenPencil abierto se crearon las páginas `11 · Mensajes` y `12 · Conversación` reutilizando el header, la tipografía y los tokens de las páginas anteriores. Ocho frames: lista con datos, vacío y error; hilo con default, enviando y vacío; y los dos móviles a 390. PNG exportados por frame (maxEdge 1280, como los existentes).
 - **Lista implementada (2026-11-09)**: `/mensajes` con offset, `ultimoMensaje`, `noLeidos`, paginación, vacío con CTA al catálogo, error con reintento y 401 a entrar. La fila muestra el anuncio como título, el último mensaje y la contraparte ("Compra · Ana P." / "Venta"). El contrato no expone el nombre del comprador en la lista: solo `vendedorNombre` dentro del anuncio, así que para el vendedor la etiqueta es "Compra"/"Venta" sin nombre. 7 pruebas nuevas (80 en la web), con `axe`.
+- **Hilo implementado (2026-11-09)**: `/mensajes/:id` con `leerConversacion` + `listarMensajes` (cursor hacia atrás, "Cargar anteriores"), envío con validación espejo del texto vacío, `POST /lecturas` una sola vez si había no leídos, burbujas propias/ajenas, 403/404 con el mismo desenlace y 401 a entrar. 6 pruebas nuevas.
+- **Contacto implementado (2026-11-09)**: el detalle muestra "Contactar al vendedor" con sesión y abre o reutiliza la conversación (`POST /conversaciones`), navegando al hilo; el 422 de auto-conversación se muestra con el detalle del servidor. 2 pruebas nuevas (88 en la web).
+- **Verificación real (2026-11-09)**: Postgres + jar, dos usuarios confirmados por el token del log y un anuncio aprobado por SQL. Con el cliente generado: abrir conversación devuelve el par comprador/vendedor correcto y reabrir reutiliza el mismo id; el panel del vendedor ve total 1 y `noLeidos` 3 con el último mensaje; `listarMensajes` con `limite=2` devuelve los dos más recientes y un cursor, y la segunda página el más antiguo; `marcarLecturas` baja `noLeidos` a 0; texto vacío y auto-conversación dan `422`.
+- **Smoke de navegador (2026-11-09)**: Playwright con el comprador real: `/mensajes` lista "Bicicleta Inc5", último mensaje y "Compra · Inc5 V."; el hilo muestra el historial y el compositor; un mensaje enviado desde la UI aparece en el hilo y el panel del vendedor lo ve como último mensaje con `noLeidos: 1`. Servicios detenidos y anuncio dado de baja.

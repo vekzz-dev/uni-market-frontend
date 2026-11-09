@@ -29,12 +29,23 @@ const rechazado = {
   precio: 28,
   estado: "inactivo",
   estadoRevision: "rechazado",
+  retraido: false,
   motivoRechazo: "Las fotos no muestran el producto.",
+  imagenUrls: [],
+};
+const retraido = {
+  id: "a4",
+  nombre: "Audífonos",
+  precio: 60,
+  estado: "inactivo",
+  estadoRevision: "rechazado",
+  retraido: true,
+  motivoRechazo: "La aprobación se revocó por moderación.",
   imagenUrls: [],
 };
 
 function montar({
-  datos = [pendiente, aprobado, rechazado],
+  datos = [pendiente, aprobado, rechazado, retraido],
   totalPaginas = 1,
   acciones = {},
 } = {}) {
@@ -75,8 +86,75 @@ describe("pantalla Mis anuncios", () => {
     expect(screen.getByText("Pendiente")).toBeTruthy();
     expect(screen.getByText("Aprobado")).toBeTruthy();
     expect(screen.getByText("Rechazado")).toBeTruthy();
+    expect(screen.getByText("Retraído")).toBeTruthy();
     expect(screen.getByText("Las fotos no muestran el producto.")).toBeTruthy();
     expect(screen.getByText("En revisión")).toBeTruthy();
+  });
+
+  it("enlaza cada anuncio con su pantalla de edición", async () => {
+    montar();
+
+    const fila = (await screen.findByText("Calculadora")).closest("li");
+    expect(
+      within(fila).getByRole("link", { name: "Editar" }).getAttribute("href"),
+    ).toBe("/mis-anuncios/a1/editar");
+  });
+
+  it("filtra el panel por estado de revisión", async () => {
+    const usuario = userEvent.setup();
+    const anuncios = montar();
+
+    await screen.findByText("Calculadora");
+    await usuario.click(screen.getByRole("button", { name: "Pendientes" }));
+
+    await waitFor(() =>
+      expect(anuncios.listarMisAnuncios).toHaveBeenLastCalledWith({
+        pagina: 0,
+        limite: 10,
+        estadoRevision: "pendiente",
+      }),
+    );
+    expect(
+      screen
+        .getByRole("button", { name: "Pendientes" })
+        .getAttribute("aria-pressed"),
+    ).toBe("true");
+  });
+
+  it("vuelve a la primera página al cambiar de filtro", async () => {
+    const usuario = userEvent.setup();
+    const anuncios = montar({ totalPaginas: 2 });
+
+    await screen.findByText("Calculadora");
+    await usuario.click(screen.getByRole("button", { name: "Siguiente" }));
+    await waitFor(() =>
+      expect(anuncios.listarMisAnuncios).toHaveBeenLastCalledWith({
+        pagina: 1,
+        limite: 10,
+      }),
+    );
+
+    await usuario.click(screen.getByRole("button", { name: "Aprobados" }));
+    await waitFor(() =>
+      expect(anuncios.listarMisAnuncios).toHaveBeenLastCalledWith({
+        pagina: 0,
+        limite: 10,
+        estadoRevision: "aprobado",
+      }),
+    );
+  });
+
+  it("distingue el vacío filtrado del panel sin anuncios", async () => {
+    const usuario = userEvent.setup();
+    montar({ datos: [] });
+
+    expect(await screen.findByText("Aún no publicaste nada")).toBeTruthy();
+
+    await usuario.click(screen.getByRole("button", { name: "Rechazados" }));
+    expect(await screen.findByText("Sin anuncios con ese estado")).toBeTruthy();
+
+    await usuario.click(screen.getByRole("button", { name: "Ver todos" }));
+    expect(await screen.findByText("Aún no publicaste nada")).toBeTruthy();
   });
 
   it("oculta un anuncio aprobado y recarga", async () => {

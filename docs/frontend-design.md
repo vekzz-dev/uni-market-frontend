@@ -160,8 +160,8 @@ Cada decisión nombra el problema, la elección, la alternativa y su costo. Las 
 | `/entrar`, `/registro` | Login y registro | Pública |
 | `/confirmar-email` | Confirmación por token (lee el token de la URL) | Pública |
 | `/restablecer` | Solicitar y confirmar restablecimiento | Pública |
-| `/mis-anuncios` | Panel offset con badge de revisión y `motivoRechazo` | `miembro`+ |
-| `/mis-anuncios/nuevo`, `/mis-anuncios/:id/editar` | Alta y edición multipart | `miembro`+ |
+| `/mis-anuncios` | Panel offset con filtro por estado de revisión, badge (incl. retraído) y `motivoRechazo` | `miembro`+ |
+| `/publicar`, `/mis-anuncios/:id/editar` | Alta y edición multipart; la edición relee el anuncio por id, así que sobrevive a recargar | `miembro`+ |
 | `/mensajes`, `/mensajes/:id` | Lista de conversaciones e hilo con envío y marcado de lectura explícito | `miembro`+ |
 | `/perfil` | Nombre, avatar, contraseña, baja | `miembro`+ |
 | `/moderacion` | Cola FIFO y decisión con motivo | `moderador`+ |

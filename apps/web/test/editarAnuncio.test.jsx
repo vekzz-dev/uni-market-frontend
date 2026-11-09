@@ -14,28 +14,31 @@ const anuncio = {
   imagenUrls: [],
   estado: "disponible",
   estadoRevision: "aprobado",
+  retraido: false,
 };
 
-function montar({ editarAnuncio, reemplazarImagenes, conAnuncio = true } = {}) {
+function montar({
+  editarAnuncio = vi.fn(),
+  reemplazarImagenes = vi.fn(),
+  leerMiAnuncio = vi.fn().mockResolvedValue(anuncio),
+} = {}) {
   const cliente = {
     categorias: {
       listarCategorias: vi.fn().mockResolvedValue({
         datos: [{ id: 3, nombre: "Deportes", orden: 1 }],
       }),
     },
-    anuncios: { editarAnuncio, reemplazarImagenes },
+    anuncios: { leerMiAnuncio, editarAnuncio, reemplazarImagenes },
   };
   const sesion = {
     ejecutar: (operacion) => operacion(),
     cerrarSesion: vi.fn(),
   };
   const estado = { estado: "autenticado", usuario: { nombre: "Ana" } };
-  const entrada = conAnuncio
-    ? { pathname: "/mis-anuncios/a2/editar", state: { anuncio } }
-    : { pathname: "/mis-anuncios/a2/editar" };
 
-  return render(
-    <MemoryRouter initialEntries={[entrada]}>
+  // Sin `state` de navegación a propósito: es el caso de recargar la URL.
+  render(
+    <MemoryRouter initialEntries={["/mis-anuncios/a2/editar"]}>
       <SesionContexto.Provider value={{ cliente, sesion, estado }}>
         <Routes>
           <Route path="/mis-anuncios/:id/editar" element={<EditarAnuncio />} />
@@ -45,17 +48,26 @@ function montar({ editarAnuncio, reemplazarImagenes, conAnuncio = true } = {}) {
       </SesionContexto.Provider>
     </MemoryRouter>,
   );
+
+  return { leerMiAnuncio };
 }
 
 describe("pantalla Editar anuncio", () => {
-  it("precarga el anuncio y guarda los cambios", async () => {
+  it("carga el anuncio por id sin depender del estado de navegación", async () => {
+    const { leerMiAnuncio } = montar();
+
+    expect(await screen.findByDisplayValue("Bicicleta")).toBeTruthy();
+    expect(leerMiAnuncio).toHaveBeenCalledWith("a2");
+    expect(screen.getByLabelText("Precio (USD)").value).toBe("210");
+    expect(screen.getByLabelText("Descripción").value).toBe("Rodada 29");
+  });
+
+  it("guarda los cambios y vuelve a revisión", async () => {
     const usuario = userEvent.setup();
     const editarAnuncio = vi.fn().mockResolvedValue({});
-    const reemplazarImagenes = vi.fn().mockResolvedValue({});
-    montar({ editarAnuncio, reemplazarImagenes });
+    montar({ editarAnuncio });
 
-    const precio = screen.getByLabelText("Precio (USD)");
-    expect(precio.value).toBe("210");
+    const precio = await screen.findByLabelText("Precio (USD)");
     await usuario.clear(precio);
     await usuario.type(precio, "200");
     await usuario.click(
@@ -78,7 +90,7 @@ describe("pantalla Editar anuncio", () => {
     const editarAnuncio = vi.fn();
     montar({ editarAnuncio });
 
-    const precio = screen.getByLabelText("Precio (USD)");
+    const precio = await screen.findByLabelText("Precio (USD)");
     await usuario.clear(precio);
     await usuario.click(
       screen.getByRole("button", { name: "Guardar cambios" }),
@@ -88,12 +100,24 @@ describe("pantalla Editar anuncio", () => {
     expect(editarAnuncio).not.toHaveBeenCalled();
   });
 
-  it("avisa si se abre sin datos del anuncio", () => {
-    montar({ editarAnuncio: vi.fn(), conAnuncio: false });
+  it("muestra el desenlace de no encontrado con 404", async () => {
+    montar({
+      leerMiAnuncio: vi.fn().mockRejectedValue({ status: 404 }),
+    });
 
     expect(
-      screen.getByRole("heading", { name: "No pudimos abrir el anuncio" }),
+      await screen.findByRole("heading", {
+        name: "No encontramos ese anuncio",
+      }),
     ).toBeTruthy();
+  });
+
+  it("redirige a entrar cuando la sesión terminó", async () => {
+    montar({
+      leerMiAnuncio: vi.fn().mockRejectedValue({ status: 401 }),
+    });
+
+    expect(await screen.findByRole("heading", { name: "Entrar" })).toBeTruthy();
   });
 
   it("reemplaza las imágenes cuando se eligen nuevas", async () => {
@@ -102,6 +126,7 @@ describe("pantalla Editar anuncio", () => {
     const reemplazarImagenes = vi.fn().mockResolvedValue({});
     montar({ editarAnuncio, reemplazarImagenes });
 
+    await screen.findByLabelText("Precio (USD)");
     const archivo = new File(["x"], "nueva.png", { type: "image/png" });
     await usuario.upload(screen.getByLabelText("Imágenes"), archivo);
     await usuario.click(

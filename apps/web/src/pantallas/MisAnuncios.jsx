@@ -15,12 +15,23 @@ import estilos from "./misAnuncios.module.css";
 
 const LIMITE = 10;
 
+// Espejo de `EstadoRevisionPanel` del contrato: `null` = panel completo.
+const FILTROS = [
+  { valor: null, etiqueta: "Todos" },
+  { valor: "pendiente", etiqueta: "Pendientes" },
+  { valor: "aprobado", etiqueta: "Aprobados" },
+  { valor: "rechazado", etiqueta: "Rechazados" },
+  { valor: "retraido", etiqueta: "Retraídos" },
+];
+
 function estadoVisible(anuncio) {
   if (anuncio.estado === "vendido") return { texto: "Vendido", tono: "neutro" };
   if (anuncio.estadoRevision === "pendiente")
     return { texto: "Pendiente", tono: "advertencia" };
   if (anuncio.estadoRevision === "rechazado")
-    return { texto: "Rechazado", tono: "error" };
+    return anuncio.retraido
+      ? { texto: "Retraído", tono: "error" }
+      : { texto: "Rechazado", tono: "error" };
   if (anuncio.estado === "inactivo")
     return { texto: "Inactivo", tono: "neutro" };
   if (anuncio.estadoRevision === "aprobado")
@@ -34,6 +45,7 @@ export function MisAnuncios() {
   const autenticado = estado.estado === "autenticado";
 
   const [pagina, setPagina] = useState(0);
+  const [filtro, setFiltro] = useState(null);
   const [anuncios, setAnuncios] = useState([]);
   const [paginacion, setPaginacion] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -52,10 +64,11 @@ export function MisAnuncios() {
     setCargando(true);
     setError(null);
 
+    const opciones = { pagina, limite: LIMITE };
+    if (filtro !== null) opciones.estadoRevision = filtro;
+
     sesion
-      .ejecutar(() =>
-        cliente.anuncios.listarMisAnuncios({ pagina, limite: LIMITE }),
-      )
+      .ejecutar(() => cliente.anuncios.listarMisAnuncios(opciones))
       .then((respuesta) => {
         if (!vigente) return;
         const datos = respuesta.datos ?? [];
@@ -79,7 +92,7 @@ export function MisAnuncios() {
     return () => {
       vigente = false;
     };
-  }, [autenticado, cliente, pagina, recarga, sesion, navegar]);
+  }, [autenticado, cliente, filtro, pagina, recarga, sesion, navegar]);
 
   async function accion(id, operacion) {
     setAccionando(id);
@@ -116,6 +129,11 @@ export function MisAnuncios() {
     accion(anuncio.id, () => cliente.anuncios.darDeBajaAnuncio(anuncio.id));
   }
 
+  function filtrar(valor) {
+    setFiltro(valor);
+    setPagina(0);
+  }
+
   if (!autenticado) {
     return (
       <div className={estilos.pagina}>
@@ -149,6 +167,26 @@ export function MisAnuncios() {
           </Link>
         </div>
 
+        <div
+          className={estilos.filtros}
+          role="group"
+          aria-label="Filtrar por estado"
+        >
+          {FILTROS.map(({ valor, etiqueta }) => (
+            <button
+              key={etiqueta}
+              type="button"
+              className={`${estilos.chip} ${
+                filtro === valor ? estilos.chipActivo : ""
+              }`}
+              aria-pressed={filtro === valor}
+              onClick={() => filtrar(valor)}
+            >
+              {etiqueta}
+            </button>
+          ))}
+        </div>
+
         {errorAccion && <Aviso>{errorAccion}</Aviso>}
 
         {cargando && (
@@ -169,7 +207,7 @@ export function MisAnuncios() {
           </div>
         )}
 
-        {!cargando && !error && anuncios.length === 0 && (
+        {!cargando && !error && anuncios.length === 0 && filtro === null && (
           <div className={estilos.vacio}>
             <div className={estilos.vacioIcono} aria-hidden="true">
               <Icono nombre="imagen" tamano={24} />
@@ -182,6 +220,19 @@ export function MisAnuncios() {
             <Link to="/publicar" className={estilos.primario}>
               Publicar anuncio
             </Link>
+          </div>
+        )}
+
+        {!cargando && !error && anuncios.length === 0 && filtro !== null && (
+          <div className={estilos.vacio}>
+            <div className={estilos.vacioIcono} aria-hidden="true">
+              <Icono nombre="imagen" tamano={24} />
+            </div>
+            <h2 className={estilos.vacioTitulo}>Sin anuncios con ese estado</h2>
+            <p className={estilos.vacioTexto}>
+              No tienes anuncios en el estado que filtras.
+            </p>
+            <Boton onClick={() => filtrar(null)}>Ver todos</Boton>
           </div>
         )}
 
@@ -231,6 +282,12 @@ export function MisAnuncios() {
                         {badge.texto}
                       </span>
                       <div className={estilos.acciones}>
+                        <Link
+                          to={`/mis-anuncios/${anuncio.id}/editar`}
+                          className={estilos.accionEnlace}
+                        >
+                          Editar
+                        </Link>
                         {aprobado && anuncio.estado !== "vendido" && (
                           <Boton
                             variante="secundario"

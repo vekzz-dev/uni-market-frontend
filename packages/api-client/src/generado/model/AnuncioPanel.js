@@ -35,10 +35,11 @@ class AnuncioPanel {
      * @param estado {module:model/Estado} 
      * @param fechaActualizacion {Date} 
      * @param estadoRevision {module:model/EstadoRevision} 
+     * @param retraido {Boolean} `true` cuando la aprobación se revocó por moderación (R5). Es la procedencia del rechazo, no un valor de `estadoRevision`: un anuncio retraído sigue publicando `estadoRevision=rechazado`. 
      */
-    constructor(id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion, estadoRevision) { 
+    constructor(id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion, estadoRevision, retraido) { 
         AnuncioDetalle.initialize(this, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion);
-        AnuncioPanel.initialize(this, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion, estadoRevision);
+        AnuncioPanel.initialize(this, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion, estadoRevision, retraido);
     }
 
     /**
@@ -46,7 +47,7 @@ class AnuncioPanel {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion, estadoRevision) { 
+    static initialize(obj, id, nombre, precio, vendedorId, vendedorNombre, fechaCreacion, estado, fechaActualizacion, estadoRevision, retraido) { 
         obj['id'] = id;
         obj['nombre'] = nombre;
         obj['precio'] = precio;
@@ -56,6 +57,7 @@ class AnuncioPanel {
         obj['estado'] = estado;
         obj['fechaActualizacion'] = fechaActualizacion;
         obj['estadoRevision'] = estadoRevision;
+        obj['retraido'] = retraido;
     }
 
     /**
@@ -108,6 +110,9 @@ class AnuncioPanel {
             }
             if (data.hasOwnProperty('motivoRechazo')) {
                 obj['motivoRechazo'] = ApiClient.convertToType(data['motivoRechazo'], 'String');
+            }
+            if (data.hasOwnProperty('retraido')) {
+                obj['retraido'] = ApiClient.convertToType(data['retraido'], 'Boolean');
             }
             if (data.hasOwnProperty('fechaRevision')) {
                 obj['fechaRevision'] = ApiClient.convertToType(data['fechaRevision'], 'Date');
@@ -163,7 +168,7 @@ class AnuncioPanel {
 
 }
 
-AnuncioPanel.RequiredProperties = ["id", "nombre", "precio", "vendedorId", "vendedorNombre", "fechaCreacion", "estado", "fechaActualizacion", "estadoRevision"];
+AnuncioPanel.RequiredProperties = ["id", "nombre", "precio", "vendedorId", "vendedorNombre", "fechaCreacion", "estado", "fechaActualizacion", "estadoRevision", "retraido"];
 
 /**
  * @member {String} id
@@ -233,6 +238,12 @@ AnuncioPanel.prototype['estadoRevision'] = undefined;
  * @member {String} motivoRechazo
  */
 AnuncioPanel.prototype['motivoRechazo'] = undefined;
+
+/**
+ * `true` cuando la aprobación se revocó por moderación (R5). Es la procedencia del rechazo, no un valor de `estadoRevision`: un anuncio retraído sigue publicando `estadoRevision=rechazado`. 
+ * @member {Boolean} retraido
+ */
+AnuncioPanel.prototype['retraido'] = undefined;
 
 /**
  * @member {Date} fechaRevision

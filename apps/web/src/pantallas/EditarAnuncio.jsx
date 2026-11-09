@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   mapearProblema,
   resolverUrlMedia,
@@ -14,22 +14,31 @@ import { origenApi } from "../config.js";
 import { useSesion } from "../sesion/SesionContexto.jsx";
 import estilos from "./publicar.module.css";
 
-export function EditarAnuncio() {
-  const { id } = useParams();
-  const { state } = useLocation();
-  const { cliente, sesion, estado } = useSesion();
-  const navegar = useNavigate();
-  const anuncio = state?.anuncio;
-  const autenticado = estado.estado === "autenticado";
-
-  const [categorias, setCategorias] = useState([]);
-  const [formulario, setFormulario] = useState({
+function formularioDesde(anuncio) {
+  return {
     nombre: anuncio?.nombre ?? "",
     precio: anuncio?.precio != null ? String(anuncio.precio) : "",
     descripcion: anuncio?.descripcion ?? "",
     categoriaId:
       anuncio?.categoriaId != null ? String(anuncio.categoriaId) : "",
-  });
+  };
+}
+
+export function EditarAnuncio() {
+  const { id } = useParams();
+  const { cliente, sesion, estado } = useSesion();
+  const navegar = useNavigate();
+  const autenticado = estado.estado === "autenticado";
+
+  // El anuncio se lee por id: `/mis-anuncios/{id}` es del panel, así que
+  // recargar la URL o abrirla desde un enlace no depende del estado de navegación.
+  const [anuncio, setAnuncio] = useState(null);
+  const [vista, setVista] = useState("cargando");
+  const [errorCarga, setErrorCarga] = useState(null);
+  const [recarga, setRecarga] = useState(0);
+
+  const [categorias, setCategorias] = useState([]);
+  const [formulario, setFormulario] = useState(formularioDesde(null));
   const [archivos, setArchivos] = useState([]);
   const [previews, setPreviews] = useState([]);
   const [errores, setErrores] = useState({});
@@ -40,6 +49,36 @@ export function EditarAnuncio() {
   useEffect(() => {
     if (!autenticado) navegar("/entrar", { replace: true });
   }, [autenticado, navegar]);
+
+  useEffect(() => {
+    if (!autenticado) return undefined;
+    let vigente = true;
+    setVista("cargando");
+    setErrorCarga(null);
+
+    sesion
+      .ejecutar(() => cliente.anuncios.leerMiAnuncio(id))
+      .then((datos) => {
+        if (!vigente) return;
+        setAnuncio(datos);
+        setFormulario(formularioDesde(datos));
+        setVista("listo");
+      })
+      .catch((fallo) => {
+        if (!vigente) return;
+        const problema = mapearProblema(fallo);
+        if (problema.status === 401) navegar("/entrar", { replace: true });
+        else if (problema.status === 404) setVista("no-encontrado");
+        else {
+          setErrorCarga(problema.mensaje);
+          setVista("error");
+        }
+      });
+
+    return () => {
+      vigente = false;
+    };
+  }, [autenticado, cliente, id, navegar, recarga, sesion]);
 
   useEffect(() => {
     cliente.categorias
@@ -126,7 +165,51 @@ export function EditarAnuncio() {
     );
   }
 
-  if (!anuncio) {
+  if (vista === "cargando") {
+    return (
+      <div className={estilos.pagina}>
+        <CabeceraPublica
+          onBuscar={(q) => navegar(q ? `/?q=${encodeURIComponent(q)}` : "/")}
+        />
+        <main className={estilos.principal}>
+          <section className={estilos.tarjeta} aria-labelledby="titulo-editar">
+            <h1 id="titulo-editar" className={estilos.titulo}>
+              Editar anuncio
+            </h1>
+            <p className={estilos.subtitulo} role="status">
+              Cargando el anuncio…
+            </p>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (vista === "no-encontrado") {
+    return (
+      <div className={estilos.pagina}>
+        <CabeceraPublica
+          onBuscar={(q) => navegar(q ? `/?q=${encodeURIComponent(q)}` : "/")}
+        />
+        <main className={estilos.principal}>
+          <section className={estilos.tarjeta} aria-labelledby="titulo-editar">
+            <h1 id="titulo-editar" className={estilos.titulo}>
+              No encontramos ese anuncio
+            </h1>
+            <p className={estilos.subtitulo}>
+              Puede que ya no exista o que no sea tuyo. Vuelve a tu panel y
+              elige otro.
+            </p>
+            <Link to="/mis-anuncios" className={estilos.primario}>
+              Ir a mis anuncios
+            </Link>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (vista === "error") {
     return (
       <div className={estilos.pagina}>
         <CabeceraPublica
@@ -137,12 +220,18 @@ export function EditarAnuncio() {
             <h1 id="titulo-editar" className={estilos.titulo}>
               No pudimos abrir el anuncio
             </h1>
-            <p className={estilos.subtitulo}>
-              Vuelve a tu panel y elige el anuncio de nuevo.
-            </p>
-            <Link to="/mis-anuncios" className={estilos.primario}>
-              Ir a mis anuncios
-            </Link>
+            <Aviso>{errorCarga}</Aviso>
+            <div className={estilos.acciones}>
+              <Link to="/mis-anuncios" className={estilos.secundario}>
+                Volver a mis anuncios
+              </Link>
+              <Boton
+                variante="secundario"
+                onClick={() => setRecarga((n) => n + 1)}
+              >
+                Reintentar
+              </Boton>
+            </div>
           </section>
         </main>
       </div>

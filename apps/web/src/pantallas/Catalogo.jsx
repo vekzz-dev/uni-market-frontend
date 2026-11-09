@@ -124,6 +124,13 @@ export function Catalogo() {
       <CabeceraPublica inicial={filtros.q} onBuscar={aplicarBusqueda}>
         {autenticado ? (
           <>
+            <Link
+              to="/mensajes"
+              className={estilos.enlaceIcono}
+              aria-label="Mensajes"
+            >
+              <Icono nombre="mensajes" tamano={18} />
+            </Link>
             <Link to="/mis-anuncios" className={estilos.enlace}>
               Mis anuncios
             </Link>

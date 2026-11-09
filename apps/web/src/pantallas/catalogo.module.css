@@ -187,6 +187,22 @@
   text-decoration: none;
 }
 
+.enlaceIcono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--um-border);
+  border-radius: var(--um-radius-control);
+  background: var(--um-surface);
+  color: var(--um-text);
+}
+
+.enlaceIcono:hover {
+  background: var(--um-surface-hover);
+}
+
 .enlaceDestacado {
   display: inline-flex;
   align-items: center;

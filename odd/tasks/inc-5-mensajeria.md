@@ -16,7 +16,7 @@
 ## Tareas
 
 - [x] **T1 — Diseño**: páginas `11 · Mensajes` (datos, vacío, error en web; datos en móvil) y `12 · Conversación` (default, enviando, vacío en web; default en móvil). Ocho PNG en `design/preview/`.
-- [ ] **T2 — Lista**: `/mensajes` con offset, último mensaje, no leídos y estados.
+- [x] **T2 — Lista**: `/mensajes` con offset, último mensaje, no leídos y estados. Enlace con icono en la cabecera del catálogo.
 - [ ] **T3 — Hilo**: `/mensajes/:id` con cursor hacia atrás, envío y lectura.
 - [ ] **T4 — Contacto**: acción en el detalle que abre o reutiliza la conversación.
 - [ ] **T5 — Pruebas y verificación** con la API real.
@@ -27,3 +27,4 @@
 - **Alcance (2026-11-09)**: contrato revisado (`/mis-conversaciones`, `/conversaciones/{id}/mensajes` con cursor, `/mensajes`, `/lecturas`, `POST /conversaciones`). El cliente generado ya expone los métodos: no hace falta resincronizar el contrato.
 - **Bloqueo (2026-11-09)**: OpenPencil no estaba conectado; el incremento sigue la convención de diseño primero (como Inc 4). Se escribió la issue y este track.
 - **Diseño (2026-11-09)**: con OpenPencil abierto se crearon las páginas `11 · Mensajes` y `12 · Conversación` reutilizando el header, la tipografía y los tokens de las páginas anteriores. Ocho frames: lista con datos, vacío y error; hilo con default, enviando y vacío; y los dos móviles a 390. PNG exportados por frame (maxEdge 1280, como los existentes).
+- **Lista implementada (2026-11-09)**: `/mensajes` con offset, `ultimoMensaje`, `noLeidos`, paginación, vacío con CTA al catálogo, error con reintento y 401 a entrar. La fila muestra el anuncio como título, el último mensaje y la contraparte ("Compra · Ana P." / "Venta"). El contrato no expone el nombre del comprador en la lista: solo `vendedorNombre` dentro del anuncio, así que para el vendedor la etiqueta es "Compra"/"Venta" sin nombre. 7 pruebas nuevas (80 en la web), con `axe`.

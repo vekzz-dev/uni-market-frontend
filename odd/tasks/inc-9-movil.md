@@ -26,3 +26,4 @@
 
 - **L1 (2026-11-10, verbatim)**: "si dale arranca"
 - **Nota**: el incremento se entrega por flujo, un commit por pantalla, para que la revisión no dependa de un bloque de miles de líneas.
+- **Vendedor: publicar (2026-11-10)**: `expo-image-picker` añadido; `/publicar` en Expo con selector nativo (1–5 imágenes), validación espejo, categorías en chips, envío multipart por el cliente generado y estados de éxito/error. La cabecera del catálogo gana "Vender" con sesión. El proveedor móvil publica `restaurado`, como el web, para no expulsar al entrar con un refresh válido. `Campo` expone `accessibilityLabel` (beneficia a todos los formularios). 7 pruebas en móvil (10 en total). Faltan mis anuncios y editar de T1.

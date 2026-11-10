@@ -216,6 +216,14 @@ export function Catalogo() {
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       <Cabecera>
+        {autenticado && (
+          <Boton
+            titulo="Vender"
+            variante="secundario"
+            onPress={() => router.push("/publicar")}
+            style={{ minHeight: 34, marginRight: 8 }}
+          />
+        )}
         <Boton
           titulo={autenticado ? "Salir" : "Entrar"}
           variante="secundario"

@@ -14,7 +14,7 @@
 
 ## Tareas
 
-- [ ] **T1 — Vendedor**: publicar, mis anuncios y editar en Expo.
+- [x] **T1 — Vendedor**: publicar, mis anuncios y editar en Expo.
 - [ ] **T2 — Mensajería**: lista e hilo.
 - [ ] **T3 — Perfil**: datos, avatar, contraseña y baja.
 - [ ] **T4 — Moderación**: cola y decisión.
@@ -27,3 +27,4 @@
 - **L1 (2026-11-10, verbatim)**: "si dale arranca"
 - **Nota**: el incremento se entrega por flujo, un commit por pantalla, para que la revisión no dependa de un bloque de miles de líneas.
 - **Vendedor: publicar (2026-11-10)**: `expo-image-picker` añadido; `/publicar` en Expo con selector nativo (1–5 imágenes), validación espejo, categorías en chips, envío multipart por el cliente generado y estados de éxito/error. La cabecera del catálogo gana "Vender" con sesión. El proveedor móvil publica `restaurado`, como el web, para no expulsar al entrar con un refresh válido. `Campo` expone `accessibilityLabel` (beneficia a todos los formularios). 7 pruebas en móvil (10 en total). Faltan mis anuncios y editar de T1.
+- **Vendedor: panel y edición (2026-11-10)**: `/mis-anuncios` con offset, badges (incluido retraído), motivo, acciones de visibilidad/vendido/baja con confirmación en línea y relectura al enfocar; `/mis-anuncios/[id]/editar` relee por id, precarga y hace PATCH de contenido. La cabecera del catálogo enlaza al panel. 6 pruebas nuevas (16 en móvil). El `useRouter` del mock debe ser estable: Expo lo memoiza y el efecto de carga depende de él.

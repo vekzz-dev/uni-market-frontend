@@ -18,10 +18,12 @@
 - [x] **T2 — Datos y avatar**: lectura, edición del nombre y avatar con sus estados.
 - [x] **T3 — Contraseña**: formulario con validación espejo y confirmación.
 - [x] **T4 — Baja**: confirmación, cierre de sesión y salida.
-- [ ] **T5 — Pruebas y verificación** con la API real.
+- [x] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
 
 - **L1 (2026-11-10, verbatim)**: "sigue con inc6"
 - **Diseño (2026-11-10)**: página `13 · Perfil` con datos, guardado y error en web y datos en móvil; cuatro PNG.
 - **Implementación (2026-11-10)**: `/perfil` con carga de `GET /usuarios/me`, edición del nombre (`PATCH`), avatar (subir con validación espejo de 2 MB y tipos, eliminar) y correo de solo lectura. El gestor de sesión gana `actualizarUsuario` para que la cabecera refleje el nombre y el avatar sin recargar. Contraseña con validación de mínimo y coincidencia, y baja con confirmación que cierra sesión y sale al catálogo. La cabecera del catálogo y del panel muestran el avatar enlazado al perfil. 11 pruebas nuevas (100 en la web) y 2 en core.
+- **Verificación real (2026-11-10)**: usuario nuevo confirmado por el token del log. Con el cliente generado: `leerPerfilPropio` devuelve nombre y email; `PATCH` renombra; subir avatar devuelve `urlAvatar` y eliminarlo lo deja en `null`; contraseña incorrecta da `422`, cambiarla permite entrar con la nueva; la baja devuelve `204` y el login posterior da `401`.
+- **Smoke de navegador (2026-11-10)**: Playwright con una cuenta real: `/perfil` muestra nombre, correo de solo lectura y las tres secciones; el catálogo expone el enlace "Mi perfil" con el avatar. Servicios detenidos.

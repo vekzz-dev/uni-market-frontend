@@ -236,57 +236,70 @@ export function AdminUsuarios() {
         {!cargando && !error && usuarios.length > 0 && (
           <>
             <ul className={estilos.lista}>
-              {usuarios.map((usuario) => (
-                <li key={usuario.id} className={estilos.fila}>
-                  <div className={estilos.datos}>
-                    <p className={estilos.nombre}>{usuario.nombre}</p>
-                    <p className={estilos.meta}>{usuario.email}</p>
-                  </div>
+              {usuarios.map((usuario) => {
+                const esYo = usuario.id === estado.usuario?.id;
+                return (
+                  <li key={usuario.id} className={estilos.fila}>
+                    <div className={estilos.datos}>
+                      <p className={estilos.nombre}>{usuario.nombre}</p>
+                      <p className={estilos.meta}>{usuario.email}</p>
+                    </div>
 
-                  <span className={`${estilos.badge} ${estilos[usuario.rol]}`}>
-                    {usuario.rol}
-                  </span>
-                  <span
-                    className={`${estilos.badge} ${
-                      usuario.habilitado ? estilos.habilitado : estilos.inactivo
-                    }`}
-                  >
-                    {usuario.habilitado ? "Habilitado" : "Inhabilitado"}
-                  </span>
+                    <span
+                      className={`${estilos.badge} ${estilos[usuario.rol]}`}
+                    >
+                      {usuario.rol}
+                    </span>
+                    <span
+                      className={`${estilos.badge} ${
+                        usuario.habilitado
+                          ? estilos.habilitado
+                          : estilos.inactivo
+                      }`}
+                    >
+                      {usuario.habilitado ? "Habilitado" : "Inhabilitado"}
+                    </span>
 
-                  <div className={estilos.acciones}>
-                    <label
-                      className={estilos.oculto}
-                      htmlFor={`rol-${usuario.id}`}
-                    >
-                      Rol de {usuario.nombre}
-                    </label>
-                    <select
-                      id={`rol-${usuario.id}`}
-                      className={estilos.selector}
-                      value={usuario.rol}
-                      disabled={accionando === usuario.id}
-                      onChange={(evento) =>
-                        cambiarRol(usuario, evento.target.value)
-                      }
-                    >
-                      {ROLES.map((rol) => (
-                        <option key={rol} value={rol}>
-                          {rol}
-                        </option>
-                      ))}
-                    </select>
-                    <Boton
-                      variante="secundario"
-                      className={estilos.accion}
-                      disabled={accionando === usuario.id}
-                      onClick={() => cambiarHabilitacion(usuario)}
-                    >
-                      {usuario.habilitado ? "Inhabilitar" : "Habilitar"}
-                    </Boton>
-                  </div>
-                </li>
-              ))}
+                    <div className={estilos.acciones}>
+                      <label
+                        className={estilos.oculto}
+                        htmlFor={`rol-${usuario.id}`}
+                      >
+                        Rol de {usuario.nombre}
+                      </label>
+                      {esYo ? (
+                        <span className={estilos.yo}>Tú</span>
+                      ) : (
+                        <>
+                          <select
+                            id={`rol-${usuario.id}`}
+                            className={estilos.selector}
+                            value={usuario.rol}
+                            disabled={accionando === usuario.id}
+                            onChange={(evento) =>
+                              cambiarRol(usuario, evento.target.value)
+                            }
+                          >
+                            {ROLES.map((rol) => (
+                              <option key={rol} value={rol}>
+                                {rol}
+                              </option>
+                            ))}
+                          </select>
+                          <Boton
+                            variante="secundario"
+                            className={estilos.accion}
+                            disabled={accionando === usuario.id}
+                            onClick={() => cambiarHabilitacion(usuario)}
+                          >
+                            {usuario.habilitado ? "Inhabilitar" : "Habilitar"}
+                          </Boton>
+                        </>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
 
             {paginacion && paginacion.totalPaginas > 1 && (

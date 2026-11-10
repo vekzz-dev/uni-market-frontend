@@ -309,3 +309,15 @@
     flex-direction: column;
   }
 }
+
+.yo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--um-surface-hover);
+  color: var(--um-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+}

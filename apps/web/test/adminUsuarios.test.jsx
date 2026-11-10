@@ -161,6 +161,17 @@ describe("pantalla Admin usuarios", () => {
     );
   });
 
+  it("no ofrece inhabilitarse ni cambiarse el rol a sí mismo", async () => {
+    montar({
+      datos: [{ ...usuario, id: "u9", nombre: "Admin" }],
+    });
+
+    await screen.findByText("Admin");
+    expect(screen.getByText("Tú")).toBeTruthy();
+    expect(screen.queryByRole("combobox")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Inhabilitar" })).toBeNull();
+  });
+
   it("no muestra la lista a quien no es admin", async () => {
     montar({ rol: "moderador" });
 

@@ -25,7 +25,7 @@ import { useTema } from "../tema.js";
 const LIMITE = 12;
 
 export function Catalogo() {
-  const { cliente, sesion, estado } = useSesion();
+  const { cliente, estado } = useSesion();
   const { semantic: c } = useTema();
   const router = useRouter();
 
@@ -120,6 +120,27 @@ export function Catalogo() {
       <Text style={{ color: c.textSecondary, fontSize: 13 }}>
         Todos los anuncios pasan por revisión antes de publicarse.
       </Text>
+      {autenticado && (
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <Boton
+            titulo="Vender"
+            onPress={() => router.push("/publicar")}
+            style={{ flex: 1, minHeight: 38 }}
+          />
+          <Boton
+            titulo="Mis anuncios"
+            variante="secundario"
+            onPress={() => router.push("/mis-anuncios")}
+            style={{ flex: 1, minHeight: 38 }}
+          />
+          <Boton
+            titulo="Mensajes"
+            variante="secundario"
+            onPress={() => router.push("/mensajes")}
+            style={{ flex: 1, minHeight: 38 }}
+          />
+        </View>
+      )}
       <View
         style={[
           estilos.buscador,
@@ -209,19 +230,46 @@ export function Catalogo() {
     </View>
   );
 
-  async function salir() {
-    await sesion.cerrarSesion();
-  }
-
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       <Cabecera>
-        <Boton
-          titulo={autenticado ? "Salir" : "Entrar"}
-          variante="secundario"
-          onPress={autenticado ? salir : () => router.push("/entrar")}
-          style={{ minHeight: 34 }}
-        />
+        {autenticado ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Mi perfil"
+            onPress={() => router.push("/perfil")}
+            style={{
+              width: 34,
+              height: 34,
+              borderRadius: 999,
+              backgroundColor: c.primarySelected,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                color: c.primaryStrong,
+                fontSize: 12,
+                fontWeight: "600",
+              }}
+            >
+              {(estado.usuario?.nombre ?? "")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map((parte) => parte[0]?.toUpperCase() ?? "")
+                .join("") || "?"}
+            </Text>
+          </Pressable>
+        ) : (
+          <Boton
+            titulo="Entrar"
+            variante="secundario"
+            onPress={() => router.push("/entrar")}
+            style={{ minHeight: 34 }}
+          />
+        )}
       </Cabecera>
       <FlatList
         data={anuncios}

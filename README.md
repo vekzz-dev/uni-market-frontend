@@ -2,14 +2,14 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0–4 completos** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo público, detalle, vendedor (publicar con imágenes, panel con filtro por estado de revisión, editar, visibilidad, vendido y baja), 404, tema claro/oscuro con conmutador y auditoría `axe`; la **app móvil** (Expo) tiene paridad de sesión y catálogo. **133 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 12 páginas y 62 PNG en `design/preview/`. Siguiente: Inc 5, mensajería web.
+> **Estado actual**: **Inc 0–8 completos en web** y **paridad móvil de Inc 4–8 en curso (Inc 9)** — monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo, detalle, vendedor, mensajería, perfil, moderación y administración; la **app móvil** (Expo) cubre sesión, catálogo, vendedor, mensajería, perfil, moderación y administración. **241 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios. El **archivo de diseño** tiene 17 páginas y 84 PNG en `design/preview/`. Lo siguiente: cerrar Inc 9 (endurecimiento y e2e).
 
 ## Estructura
 
 ```
 apps/
   web/        ✅ (Inc 1–4) React 19 + Vite · JavaScript · CSS puro (CSS Modules) · sesión, catálogo, detalle y vendedor
-  mobile/     ✅ (Inc 3) Expo 58 + Expo Router · JavaScript · sesión y catálogo con paridad
+  mobile/     ✅ (Inc 3 y 9) Expo 58 + Expo Router · JavaScript · paridad de sesión, catálogo, vendedor, mensajería, perfil, moderación y administración
 packages/
   api-client/ ✅ cliente generado desde el OpenAPI + transporte propio sobre fetch
   core/       ✅ sesión, errores, paginación, validación espejo, capacidades, formato y medios
@@ -48,7 +48,7 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm tokens:build` | Regenera `tokens.css` desde los tokens |
 | `pnpm test` | Suite de todos los paquetes (tokens, api-client, core, web y móvil) |
 | `pnpm test:coverage` | Cobertura de `core` y `api-client` con umbral del 80 % de líneas |
-| `pnpm e2e` | Humo con Playwright contra la API local (requiere `E2E_EMAIL` y `E2E_PASSWORD`) |
+| `pnpm e2e` | Humo con Playwright: un recorrido completo con login único (requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta con conversación) |
 | `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
 | `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
 | `pnpm dev:mobile` | Expo (Metro) para la app móvil |

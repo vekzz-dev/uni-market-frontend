@@ -62,6 +62,7 @@ export function Campo({
         {etiqueta}
       </Text>
       <TextInput
+        accessibilityLabel={etiqueta}
         value={valor}
         onChangeText={onChangeText}
         placeholderTextColor={c.textSecondary}

@@ -8,6 +8,9 @@ export const SesionContexto = createContext(null);
 
 export function SesionProvider({ children }) {
   const [estado, setEstado] = useState({ estado: "anonimo", usuario: null });
+  // `false` hasta que termina la restauración: los guards esperan para no
+  // expulsar a entrar con un refresh válido guardado.
+  const [restaurado, setRestaurado] = useState(false);
   const [recursos] = useState(() => {
     let gestor = null;
     const cliente = crearCliente({
@@ -21,17 +24,26 @@ export function SesionProvider({ children }) {
     });
     return { cliente, sesion: gestor };
   });
-  const restaurado = useRef(false);
+  const restauracionIniciada = useRef(false);
 
   useEffect(() => {
-    if (restaurado.current) return;
-    restaurado.current = true;
-    recursos.sesion.restaurar().catch(() => {});
+    // StrictMode ejecuta el efecto dos veces: restaurar dos veces rotaría dos veces.
+    if (restauracionIniciada.current) return;
+    restauracionIniciada.current = true;
+    recursos.sesion
+      .restaurar()
+      .catch(() => {})
+      .finally(() => setRestaurado(true));
   }, [recursos]);
 
   return (
     <SesionContexto.Provider
-      value={{ cliente: recursos.cliente, sesion: recursos.sesion, estado }}
+      value={{
+        cliente: recursos.cliente,
+        sesion: recursos.sesion,
+        estado,
+        restaurado,
+      }}
     >
       {children}
     </SesionContexto.Provider>

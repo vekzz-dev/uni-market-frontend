@@ -44,6 +44,9 @@ jobs:
       - name: Build de la web
         run: pnpm build:web
 
+      - name: Presupuesto del bundle web
+        run: pnpm budget:web
+
       - name: Build de la móvil (web)
         run: pnpm --filter @uni-market/mobile export:web
 

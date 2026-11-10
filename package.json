@@ -17,6 +17,7 @@
     "api:check": "node scripts/api-check.mjs",
     "dev:web": "pnpm --filter @uni-market/web dev",
     "build:web": "pnpm --filter @uni-market/web build",
+    "budget:web": "node scripts/bundle-budget.mjs",
     "test": "pnpm -r test",
     "test:coverage": "pnpm -r --if-present test:coverage",
     "e2e": "pnpm --filter @uni-market/web e2e",

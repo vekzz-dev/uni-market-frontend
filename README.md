@@ -51,6 +51,7 @@ La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localho
 | `pnpm e2e` | Humo con Playwright: un recorrido completo con login único (requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta con conversación) |
 | `pnpm dev:web` | Servidor de desarrollo de la web en `http://localhost:5173` |
 | `pnpm build:web` | Build de producción de la web (incluye el `.woff2` de Inter) |
+| `pnpm budget:web` | Mide el JS del build (gzip) y falla si supera el presupuesto de 220 KB |
 | `pnpm dev:mobile` | Expo (Metro) para la app móvil |
 | `pnpm lint` | ESLint sobre el monorepo, con las reglas de frontera |
 | `pnpm format:check` | Comprueba el formato con Prettier |

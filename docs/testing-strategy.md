@@ -92,7 +92,7 @@ Los gates de UI **no** imponen un porcentaje de cobertura: exigir 80 % en pantal
 
 | Métrica | Presupuesto propuesto | Por qué |
 |---|---|---|
-| JS inicial de la ruta de catálogo | ≤ 220 KB gzip | El catálogo es la primera impresión; es una lista, no una app pesada |
+| JS inicial de la ruta de catálogo | ≤ 220 KB gzip · **gate**: `pnpm budget:web` en CI | El catálogo es la primera impresión; es una lista, no una app pesada. Hoy: **109 KB gzip** |
 | Imágenes del catálogo | `srcset` + dimensiones declaradas + `loading="lazy"` salvo la primera fila | Evita saltos de layout, que se sienten como lentitud |
 | Listas largas | Virtualización o paginación por cursor real (nunca traer 500 elementos) | El contrato ya ofrece cursor |
 | LCP en portátil local | ≤ 2.5 s con la API en la misma máquina | Referencia medible sin inventar SLO de producción |

@@ -4,6 +4,7 @@ import { useRouter } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
 import {
   mapearProblema,
+  puede,
   resolverUrlMedia,
   validarAvatar,
 } from "@uni-market/core";
@@ -429,6 +430,13 @@ export function Perfil() {
           <Text style={{ color: c.text, fontSize: 18, fontWeight: "600" }}>
             Cuenta
           </Text>
+          {puede(estado.usuario?.rol, "moderacion.decidir") && (
+            <Boton
+              titulo="Moderación"
+              variante="secundario"
+              onPress={() => router.push("/moderacion")}
+            />
+          )}
           <Boton
             titulo="Cerrar sesión"
             variante="secundario"

@@ -17,7 +17,7 @@
 - [x] **T1 — Vendedor**: publicar, mis anuncios y editar en Expo.
 - [x] **T2 — Mensajería**: lista e hilo.
 - [x] **T3 — Perfil**: datos, avatar, contraseña y baja.
-- [ ] **T4 — Moderación**: cola y decisión.
+- [x] **T4 — Moderación**: cola y decisión.
 - [ ] **T5 — Administración**: usuarios y categorías.
 - [ ] **T6 — Diseño móvil de administración** (única página sin frames móviles).
 - [ ] **T7 — Endurecimiento**: README y e2e (issue #47).
@@ -30,3 +30,4 @@
 - **Vendedor: panel y edición (2026-11-10)**: `/mis-anuncios` con offset, badges (incluido retraído), motivo, acciones de visibilidad/vendido/baja con confirmación en línea y relectura al enfocar; `/mis-anuncios/[id]/editar` relee por id, precarga y hace PATCH de contenido. La cabecera del catálogo enlaza al panel. 6 pruebas nuevas (16 en móvil). El `useRouter` del mock debe ser estable: Expo lo memoiza y el efecto de carga depende de él.
 - **Mensajería móvil (2026-11-10)**: `/mensajes` con offset, último mensaje, contraparte y badge de no leídos; `/mensajes/[id]` con cursor hacia atrás, burbujas propias/ajenas, envío con validación espejo y `POST /lecturas` una sola vez si había no leídos. Ambos releen al enfocar. El catálogo gana accesos rápidos (Vender, Mis anuncios, Mensajes) fuera de la cabecera, que se saturaba. 6 pruebas nuevas (22 en móvil).
 - **Perfil móvil (2026-11-10)**: `/perfil` con datos, avatar (elegir con el selector nativo, validación espejo, eliminar), contraseña con validación y baja con confirmación en línea más cierre de sesión. La cabecera del catálogo reemplaza "Salir" por el avatar con iniciales que lleva al perfil; "Salir" vive ahora en el perfil. 4 pruebas nuevas (26 en móvil).
+- **Moderación móvil (2026-11-10)**: `/moderacion` con filtros, paginación, aprobación en un toque y rechazo/retracción con motivo validado en línea; desenlace sin capacidad. El acceso vive en Perfil, como indica el diseño móvil (moderación y administración dentro de Perfil, solo con la capacidad). 3 pruebas nuevas (29 en móvil).

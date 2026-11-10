@@ -14,7 +14,7 @@
 
 ## Tareas
 
-- [ ] **T1 — Diseño**: `13 · Perfil` (datos, guardado, error) y móvil; PNG en `design/preview/13-perfil/`.
+- [x] **T1 — Diseño**: `13 · Perfil` (datos, guardado, error) y móvil; cuatro PNG en `design/preview/13-perfil/`.
 - [ ] **T2 — Datos y avatar**: lectura, edición del nombre y avatar con sus estados.
 - [ ] **T3 — Contraseña**: formulario con validación espejo y confirmación.
 - [ ] **T4 — Baja**: confirmación, cierre de sesión y salida.

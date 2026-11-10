@@ -18,10 +18,12 @@
 - [x] **T2 — Cola**: `/moderacion` con filtro por estado, paginación y estados.
 - [x] **T3 — Decisión**: aprobar, rechazar y retraer con motivo y feedback.
 - [x] **T4 — Acceso**: capacidad, enlace en la cabecera y `403` propio.
-- [ ] **T5 — Pruebas y verificación** con la API real.
+- [x] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
 
 - **L1 (2026-11-10, verbatim)**: "arranca con inc 7"
 - **Diseño (2026-11-10)**: página `14 · Moderación` con cola, rechazo con motivo en línea y vacío en web, más la cola móvil; cuatro PNG.
 - **Implementación (2026-11-10)**: `/moderacion` con filtros (pendientes por defecto), paginación, decisión en línea con motivo validado en espejo y feedback por acción. `puede(rol, "moderacion.decidir")` controla el enlace en la cabecera y la ruta; sin capacidad hay desenlace de acceso. El 403 del anuncio propio se muestra dentro del panel de decisión. 10 pruebas nuevas (110 en la web), con `axe`.
+- **Verificación real (2026-11-10)**: moderador promovido por SQL antes de emitir el JWT. Con el cliente generado: la cola pendiente ordena FIFO y cuenta el total; aprobar deja `aprobado`; rechazar sin motivo da `422` y con motivo `rechazado` con su `motivoRechazo`; retraer deja `rechazado` con `retraido: true`; decidir sobre el anuncio propio da `403` y un miembro sin rol recibe `403` al pedir la cola.
+- **Smoke de navegador (2026-11-10)**: Playwright con la cuenta moderadora: `/moderacion` muestra la cola con chips, anuncio, vendedor, fecha y acciones Aprobar/Rechazar. Datos de prueba borrados y servicios detenidos.

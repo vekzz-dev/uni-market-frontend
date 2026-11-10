@@ -1,0 +1,28 @@
+# Inc 9 — Paridad móvil y endurecimiento
+
+**Objetivo**: llevar a Expo los flujos de Inc 4–8 con paridad de comportamiento, y cerrar la deuda de documentación y e2e.
+**Rama**: `feat/inc-9-movil` · **Runner**: `pnpm test`, `pnpm lint`, `pnpm format:check`, `pnpm --filter @uni-market/mobile export:web`.
+
+## Specs
+
+- **S1 — Vendedor**: publicar con imágenes (selector nativo, 1–5, validación espejo), panel con estado de revisión y acciones, y edición con relectura por id.
+- **S2 — Mensajería**: lista con último mensaje y no leídos; hilo con cursor hacia atrás, envío y `POST /lecturas` explícito.
+- **S3 — Perfil**: datos, avatar, contraseña y baja con confirmación.
+- **S4 — Moderación**: cola FIFO con filtros y decisión motivada; acceso por capacidad.
+- **S5 — Administración**: usuarios (búsqueda, rol, habilitación) y categorías (CRUD); acceso por capacidad.
+- **S6 — Endurecimiento** (issue #47): README al día y e2e de mensajería y perfil reproducible.
+
+## Tareas
+
+- [ ] **T1 — Vendedor**: publicar, mis anuncios y editar en Expo.
+- [ ] **T2 — Mensajería**: lista e hilo.
+- [ ] **T3 — Perfil**: datos, avatar, contraseña y baja.
+- [ ] **T4 — Moderación**: cola y decisión.
+- [ ] **T5 — Administración**: usuarios y categorías.
+- [ ] **T6 — Diseño móvil de administración** (única página sin frames móviles).
+- [ ] **T7 — Endurecimiento**: README y e2e (issue #47).
+
+## Log
+
+- **L1 (2026-11-10, verbatim)**: "si dale arranca"
+- **Nota**: el incremento se entrega por flujo, un commit por pantalla, para que la revisión no dependa de un bloque de miles de líneas.

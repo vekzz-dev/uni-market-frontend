@@ -14,6 +14,7 @@ import { EditarAnuncio } from "./pantallas/EditarAnuncio.jsx";
 import { Mensajes } from "./pantallas/Mensajes.jsx";
 import { Conversacion } from "./pantallas/Conversacion.jsx";
 import { Perfil } from "./pantallas/Perfil.jsx";
+import { Moderacion } from "./pantallas/Moderacion.jsx";
 
 export function App() {
   return (
@@ -26,6 +27,7 @@ export function App() {
       <Route path="/mensajes" element={<Mensajes />} />
       <Route path="/mensajes/:id" element={<Conversacion />} />
       <Route path="/perfil" element={<Perfil />} />
+      <Route path="/moderacion" element={<Moderacion />} />
       <Route path="/entrar" element={<Entrar />} />
       <Route path="/registro" element={<Registro />} />
       <Route path="/confirmar-email" element={<Confirmar />} />

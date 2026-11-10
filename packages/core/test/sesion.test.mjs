@@ -240,3 +240,38 @@ test("dos pestañas que refrescan a la vez no cierran la sesión", async () => {
   assert.equal(uno.obtenerEstado().estado, ESTADOS.AUTENTICADO);
   assert.equal(dos.obtenerEstado().estado, ESTADOS.AUTENTICADO);
 });
+
+test("actualizarUsuario refleja el perfil guardado sin tocar el token", async () => {
+  const auth = authFalso();
+  const gestor = crearGestorSesion({
+    auth,
+    almacen: almacenFalso(),
+    reloj: () => 0,
+  });
+  await gestor.iniciarSesion({
+    email: "ana@uni.edu",
+    contrasena: "secreta123",
+  });
+  const antes = gestor.obtenerAccessToken();
+
+  gestor.actualizarUsuario({ nombre: "Ana María", urlAvatar: "/media/a.png" });
+
+  const estado = gestor.obtenerEstado();
+  assert.equal(estado.usuario.nombre, "Ana María");
+  assert.equal(estado.usuario.urlAvatar, "/media/a.png");
+  assert.equal(estado.estado, ESTADOS.AUTENTICADO);
+  assert.equal(gestor.obtenerAccessToken(), antes);
+});
+
+test("actualizarUsuario no hace nada sin sesión", () => {
+  const gestor = crearGestorSesion({
+    auth: authFalso(),
+    almacen: almacenFalso(),
+    reloj: () => 0,
+  });
+
+  gestor.actualizarUsuario({ nombre: "Fantasma" });
+
+  assert.equal(gestor.obtenerEstado().estado, ESTADOS.ANONIMO);
+  assert.equal(gestor.obtenerEstado().usuario, null);
+});

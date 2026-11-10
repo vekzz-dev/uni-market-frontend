@@ -137,9 +137,19 @@ export function Catalogo() {
             <Link to="/publicar" className={estilos.enlaceDestacado}>
               Publicar anuncio
             </Link>
-            <span className={estilos.saludo}>
-              Hola, {estado.usuario?.nombre}
-            </span>
+            <Link
+              to="/perfil"
+              className={estilos.avatarPerfil}
+              aria-label="Mi perfil"
+              title={estado.usuario?.nombre ?? "Mi perfil"}
+            >
+              {(estado.usuario?.nombre ?? "")
+                .trim()
+                .split(/\s+/)
+                .slice(0, 2)
+                .map((parte) => parte[0]?.toUpperCase() ?? "")
+                .join("") || "?"}
+            </Link>
             <Boton
               variante="secundario"
               className={estilos.botonCuenta}

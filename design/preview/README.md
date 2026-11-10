@@ -30,6 +30,7 @@ Cada carpeta corresponde a una **página del `.fig`**; dentro, un PNG por frame.
 | `10-mis-anuncios/` | datos, vacío, error (ambas plataformas) | 1× web / 2× móvil |
 | `11-mensajes/` | datos, vacío, error (web) · datos (móvil) | 1× web / 2× móvil |
 | `12-conversacion/` | default, enviando, vacío (web) · default (móvil) | 1× web / 2× móvil |
+| `13-perfil/` | datos, guardado, error (web) · datos (móvil) | 1× web / 2× móvil |
 
 Convención de nombre: **`<vista>-<plataforma>[-<estado>].png`** — `entrar-web.png`, `entrar-movil-credenciales.png`. El estado se omite cuando es el default.
 

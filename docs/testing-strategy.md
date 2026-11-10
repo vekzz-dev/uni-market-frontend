@@ -19,7 +19,7 @@ Qué se prueba, con qué herramienta y qué se exige para dar algo por terminado
 | Componente y hook | Render, estados, accesibilidad básica, adaptadores de paginación | **Vitest + Testing Library** (`jsdom`) en web · **Jest (`jest-expo`) + React Native Testing Library** en móvil | `apps/web/test`, `apps/mobile/test` |
 | Flujo integrado | Un recorrido completo con red simulada: login → refresh transparente → logout; catálogo con cursor | **MSW** (web) interceptando `fetch` · transporte falso inyectado (móvil) | `apps/web/test/flujos` |
 | Contrato | Que el cliente generado corresponda al `openapi.yaml` vendorizado y que este corresponda al origen fijado | `pnpm contract:check` (vendorizado ↔ lock) · `pnpm contract:drift` (lock ↔ repositorio de la API) | CI y local |
-| Extremo a extremo | Humo real navegador ↔ API local: login y panel del vendedor | **Playwright** (opt-in; requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta confirmada) | `apps/web/e2e` |
+| Extremo a extremo | Un recorrido real navegador ↔ API local con **un solo login**: catálogo, panel del vendedor, mensajería (lista, hilo y envío) y perfil | **Playwright** (opt-in; `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta confirmada con al menos una conversación) | `apps/web/e2e` |
 | Accesibilidad | Automática en todas las pantallas web y manual (teclado, foco, lector de pantalla) | `vitest-axe` en las nueve pantallas web · lista manual de `design-system.md` §7 | `apps/web/test` |
 | Visual / responsive | Que no haya desbordes ni jerarquía rota a 1440×900 y 390×844 | Inspección manual con contenido real (largo, faltante, imágenes rotas) | Antes de cerrar cada incremento |
 
@@ -59,7 +59,7 @@ No se exige un test por cada línea de JSX. Se exige que **cada afirmación sobr
 | `pnpm --filter @uni-market/web test` | Vitest en web (unitario + componente + flujo con MSW) |
 | `pnpm --filter @uni-market/mobile test` | Jest con `jest-expo` |
 | `pnpm --filter @uni-market/core test` | `node --test` del dominio compartido (sin React) |
-| `pnpm e2e` | Playwright contra la API local; requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta confirmada. No es obligatorio para cada commit |
+| `pnpm e2e` | Playwright contra la API local: un recorrido completo con login único. Requiere `E2E_EMAIL` y `E2E_PASSWORD` de una cuenta confirmada con una conversación. No es obligatorio para cada commit |
 | `pnpm lint` | ESLint (config compartida en `packages/config`), incluidas las reglas de frontera de dependencias (§4) |
 | `pnpm contract:check` | Valida que el contrato vendorizado coincide con su lock |
 | `pnpm contract:drift` | Compara el contrato con el repositorio de la API; sin el repo vecino se omite |

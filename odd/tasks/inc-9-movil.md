@@ -20,7 +20,7 @@
 - [x] **T4 — Moderación**: cola y decisión.
 - [x] **T5 — Administración**: usuarios y categorías.
 - [x] **T6 — Diseño móvil de administración**: frames `Usuarios · móvil` y `Categorías · móvil`.
-- [ ] **T7 — Endurecimiento**: README y e2e (issue #47).
+- [x] **T7 — Endurecimiento**: README y e2e (issue #47).
 
 ## Log
 
@@ -33,3 +33,4 @@
 - **Moderación móvil (2026-11-10)**: `/moderacion` con filtros, paginación, aprobación en un toque y rechazo/retracción con motivo validado en línea; desenlace sin capacidad. El acceso vive en Perfil, como indica el diseño móvil (moderación y administración dentro de Perfil, solo con la capacidad). 3 pruebas nuevas (29 en móvil).
 - **Administración móvil (2026-11-10)**: `/admin/usuarios` con buscador, filtros por rol, paginación, cambio de rol en línea y habilitación; la fila propia muestra "Tú" y no ofrece acciones. `/admin/categorias` con alta, edición y baja con confirmación. Ambas con desenlace sin capacidad y enlaces desde Perfil. 6 pruebas nuevas (35 en móvil).
 - **Diseño móvil de administración (2026-11-10)**: frames `Usuarios · móvil` y `Categorías · móvil` en las páginas 15 y 16, con sus PNG. Ya no queda ninguna página sin móvil.
+- **Endurecimiento (2026-11-10)**: README con el estado real (Inc 0–8 y paridad móvil en curso), 241 pruebas, 17 páginas y 84 PNG. El e2e pasa a un **recorrido único con un solo login** (catálogo, panel, mensajería y perfil): repetir login por spec chocaba con el rate limit de 5/min de la API. `docs/testing-strategy.md` describe el recorrido real. Verificado en local: 1 prueba, 2 s.

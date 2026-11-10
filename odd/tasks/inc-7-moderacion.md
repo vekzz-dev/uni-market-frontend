@@ -14,7 +14,7 @@
 
 ## Tareas
 
-- [ ] **T1 — Diseño**: `14 · Moderación` (cola, vacío, error) y móvil; PNG en `design/preview/14-moderacion/`.
+- [x] **T1 — Diseño**: `14 · Moderación` (cola, rechazo con motivo, vacío) y móvil; cuatro PNG en `design/preview/14-moderacion/`.
 - [ ] **T2 — Cola**: `/moderacion` con filtro por estado, paginación y estados.
 - [ ] **T3 — Decisión**: aprobar, rechazar y retraer con motivo y feedback.
 - [ ] **T4 — Acceso**: capacidad, enlace en la cabecera y `403` propio.

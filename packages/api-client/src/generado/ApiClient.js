@@ -131,9 +131,21 @@ class ApiClient {
         const valores = Array.isArray(valor) ? valor : [valor];
         for (const item of valores) {
           if (this.isFileParam(item)) {
-            // En RN se pasa el objeto tal cual; en web, File/Blob.
-            if (typeof item === 'object' && item.uri) body.append(clave, item);
-            else body.append(clave, item, item.name ?? 'archivo');
+            if (typeof item === 'object' && item.uri) {
+              // RN entiende { uri, name, type } directamente, pero el navegador
+              // lo convertiría en "[object Object]". Las URIs web (data:, blob:)
+              // se resuelven a un Blob; las nativas (file:, content:, ph:) viajan
+              // tal cual para que RN las adjunte.
+              if (/^(data|blob):/i.test(item.uri)) {
+                const respuesta = await fetch(item.uri);
+                const blob = await respuesta.blob();
+                body.append(clave, blob, item.name ?? 'archivo');
+              } else {
+                body.append(clave, item);
+              }
+            } else {
+              body.append(clave, item, item.name ?? 'archivo');
+            }
           } else {
             body.append(clave, String(item));
           }

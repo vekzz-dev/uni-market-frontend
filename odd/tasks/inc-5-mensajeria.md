@@ -1,0 +1,35 @@
+# Inc 5 — Mensajería web
+
+**Objetivo**: conversaciones del usuario, hilo con cursor hacia atrás, envío de texto y marcado de lectura, más el contacto desde el detalle.
+**Rama**: `feat/inc-5-mensajeria` · **Runner**: `pnpm test`, `pnpm lint`, `pnpm format:check`.
+**Diseño**: páginas `11 · Mensajes` y `12 · Conversación` (web). **Bloqueado hasta que OpenPencil esté abierto con `design/uni-market.fig`.**
+
+## Specs
+
+- **S1 — Lista**: `GET /v1/mis-conversaciones` offset (`pagina`, `limite`) con `ultimoMensaje` y `noLeidos`. Como comprador o vendedor. Estados vacío y error.
+- **S2 — Hilo**: `GET /v1/conversaciones/{id}/mensajes` con cursor opaco `(fechaCreacion, id)` hacia atrás; sin cursor devuelve los más recientes. El `GET` no muta `leido`.
+- **S3 — Envío**: `POST /v1/conversaciones/{id}/mensajes` con `{ texto }` → `201`. Texto vacío o solo espacios se valida en el cliente (espejo del `422`).
+- **S4 — Lectura**: `POST /v1/conversaciones/{id}/lecturas` sin cuerpo → `204`; el contador de no leídos baja al volver a la lista. Acción explícita, nunca implícita en un `GET`.
+- **S5 — Contacto**: en el detalle, "Contactar" abre o reutiliza la conversación con `POST /v1/conversaciones` (`200` existente, `201` nueva, `422` auto-conversación) y navega al hilo.
+- **S6 — Acceso**: solo participantes (`403`), `404` indistinguible, `401` a entrar.
+
+## Tareas
+
+- [x] **T1 — Diseño**: páginas `11 · Mensajes` (datos, vacío, error en web; datos en móvil) y `12 · Conversación` (default, enviando, vacío en web; default en móvil). Ocho PNG en `design/preview/`.
+- [x] **T2 — Lista**: `/mensajes` con offset, último mensaje, no leídos y estados. Enlace con icono en la cabecera del catálogo.
+- [x] **T3 — Hilo**: `/mensajes/:id` con cursor hacia atrás, envío y lectura.
+- [x] **T4 — Contacto**: acción en el detalle que abre o reutiliza la conversación.
+- [x] **T5 — Pruebas y verificación** con la API real.
+
+## Log
+
+- **L1 (2026-11-09, verbatim)**: "dale arranca"
+- **Alcance (2026-11-09)**: contrato revisado (`/mis-conversaciones`, `/conversaciones/{id}/mensajes` con cursor, `/mensajes`, `/lecturas`, `POST /conversaciones`). El cliente generado ya expone los métodos: no hace falta resincronizar el contrato.
+- **Bloqueo (2026-11-09)**: OpenPencil no estaba conectado; el incremento sigue la convención de diseño primero (como Inc 4). Se escribió la issue y este track.
+- **Diseño (2026-11-09)**: con OpenPencil abierto se crearon las páginas `11 · Mensajes` y `12 · Conversación` reutilizando el header, la tipografía y los tokens de las páginas anteriores. Ocho frames: lista con datos, vacío y error; hilo con default, enviando y vacío; y los dos móviles a 390. PNG exportados por frame (maxEdge 1280, como los existentes).
+- **Lista implementada (2026-11-09)**: `/mensajes` con offset, `ultimoMensaje`, `noLeidos`, paginación, vacío con CTA al catálogo, error con reintento y 401 a entrar. La fila muestra el anuncio como título, el último mensaje y la contraparte ("Compra · Ana P." / "Venta"). La fila usa el anuncio como título y etiqueta la contraparte como compra o venta. 7 pruebas nuevas (80 en la web), con `axe`.
+- **Hilo implementado (2026-11-09)**: `/mensajes/:id` con `leerConversacion` + `listarMensajes` (cursor hacia atrás, "Cargar anteriores"), envío con validación espejo del texto vacío, `POST /lecturas` una sola vez si había no leídos, burbujas propias/ajenas, 403/404 con el mismo desenlace y 401 a entrar. 6 pruebas nuevas.
+- **Contacto implementado (2026-11-09)**: el detalle muestra "Contactar al vendedor" con sesión y abre o reutiliza la conversación (`POST /conversaciones`), navegando al hilo; el 422 de auto-conversación se muestra con el detalle del servidor. 2 pruebas nuevas (88 en la web).
+- **Verificación real (2026-11-09)**: Postgres + jar, dos usuarios confirmados por el token del log y un anuncio aprobado por SQL. Con el cliente generado: abrir conversación devuelve el par comprador/vendedor correcto y reabrir reutiliza el mismo id; el panel del vendedor ve total 1 y `noLeidos` 3 con el último mensaje; `listarMensajes` con `limite=2` devuelve los dos más recientes y un cursor, y la segunda página el más antiguo; `marcarLecturas` baja `noLeidos` a 0; texto vacío y auto-conversación dan `422`.
+- **Smoke de navegador (2026-11-09)**: Playwright con el comprador real: `/mensajes` lista "Bicicleta Inc5", último mensaje y "Compra · Inc5 V."; el hilo muestra el historial y el compositor; un mensaje enviado desde la UI aparece en el hilo y el panel del vendedor lo ve como último mensaje con `noLeidos: 1`. Servicios detenidos y anuncio dado de baja.
+- **Contraparte (2026-11-10)**: `uni-market-api#6` cerrada en la API `v1.3.0` (`8e0fe60`): `contraparteNombre` en la lista y en el detalle, resuelto según quién consulta y con `"Usuario"` como genérico. Se resincronizó el contrato, se regeneró el cliente y la lista y el hilo usan el campo. Verificado contra la API real: el vendedor ve "Inc5 C." y el comprador "Inc5 V.", en lista y detalle, y la conversación sobrevive a la baja del anuncio (R16). 1 prueba nueva (8 en la lista).

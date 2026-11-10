@@ -32,11 +32,12 @@ class ConversacionDetalle {
      * @param fechaCreacion {Date} 
      * @param fechaActualizacion {Date} Se actualiza en cada envío; ordena \"mis conversaciones\".
      * @param anuncio {module:model/AnuncioResumen} 
+     * @param contraparteNombre {String} Nombre público del OTRO participante, resuelto según quién consulta (R18): el comprador ve al vendedor y el vendedor al comprador. Sin nombre resoluble publica `\"Usuario\"`, un genérico neutro que no insinúa un rol. 
      * @param noLeidos {Number} Conteo explícito; ningún GET muta leido (PRD §5).
      */
-    constructor(id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion, anuncio, noLeidos) { 
+    constructor(id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion, anuncio, contraparteNombre, noLeidos) { 
         ConversacionResumen.initialize(this, id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion);
-        ConversacionDetalle.initialize(this, id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion, anuncio, noLeidos);
+        ConversacionDetalle.initialize(this, id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion, anuncio, contraparteNombre, noLeidos);
     }
 
     /**
@@ -44,7 +45,7 @@ class ConversacionDetalle {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion, anuncio, noLeidos) { 
+    static initialize(obj, id, anuncioId, compradorId, vendedorId, fechaCreacion, fechaActualizacion, anuncio, contraparteNombre, noLeidos) { 
         obj['id'] = id;
         obj['anuncioId'] = anuncioId;
         obj['compradorId'] = compradorId;
@@ -52,6 +53,7 @@ class ConversacionDetalle {
         obj['fechaCreacion'] = fechaCreacion;
         obj['fechaActualizacion'] = fechaActualizacion;
         obj['anuncio'] = anuncio;
+        obj['contraparteNombre'] = contraparteNombre;
         obj['noLeidos'] = noLeidos;
     }
 
@@ -87,6 +89,9 @@ class ConversacionDetalle {
             }
             if (data.hasOwnProperty('anuncio')) {
                 obj['anuncio'] = AnuncioResumen.constructFromObject(data['anuncio']);
+            }
+            if (data.hasOwnProperty('contraparteNombre')) {
+                obj['contraparteNombre'] = ApiClient.convertToType(data['contraparteNombre'], 'String');
             }
             if (data.hasOwnProperty('noLeidos')) {
                 obj['noLeidos'] = ApiClient.convertToType(data['noLeidos'], 'Number');
@@ -127,6 +132,10 @@ class ConversacionDetalle {
         if (data['anuncio']) { // data not null
           AnuncioResumen.validateJSON(data['anuncio']);
         }
+        // ensure the json data is a string
+        if (data['contraparteNombre'] && !(typeof data['contraparteNombre'] === 'string' || data['contraparteNombre'] instanceof String)) {
+            throw new Error("Expected the field `contraparteNombre` to be a primitive type in the JSON string but got " + data['contraparteNombre']);
+        }
 
         return true;
     }
@@ -134,7 +143,7 @@ class ConversacionDetalle {
 
 }
 
-ConversacionDetalle.RequiredProperties = ["id", "anuncioId", "compradorId", "vendedorId", "fechaCreacion", "fechaActualizacion", "anuncio", "noLeidos"];
+ConversacionDetalle.RequiredProperties = ["id", "anuncioId", "compradorId", "vendedorId", "fechaCreacion", "fechaActualizacion", "anuncio", "contraparteNombre", "noLeidos"];
 
 /**
  * @member {String} id
@@ -171,6 +180,12 @@ ConversacionDetalle.prototype['fechaActualizacion'] = undefined;
  * @member {module:model/AnuncioResumen} anuncio
  */
 ConversacionDetalle.prototype['anuncio'] = undefined;
+
+/**
+ * Nombre público del OTRO participante, resuelto según quién consulta (R18): el comprador ve al vendedor y el vendedor al comprador. Sin nombre resoluble publica `\"Usuario\"`, un genérico neutro que no insinúa un rol. 
+ * @member {String} contraparteNombre
+ */
+ConversacionDetalle.prototype['contraparteNombre'] = undefined;
 
 /**
  * Conteo explícito; ningún GET muta leido (PRD §5).

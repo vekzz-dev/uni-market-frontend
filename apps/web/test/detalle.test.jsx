@@ -19,9 +19,13 @@ const detalle = {
   imagenUrls: [],
 };
 
-function montar(leerAnuncio) {
+function montar(
+  leerAnuncio,
+  { autenticado = false, abrirConversacion = vi.fn() } = {},
+) {
   const cliente = {
     catalogo: { leerAnuncio },
+    conversaciones: { abrirConversacion },
     categorias: {
       listarCategorias: vi.fn().mockResolvedValue({
         datos: [{ id: 3, nombre: "Electrónica", orden: 1 }],
@@ -33,12 +37,16 @@ function montar(leerAnuncio) {
       <SesionContexto.Provider
         value={{
           cliente,
-          sesion: {},
-          estado: { estado: "anonimo", usuario: null },
+          sesion: autenticado ? { ejecutar: (operacion) => operacion() } : {},
+          estado: autenticado
+            ? { estado: "autenticado", usuario: { id: "u9", nombre: "Beto" } }
+            : { estado: "anonimo", usuario: null },
+          restaurado: true,
         }}
       >
         <Routes>
           <Route path="/anuncios/:id" element={<Detalle />} />
+          <Route path="/mensajes/:id" element={<h1>Hilo</h1>} />
           <Route path="/" element={<h1>Catálogo</h1>} />
         </Routes>
       </SesionContexto.Provider>
@@ -95,5 +103,45 @@ describe("pantalla Detalle", () => {
 
     await screen.findByRole("heading", { name: "Calculadora científica" });
     expect((await axe(container)).violations).toEqual([]);
+  });
+
+  it("abre la conversación y navega al hilo con sesión", async () => {
+    const usuario = userEvent.setup();
+    const abrirConversacion = vi.fn().mockResolvedValue({ id: "c9" });
+    montar(vi.fn().mockResolvedValue(detalle), {
+      autenticado: true,
+      abrirConversacion,
+    });
+
+    await usuario.click(
+      await screen.findByRole("button", { name: "Contactar al vendedor" }),
+    );
+
+    expect(abrirConversacion).toHaveBeenCalledWith({ anuncioId: "a1" });
+    expect(await screen.findByRole("heading", { name: "Hilo" })).toBeTruthy();
+  });
+
+  it("muestra el motivo cuando no puede abrir la conversación", async () => {
+    const usuario = userEvent.setup();
+    const abrirConversacion = vi.fn().mockRejectedValue(
+      new ApiError("No procesable", {
+        status: 422,
+        problem: { detail: "No puedes abrir una conversación contigo mismo." },
+      }),
+    );
+    montar(vi.fn().mockResolvedValue(detalle), {
+      autenticado: true,
+      abrirConversacion,
+    });
+
+    await usuario.click(
+      await screen.findByRole("button", { name: "Contactar al vendedor" }),
+    );
+
+    expect(
+      await screen.findByText(
+        "No puedes abrir una conversación contigo mismo.",
+      ),
+    ).toBeTruthy();
   });
 });

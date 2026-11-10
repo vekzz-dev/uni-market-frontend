@@ -150,9 +150,10 @@ export default class AdministracionApi {
 
     /**
      * Lista usuarios (admin)
-     * Requiere rol `admin`. Filtro por `rol` (índice parcial solo activos); offset + total. Nunca incluye cuentas dadas de baja (R1, R15). El panel nunca borra usuarios físicamente ni escribe `fechaEliminacion`. 
+     * Requiere rol `admin`. Filtro por `rol` (índice parcial solo activos) y por texto en nombre o email (issue #7, con escape de comodines); offset + total del filtro. Nunca incluye cuentas dadas de baja (R1, R15). El panel nunca borra usuarios físicamente ni escribe `fechaEliminacion`. 
      * @param {Object} opts Optional parameters
      * @param {module:model/Rol} [rol] 
+     * @param {String} [q] Búsqueda aditiva en `nombre` y `email`, case-insensitive y con escape de comodines `%`, `_`, `\\`. Se combina con `rol`; sin el parámetro el listado no cambia. Más de 200 caracteres → `400`. 
      * @param {Number} [pagina = 0)] Índice de página desde 0 (paneles con conteo total).
      * @param {Number} [limite = 20)] Elementos por página (default 20, máximo 100).
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/ColeccionUsuarios} and HTTP response
@@ -165,6 +166,7 @@ export default class AdministracionApi {
       };
       let queryParams = {
         'rol': opts['rol'],
+        'q': opts['q'],
         'pagina': opts['pagina'],
         'limite': opts['limite']
       };
@@ -186,9 +188,10 @@ export default class AdministracionApi {
 
     /**
      * Lista usuarios (admin)
-     * Requiere rol `admin`. Filtro por `rol` (índice parcial solo activos); offset + total. Nunca incluye cuentas dadas de baja (R1, R15). El panel nunca borra usuarios físicamente ni escribe `fechaEliminacion`. 
+     * Requiere rol `admin`. Filtro por `rol` (índice parcial solo activos) y por texto en nombre o email (issue #7, con escape de comodines); offset + total del filtro. Nunca incluye cuentas dadas de baja (R1, R15). El panel nunca borra usuarios físicamente ni escribe `fechaEliminacion`. 
      * @param {Object} opts Optional parameters
      * @param {module:model/Rol} opts.rol 
+     * @param {String} opts.q Búsqueda aditiva en `nombre` y `email`, case-insensitive y con escape de comodines `%`, `_`, `\\`. Se combina con `rol`; sin el parámetro el listado no cambia. Más de 200 caracteres → `400`. 
      * @param {Number} opts.pagina Índice de página desde 0 (paneles con conteo total). (default to 0)
      * @param {Number} opts.limite Elementos por página (default 20, máximo 100). (default to 20)
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/ColeccionUsuarios}

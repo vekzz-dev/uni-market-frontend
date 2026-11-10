@@ -15,6 +15,8 @@ import { Mensajes } from "./pantallas/Mensajes.jsx";
 import { Conversacion } from "./pantallas/Conversacion.jsx";
 import { Perfil } from "./pantallas/Perfil.jsx";
 import { Moderacion } from "./pantallas/Moderacion.jsx";
+import { AdminUsuarios } from "./pantallas/AdminUsuarios.jsx";
+import { AdminCategorias } from "./pantallas/AdminCategorias.jsx";
 
 export function App() {
   return (
@@ -28,6 +30,8 @@ export function App() {
       <Route path="/mensajes/:id" element={<Conversacion />} />
       <Route path="/perfil" element={<Perfil />} />
       <Route path="/moderacion" element={<Moderacion />} />
+      <Route path="/admin/usuarios" element={<AdminUsuarios />} />
+      <Route path="/admin/categorias" element={<AdminCategorias />} />
       <Route path="/entrar" element={<Entrar />} />
       <Route path="/registro" element={<Registro />} />
       <Route path="/confirmar-email" element={<Confirmar />} />

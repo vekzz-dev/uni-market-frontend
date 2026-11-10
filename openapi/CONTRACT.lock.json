@@ -1,8 +1,8 @@
 {
   "contract": "openapi/uni-market.yaml",
   "source": "../uni-market-api/openapi.yaml",
-  "apiCommit": "8e0fe606292064e7d86c3cc797bfb36aa2994869",
+  "apiCommit": "a31636cf92c0c4582e518129e8e90bab853b8029",
   "apiVersion": "1.0.0",
-  "sha256": "31115f67f78c8a65667a7d9d4e80935138d5220f23592508524672e9e35274ab",
-  "syncedAt": "2026-11-10T00:19:47.145Z"
+  "sha256": "462faf60620040fa2f8dbe8e6fbe8b206c69580d813057e2e80dd69d29d85277",
+  "syncedAt": "2026-11-10T02:11:31.289Z"
 }

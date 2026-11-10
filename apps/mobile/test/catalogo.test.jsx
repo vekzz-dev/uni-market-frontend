@@ -4,6 +4,10 @@ import { Catalogo } from "../src/pantallas/Catalogo.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
 import { TemaContexto } from "../src/tema.js";
 
+// El primer test de la suite paga el arranque de jest-expo; en CI supera los 5 s
+// por defecto. El límite propio de cada consulta sigue siendo 5 s.
+jest.setTimeout(20000);
+
 jest.mock("expo-router", () => ({
   useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
 }));

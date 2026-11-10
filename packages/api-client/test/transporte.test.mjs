@@ -147,6 +147,28 @@ test("las subidas usan FormData y no fijan Content-Type", async () => {
   assert.ok(init.body.get("imagenes") instanceof File);
 });
 
+test("en web, { uri, name, type } se resuelve a un Blob antes de adjuntarlo", async () => {
+  // React Native entiende ese objeto; el navegador lo convertiría en
+  // "[object Object]" y el servidor rechazaría la subida.
+  const { cliente, llamadas } = clienteCon([
+    new Response(JSON.stringify({ id: "a1" }), {
+      status: 201,
+      headers: { "content-type": "application/json" },
+    }),
+  ]);
+
+  const png =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  await cliente.anuncios.crearAnuncio("Calculadora", 45, [
+    { uri: png, name: "foto.png", type: "image/png" },
+  ]);
+
+  const { init } = llamadas[0];
+  const adjunto = init.body.get("imagenes");
+  assert.ok(adjunto instanceof Blob, "debe viajar un Blob, no un objeto plano");
+  assert.equal(adjunto.type, "image/png");
+});
+
 test("204 devuelve data null sin intentar parsear el cuerpo", async () => {
   const { cliente } = clienteCon([new Response(null, { status: 204 })]);
 

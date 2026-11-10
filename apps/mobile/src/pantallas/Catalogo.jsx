@@ -120,6 +120,27 @@ export function Catalogo() {
       <Text style={{ color: c.textSecondary, fontSize: 13 }}>
         Todos los anuncios pasan por revisión antes de publicarse.
       </Text>
+      {autenticado && (
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <Boton
+            titulo="Vender"
+            onPress={() => router.push("/publicar")}
+            style={{ flex: 1, minHeight: 38 }}
+          />
+          <Boton
+            titulo="Mis anuncios"
+            variante="secundario"
+            onPress={() => router.push("/mis-anuncios")}
+            style={{ flex: 1, minHeight: 38 }}
+          />
+          <Boton
+            titulo="Mensajes"
+            variante="secundario"
+            onPress={() => router.push("/mensajes")}
+            style={{ flex: 1, minHeight: 38 }}
+          />
+        </View>
+      )}
       <View
         style={[
           estilos.buscador,
@@ -216,22 +237,6 @@ export function Catalogo() {
   return (
     <View style={{ flex: 1, backgroundColor: c.bg }}>
       <Cabecera>
-        {autenticado && (
-          <>
-            <Boton
-              titulo="Mis anuncios"
-              variante="secundario"
-              onPress={() => router.push("/mis-anuncios")}
-              style={{ minHeight: 34, marginRight: 8 }}
-            />
-            <Boton
-              titulo="Vender"
-              variante="secundario"
-              onPress={() => router.push("/publicar")}
-              style={{ minHeight: 34, marginRight: 8 }}
-            />
-          </>
-        )}
         <Boton
           titulo={autenticado ? "Salir" : "Entrar"}
           variante="secundario"

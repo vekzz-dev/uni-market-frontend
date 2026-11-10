@@ -152,6 +152,18 @@ export function MisAnuncios() {
         <Link to="/publicar" className={estilos.enlaceDestacado}>
           Publicar anuncio
         </Link>
+        <Link
+          to="/perfil"
+          className={estilos.avatarPerfil}
+          aria-label="Mi perfil"
+        >
+          {(estado.usuario?.nombre ?? "")
+            .trim()
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((parte) => parte[0]?.toUpperCase() ?? "")
+            .join("") || "?"}
+        </Link>
       </CabeceraPublica>
 
       <main className={estilos.principal}>

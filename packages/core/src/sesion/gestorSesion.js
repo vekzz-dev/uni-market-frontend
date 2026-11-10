@@ -207,6 +207,13 @@ export function crearGestorSesion({
     }
   };
 
+  /** Refleja en memoria un cambio del perfil (nombre, avatar) ya guardado. */
+  const actualizarUsuario = (datos) => {
+    if (estado !== ESTADOS.AUTENTICADO) return;
+    usuario = { ...usuario, ...datos };
+    alCambiar(foto());
+  };
+
   /** Adopta un par emitido por otra pestaña (canal de coordinación). */
   const adoptarSesion = async (sesion) => {
     if (!sesion?.accessToken || !sesion?.refreshToken) return;
@@ -226,6 +233,7 @@ export function crearGestorSesion({
     restaurar,
     refrescar,
     ejecutar,
+    actualizarUsuario,
     adoptarSesion,
     obtenerAccessToken: () => accessToken,
     obtenerEstado: foto,

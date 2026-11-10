@@ -437,6 +437,20 @@ export function Perfil() {
               onPress={() => router.push("/moderacion")}
             />
           )}
+          {puede(estado.usuario?.rol, "categorias.gestionar") && (
+            <Boton
+              titulo="Categorías"
+              variante="secundario"
+              onPress={() => router.push("/admin/categorias")}
+            />
+          )}
+          {puede(estado.usuario?.rol, "admin.usuarios") && (
+            <Boton
+              titulo="Usuarios"
+              variante="secundario"
+              onPress={() => router.push("/admin/usuarios")}
+            />
+          )}
           <Boton
             titulo="Cerrar sesión"
             variante="secundario"

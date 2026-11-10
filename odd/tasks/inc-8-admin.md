@@ -15,12 +15,14 @@
 ## Tareas
 
 - [x] **T1 — Diseño**: `15 · Admin usuarios` (lista y vacío) y `16 · Admin categorías` (lista y formulario), solo web; cuatro PNG.
-- [ ] **T2 — Usuarios**: listado, filtro por rol, paginación y estados.
-- [ ] **T3 — Rol y habilitación**: cambios con feedback y errores.
-- [ ] **T4 — Categorías**: listado, alta, edición y baja con confirmación.
+- [x] **T2 — Usuarios**: listado, filtro por rol, paginación y estados.
+- [x] **T3 — Rol y habilitación**: cambios con feedback y errores.
+- [x] **T4 — Categorías**: listado, alta, edición y baja con confirmación.
 - [ ] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
 
 - **L1 (2026-11-10, verbatim)**: "si"
 - **Nota (2026-11-10)**: el diseño de este incremento es solo web; la administración es de escritorio y la paridad móvil corresponde a Inc 9.
+- **Diseño (2026-11-10)**: páginas `15 · Admin usuarios` (lista y vacío) y `16 · Admin categorías` (lista y formulario), solo web; cuatro PNG.
+- **Implementación (2026-11-10)**: `/admin/usuarios` con filtro por rol, paginación, cambio de rol por selector y habilitación; el 403 del propio rol se explica en un aviso. `/admin/categorias` con alta en línea, edición precargada, baja con confirmación y 409 de nombre duplicado. Ambas rutas dependen de su capacidad (`admin.usuarios`, `categorias.gestionar`) y ofrecen desenlace sin acceso. 18 pruebas nuevas (128 en la web), con `axe`.

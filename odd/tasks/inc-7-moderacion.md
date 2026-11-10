@@ -15,11 +15,13 @@
 ## Tareas
 
 - [x] **T1 — Diseño**: `14 · Moderación` (cola, rechazo con motivo, vacío) y móvil; cuatro PNG en `design/preview/14-moderacion/`.
-- [ ] **T2 — Cola**: `/moderacion` con filtro por estado, paginación y estados.
-- [ ] **T3 — Decisión**: aprobar, rechazar y retraer con motivo y feedback.
-- [ ] **T4 — Acceso**: capacidad, enlace en la cabecera y `403` propio.
+- [x] **T2 — Cola**: `/moderacion` con filtro por estado, paginación y estados.
+- [x] **T3 — Decisión**: aprobar, rechazar y retraer con motivo y feedback.
+- [x] **T4 — Acceso**: capacidad, enlace en la cabecera y `403` propio.
 - [ ] **T5 — Pruebas y verificación** con la API real.
 
 ## Log
 
 - **L1 (2026-11-10, verbatim)**: "arranca con inc 7"
+- **Diseño (2026-11-10)**: página `14 · Moderación` con cola, rechazo con motivo en línea y vacío en web, más la cola móvil; cuatro PNG.
+- **Implementación (2026-11-10)**: `/moderacion` con filtros (pendientes por defecto), paginación, decisión en línea con motivo validado en espejo y feedback por acción. `puede(rol, "moderacion.decidir")` controla el enlace en la cabecera y la ruta; sin capacidad hay desenlace de acceso. El 403 del anuncio propio se muestra dentro del panel de decisión. 10 pruebas nuevas (110 en la web), con `axe`.

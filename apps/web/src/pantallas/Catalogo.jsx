@@ -5,6 +5,7 @@ import { Aviso } from "../componentes/Aviso.jsx";
 import { Boton } from "../componentes/Boton.jsx";
 import { CabeceraPublica } from "../componentes/CabeceraPublica.jsx";
 import { Icono } from "../componentes/Icono.jsx";
+import { puede } from "@uni-market/core";
 import { useSesion } from "../sesion/SesionContexto.jsx";
 import { TarjetaAnuncio } from "./TarjetaAnuncio.jsx";
 import estilos from "./catalogo.module.css";
@@ -134,6 +135,11 @@ export function Catalogo() {
             <Link to="/mis-anuncios" className={estilos.enlace}>
               Mis anuncios
             </Link>
+            {puede(estado.usuario?.rol, "moderacion.decidir") && (
+              <Link to="/moderacion" className={estilos.enlace}>
+                Moderación
+              </Link>
+            )}
             <Link to="/publicar" className={estilos.enlaceDestacado}>
               Publicar anuncio
             </Link>

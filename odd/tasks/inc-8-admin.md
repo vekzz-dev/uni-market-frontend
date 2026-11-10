@@ -14,7 +14,7 @@
 
 ## Tareas
 
-- [ ] **T1 — Diseño**: `15 · Admin usuarios` y `16 · Admin categorías` con sus estados; PNG en `design/preview/`.
+- [x] **T1 — Diseño**: `15 · Admin usuarios` (lista y vacío) y `16 · Admin categorías` (lista y formulario), solo web; cuatro PNG.
 - [ ] **T2 — Usuarios**: listado, filtro por rol, paginación y estados.
 - [ ] **T3 — Rol y habilitación**: cambios con feedback y errores.
 - [ ] **T4 — Categorías**: listado, alta, edición y baja con confirmación.

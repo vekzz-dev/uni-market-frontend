@@ -213,8 +213,8 @@ export function Conversacion() {
                     {anuncio?.precio != null
                       ? formatearPrecio(anuncio.precio)
                       : ""}
-                    {anuncio?.vendedorNombre
-                      ? ` · Con ${anuncio.vendedorNombre}`
+                    {conversacion?.contraparteNombre
+                      ? ` · Con ${conversacion.contraparteNombre}`
                       : ""}
                   </p>
                 </div>

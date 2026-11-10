@@ -38,6 +38,7 @@ function montar({
     anuncioId: "a1",
     compradorId: "u1",
     vendedorId: "u2",
+    contraparteNombre: "Ana P.",
     anuncio,
     noLeidos: 1,
   }),

@@ -85,6 +85,9 @@ class ConversacionListItem {
             if (data.hasOwnProperty('anuncio')) {
                 obj['anuncio'] = AnuncioResumen.constructFromObject(data['anuncio']);
             }
+            if (data.hasOwnProperty('contraparteNombre')) {
+                obj['contraparteNombre'] = ApiClient.convertToType(data['contraparteNombre'], 'String');
+            }
             if (data.hasOwnProperty('ultimoMensaje')) {
                 obj['ultimoMensaje'] = ConversacionListItemAllOfUltimoMensaje.constructFromObject(data['ultimoMensaje']);
             }
@@ -126,6 +129,10 @@ class ConversacionListItem {
         // validate the optional field `anuncio`
         if (data['anuncio']) { // data not null
           AnuncioResumen.validateJSON(data['anuncio']);
+        }
+        // ensure the json data is a string
+        if (data['contraparteNombre'] && !(typeof data['contraparteNombre'] === 'string' || data['contraparteNombre'] instanceof String)) {
+            throw new Error("Expected the field `contraparteNombre` to be a primitive type in the JSON string but got " + data['contraparteNombre']);
         }
         // validate the optional field `ultimoMensaje`
         if (data['ultimoMensaje']) { // data not null
@@ -175,6 +182,12 @@ ConversacionListItem.prototype['fechaActualizacion'] = undefined;
  * @member {module:model/AnuncioResumen} anuncio
  */
 ConversacionListItem.prototype['anuncio'] = undefined;
+
+/**
+ * Nombre público del OTRO participante, resuelto según quién consulta (R18). La lista resuelve los nombres de toda la página en una sola consulta. 
+ * @member {String} contraparteNombre
+ */
+ConversacionListItem.prototype['contraparteNombre'] = undefined;
 
 /**
  * @member {module:model/ConversacionListItemAllOfUltimoMensaje} ultimoMensaje

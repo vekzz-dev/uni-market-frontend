@@ -13,6 +13,7 @@ const conversacion = {
   vendedorId: "u2",
   fechaCreacion: "2026-11-01T10:00:00Z",
   fechaActualizacion: "2026-11-09T10:00:00Z",
+  contraparteNombre: "Ana P.",
   anuncio: {
     id: "a1",
     nombre: "Bicicleta de montaña",
@@ -83,6 +84,21 @@ describe("pantalla Mensajes", () => {
     expect(screen.getByText("¿Sigue disponible?")).toBeTruthy();
     expect(screen.getByText("Compra · Ana P.")).toBeTruthy();
     expect(screen.getByLabelText("2 sin leer")).toBeTruthy();
+  });
+
+  it("muestra el nombre de la contraparte cuando eres el vendedor", async () => {
+    montar({
+      datos: [
+        {
+          ...conversacion,
+          compradorId: "u9",
+          vendedorId: "u1",
+          contraparteNombre: "Beto R.",
+        },
+      ],
+    });
+
+    expect(await screen.findByText("Venta · Beto R.")).toBeTruthy();
   });
 
   it("enlaza cada conversación con su hilo", async () => {

@@ -21,13 +21,10 @@ function iniciales(nombre) {
 }
 
 function contraparte(conversacion, usuarioId) {
-  if (conversacion.compradorId === usuarioId) {
-    return {
-      nombre: conversacion.anuncio?.vendedorNombre ?? "Vendedor",
-      etiqueta: "Compra",
-    };
-  }
-  return { nombre: "Comprador", etiqueta: "Venta" };
+  return {
+    nombre: conversacion.contraparteNombre ?? "Usuario",
+    etiqueta: conversacion.compradorId === usuarioId ? "Compra" : "Venta",
+  };
 }
 
 export function Mensajes() {

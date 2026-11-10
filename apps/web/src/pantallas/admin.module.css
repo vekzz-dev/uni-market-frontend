@@ -321,3 +321,22 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+.buscador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.entrada {
+  flex: 1;
+  max-width: 420px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--um-border-field);
+  border-radius: var(--um-radius-control);
+  background: var(--um-surface);
+  color: var(--um-text);
+  font-family: inherit;
+  font-size: 14px;
+}

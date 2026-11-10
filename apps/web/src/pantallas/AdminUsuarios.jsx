@@ -24,6 +24,8 @@ export function AdminUsuarios() {
   const esAdmin = puede(estado.usuario?.rol, "admin.usuarios");
 
   const [filtro, setFiltro] = useState(null);
+  const [texto, setTexto] = useState("");
+  const [busqueda, setBusqueda] = useState("");
   const [pagina, setPagina] = useState(0);
   const [usuarios, setUsuarios] = useState([]);
   const [paginacion, setPaginacion] = useState(null);
@@ -46,6 +48,7 @@ export function AdminUsuarios() {
 
     const opciones = { pagina, limite: LIMITE };
     if (filtro) opciones.rol = filtro;
+    if (busqueda) opciones.q = busqueda;
 
     sesion
       .ejecutar(() => cliente.administracion.listarUsuarios(opciones))
@@ -72,13 +75,37 @@ export function AdminUsuarios() {
     return () => {
       vigente = false;
     };
-  }, [autenticado, cliente, esAdmin, filtro, pagina, recarga, sesion, navegar]);
+  }, [
+    autenticado,
+    busqueda,
+    cliente,
+    esAdmin,
+    filtro,
+    pagina,
+    recarga,
+    sesion,
+    navegar,
+  ]);
 
   function filtrar(valor) {
     setFiltro(valor);
     setPagina(0);
     setAviso(null);
     setErrorAccion(null);
+  }
+
+  function buscar(evento) {
+    evento.preventDefault();
+    setBusqueda(texto.trim());
+    setPagina(0);
+    setAviso(null);
+    setErrorAccion(null);
+  }
+
+  function limpiarBusqueda() {
+    setTexto("");
+    setBusqueda("");
+    setPagina(0);
   }
 
   async function cambiarRol(usuario, rol) {
@@ -185,6 +212,38 @@ export function AdminUsuarios() {
           </div>
         </div>
 
+        <form
+          className={estilos.buscador}
+          onSubmit={buscar}
+          role="search"
+          aria-label="Buscar usuarios"
+        >
+          <label className={estilos.oculto} htmlFor="buscar-usuarios">
+            Buscar usuarios
+          </label>
+          <input
+            id="buscar-usuarios"
+            className={estilos.entrada}
+            type="search"
+            placeholder="Buscar por nombre o email"
+            value={texto}
+            onChange={(evento) => setTexto(evento.target.value)}
+          />
+          <Boton type="submit" variante="secundario" className={estilos.accion}>
+            Buscar
+          </Boton>
+          {busqueda && (
+            <Boton
+              type="button"
+              variante="secundario"
+              className={estilos.accion}
+              onClick={limpiarBusqueda}
+            >
+              Limpiar
+            </Boton>
+          )}
+        </form>
+
         <div
           className={estilos.filtros}
           role="group"
@@ -228,7 +287,11 @@ export function AdminUsuarios() {
 
         {!cargando && !error && usuarios.length === 0 && (
           <div className={estilos.vacio}>
-            <h2 className={estilos.vacioTitulo}>No hay usuarios con ese rol</h2>
+            <h2 className={estilos.vacioTitulo}>
+              {busqueda
+                ? `Sin resultados para "${busqueda}"`
+                : "No hay usuarios con ese rol"}
+            </h2>
             <p className={estilos.vacioTexto}>Prueba con otro filtro.</p>
           </div>
         )}

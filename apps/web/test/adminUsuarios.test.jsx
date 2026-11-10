@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { axe } from "vitest-axe";
@@ -91,6 +91,99 @@ describe("pantalla Admin usuarios", () => {
         rol: "moderador",
       }),
     );
+  });
+
+  it("busca por nombre o email y vuelve a la primera página", async () => {
+    const evento = userEvent.setup();
+    const administracion = montar({ totalPaginas: 3 });
+
+    await screen.findByText("Ana Pérez");
+    const buscador = screen.getByRole("search", { name: "Buscar usuarios" });
+    await evento.type(
+      within(buscador).getByLabelText("Buscar usuarios"),
+      "ana",
+    );
+    await evento.click(
+      within(buscador).getByRole("button", { name: "Buscar" }),
+    );
+
+    await waitFor(() =>
+      expect(administracion.listarUsuarios).toHaveBeenLastCalledWith({
+        pagina: 0,
+        limite: 10,
+        q: "ana",
+      }),
+    );
+  });
+
+  it("combina la búsqueda con el filtro de rol", async () => {
+    const evento = userEvent.setup();
+    const administracion = montar();
+
+    await screen.findByText("Ana Pérez");
+    const buscador = screen.getByRole("search", { name: "Buscar usuarios" });
+    await evento.type(
+      within(buscador).getByLabelText("Buscar usuarios"),
+      "ana",
+    );
+    await evento.click(
+      within(buscador).getByRole("button", { name: "Buscar" }),
+    );
+    await evento.click(screen.getByRole("button", { name: "Moderadores" }));
+
+    await waitFor(() =>
+      expect(administracion.listarUsuarios).toHaveBeenLastCalledWith({
+        pagina: 0,
+        limite: 10,
+        rol: "moderador",
+        q: "ana",
+      }),
+    );
+  });
+
+  it("limpia la búsqueda", async () => {
+    const evento = userEvent.setup();
+    const administracion = montar();
+
+    await screen.findByText("Ana Pérez");
+    const buscador = screen.getByRole("search", { name: "Buscar usuarios" });
+    await evento.type(
+      within(buscador).getByLabelText("Buscar usuarios"),
+      "ana",
+    );
+    await evento.click(
+      within(buscador).getByRole("button", { name: "Buscar" }),
+    );
+    await evento.click(screen.getByRole("button", { name: "Limpiar" }));
+
+    await waitFor(() =>
+      expect(administracion.listarUsuarios).toHaveBeenLastCalledWith({
+        pagina: 0,
+        limite: 10,
+      }),
+    );
+  });
+
+  it("muestra el vacío con el término buscado", async () => {
+    const evento = userEvent.setup();
+    montar({
+      datos: [],
+      listarUsuarios: vi.fn().mockResolvedValue({
+        datos: [],
+        paginacion: { pagina: 0, limite: 10, total: 0, totalPaginas: 0 },
+      }),
+    });
+
+    const buscador = screen.getByRole("search", { name: "Buscar usuarios" });
+    await evento.type(
+      within(buscador).getByLabelText("Buscar usuarios"),
+      "zzz",
+    );
+    await evento.click(
+      within(buscador).getByRole("button", { name: "Buscar" }),
+    );
+
+    expect(await screen.findByText('Sin resultados para "zzz"')).toBeTruthy();
   });
 
   it("cambia el rol de un usuario", async () => {

@@ -120,6 +120,22 @@ El móvil no necesita nada de esto: es un solo proceso.
 
 ---
 
+### 2.4 Confirmación de cuenta y restablecimiento con PIN
+
+El contrato `v2.0.0` (issue #8 de `uni-market-api`) sustituyó el enlace con token por un **PIN de 6 dígitos** en los dos flujos. El correo no contiene enlaces: los escáneres de webmail los previsualizaban y consumían el token antes del clic.
+
+| Flujo | Endpoint | Cuerpo |
+|---|---|---|
+| Confirmar cuenta | `POST /v1/auth/confirmar-email` | `{email, pin}` |
+| Restablecer contraseña | `POST /v1/auth/restablecer-contrasena/confirmar` | `{email, pin, nuevaContrasena}` |
+
+Reglas que el cliente refleja sin reinterpretarlas:
+
+- **6 dígitos exactos**, sin `trim`: el contrato declara `pattern: '^\d{6}$'`, así que los espacios cuentan como error. Lo valida `validarPin` en `core`.
+- **15 minutos** de vigencia y **5 intentos** como máximo; al agotarlos hay que pedir otro código.
+- El `422` es **deliberadamente indistinguible** entre cuenta inexistente, PIN incorrecto, ajeno, expirado, usado o agotado (R13). La interfaz muestra el `detail` del servidor tal cual y **no intenta deducir la causa**; además deja el formulario abierto, porque quedan intentos.
+- El `GET /v1/auth/confirmar-email?token=…` **ya no existe**: cualquier pantalla que lo llamara está rota contra `v2.0.0`.
+
 ## 3. Errores
 
 ### 3.1 Forma
@@ -159,6 +175,7 @@ Obligación del PRD: validar en el cliente lo que el contrato declara, sin inven
 | Precio entre `0` y `99999999.99` | `docs/prd.md:77` |
 | 1..5 imágenes de 5 MB; avatar de 2 MB; `jpeg/png/gif/webp` | `application.yml:65-78` |
 | Mensaje no vacío tras recortar espacios | `docs/prd.md:79` |
+| PIN de confirmación/reset: exactamente 6 dígitos (`^\d{6}$`), sin recorte | `openapi.yaml` (`PinConfirmacion`) |
 | Motivo obligatorio al rechazar o retraer | `docs/prd.md:74` |
 
 La validación del cliente **mejora la experiencia**; la autoridad es el servidor. Un `422` del servidor nunca se oculta ni se convierte en "no debería pasar".

@@ -32,7 +32,7 @@ describe("pantalla Restablecer", () => {
     montar(<Restablecer />, "/restablecer", { solicitarRestablecimiento });
 
     await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
-    await usuario.click(screen.getByRole("button", { name: "Enviar enlace" }));
+    await usuario.click(screen.getByRole("button", { name: "Enviar código" }));
 
     expect(solicitarRestablecimiento).toHaveBeenCalledWith({
       email: "ana@uni.edu",
@@ -50,10 +50,10 @@ describe("pantalla Restablecer", () => {
     montar(<Restablecer />, "/restablecer", { solicitarRestablecimiento });
 
     await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
-    await usuario.click(screen.getByRole("button", { name: "Enviar enlace" }));
+    await usuario.click(screen.getByRole("button", { name: "Enviar código" }));
 
     await screen.findByRole("alert");
-    expect(screen.getByRole("button", { name: "Enviar enlace" }).disabled).toBe(
+    expect(screen.getByRole("button", { name: "Enviar código" }).disabled).toBe(
       true,
     );
   });
@@ -66,7 +66,7 @@ describe("pantalla Reenviar", () => {
     montar(<Reenviar />, "/reenviar", { reenviarConfirmacion });
 
     await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
-    await usuario.click(screen.getByRole("button", { name: "Enviar enlace" }));
+    await usuario.click(screen.getByRole("button", { name: "Enviar código" }));
 
     expect(
       await screen.findByRole("heading", { name: "Revisa tu correo" }),
@@ -75,21 +75,30 @@ describe("pantalla Reenviar", () => {
 });
 
 describe("pantalla Nueva contraseña", () => {
-  it("exige que las contraseñas coincidan antes de llamar a la API", async () => {
-    const usuario = userEvent.setup();
-    const confirmarRestablecimiento = vi.fn();
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
-      confirmarRestablecimiento,
-    });
-
+  async function rellenar(
+    usuario,
+    { pin = "123456", nueva = "secreta123", repetir } = {},
+  ) {
+    await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
+    await usuario.type(screen.getByLabelText("Código"), pin);
     await usuario.type(
       screen.getByLabelText("Nueva contraseña", { selector: "input" }),
-      "secreta123",
+      nueva,
     );
     await usuario.type(
       screen.getByLabelText("Repetir contraseña", { selector: "input" }),
-      "secreta124",
+      repetir ?? nueva,
     );
+  }
+
+  it("exige que las contraseñas coincidan antes de llamar a la API", async () => {
+    const usuario = userEvent.setup();
+    const confirmarRestablecimiento = vi.fn();
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
+      confirmarRestablecimiento,
+    });
+
+    await rellenar(usuario, { repetir: "secreta124" });
     await usuario.click(
       screen.getByRole("button", { name: "Guardar contraseña" }),
     );
@@ -98,53 +107,60 @@ describe("pantalla Nueva contraseña", () => {
     expect(confirmarRestablecimiento).not.toHaveBeenCalled();
   });
 
-  it("muestra el enlace inválido cuando el token ya no sirve", async () => {
+  it("exige un PIN de 6 dígitos antes de llamar a la API", async () => {
     const usuario = userEvent.setup();
-    const confirmarRestablecimiento = vi
-      .fn()
-      .mockRejectedValue(new ApiError("Token inválido", { status: 422 }));
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+    const confirmarRestablecimiento = vi.fn();
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
       confirmarRestablecimiento,
     });
 
-    await usuario.type(
-      screen.getByLabelText("Nueva contraseña", { selector: "input" }),
-      "secreta123",
-    );
-    await usuario.type(
-      screen.getByLabelText("Repetir contraseña", { selector: "input" }),
-      "secreta123",
-    );
+    await rellenar(usuario, { pin: "1234" });
     await usuario.click(
       screen.getByRole("button", { name: "Guardar contraseña" }),
     );
 
     expect(
-      await screen.findByRole("heading", { name: "El enlace no es válido" }),
+      screen.getByText("El código debe tener exactamente 6 dígitos."),
     ).toBeTruthy();
+    expect(confirmarRestablecimiento).not.toHaveBeenCalled();
+  });
+
+  it("muestra el mensaje genérico cuando el PIN no sirve", async () => {
+    const usuario = userEvent.setup();
+    const detalle = "El código es inválido, expiró o ya fue usado.";
+    const confirmarRestablecimiento = vi
+      .fn()
+      .mockRejectedValue(
+        new ApiError(detalle, { status: 422, problem: { detail: detalle } }),
+      );
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
+      confirmarRestablecimiento,
+    });
+
+    await rellenar(usuario);
+    await usuario.click(
+      screen.getByRole("button", { name: "Guardar contraseña" }),
+    );
+
+    expect((await screen.findByRole("alert")).textContent).toContain(detalle);
+    expect(screen.getByLabelText("Código")).toBeTruthy();
   });
 
   it("guarda la contraseña nueva y ofrece entrar", async () => {
     const usuario = userEvent.setup();
     const confirmarRestablecimiento = vi.fn().mockResolvedValue({});
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
       confirmarRestablecimiento,
     });
 
-    await usuario.type(
-      screen.getByLabelText("Nueva contraseña", { selector: "input" }),
-      "secreta123",
-    );
-    await usuario.type(
-      screen.getByLabelText("Repetir contraseña", { selector: "input" }),
-      "secreta123",
-    );
+    await rellenar(usuario);
     await usuario.click(
       screen.getByRole("button", { name: "Guardar contraseña" }),
     );
 
     expect(confirmarRestablecimiento).toHaveBeenCalledWith({
-      token: "abc",
+      email: "ana@uni.edu",
+      pin: "123456",
       nuevaContrasena: "secreta123",
     });
     expect(
@@ -171,7 +187,7 @@ describe("accesibilidad de la recuperación", () => {
   });
 
   it("Nueva contraseña no tiene violaciones", async () => {
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
       confirmarRestablecimiento: vi.fn(),
     });
 

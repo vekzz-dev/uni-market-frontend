@@ -37,7 +37,7 @@ export function Reenviar() {
     return (
       <LayoutAuth
         titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta sin confirmar con ese correo, te enviamos un enlace. Podrás pedir otro en unos minutos."
+        subtitulo="Si existe una cuenta sin confirmar con ese correo, te enviamos un código. Podrás pedir otro en unos minutos."
         resultado
         icono={{ nombre: "correo", tono: "exito" }}
       >
@@ -51,7 +51,7 @@ export function Reenviar() {
   return (
     <LayoutAuth
       titulo="Reenviar confirmación"
-      subtitulo="Te enviamos otro enlace para confirmar tu cuenta."
+      subtitulo="Te enviamos otro código para confirmar tu cuenta."
     >
       <form className={estilos.formulario} onSubmit={enviar} noValidate>
         {error && <Aviso>{error}</Aviso>}
@@ -68,7 +68,7 @@ export function Reenviar() {
         />
 
         <Boton type="submit" cargando={enviando} disabled={bloqueado}>
-          {enviando ? "Enviando…" : "Enviar enlace"}
+          {enviando ? "Enviando…" : "Enviar código"}
         </Boton>
       </form>
 

@@ -37,7 +37,7 @@ export function Restablecer() {
     return (
       <LayoutAuth
         titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta con ese correo, te enviamos un enlace para restablecer la contraseña. Vence en 60 minutos."
+        subtitulo="Si existe una cuenta con ese correo, te enviamos un código para restablecer la contraseña. Vence en 15 minutos."
         resultado
         icono={{ nombre: "correo", tono: "exito" }}
       >
@@ -51,7 +51,7 @@ export function Restablecer() {
   return (
     <LayoutAuth
       titulo="Restablecer contraseña"
-      subtitulo="Te enviaremos un enlace para crear una nueva."
+      subtitulo="Te enviaremos un código para crear una nueva."
     >
       <form className={estilos.formulario} onSubmit={enviar} noValidate>
         {error && <Aviso>{error}</Aviso>}
@@ -68,7 +68,7 @@ export function Restablecer() {
         />
 
         <Boton type="submit" cargando={enviando} disabled={bloqueado}>
-          {enviando ? "Enviando…" : "Enviar enlace"}
+          {enviando ? "Enviando…" : "Enviar código"}
         </Boton>
       </form>
 

@@ -52,7 +52,7 @@ export function Registro() {
     return (
       <LayoutAuth
         titulo="Revisa tu correo"
-        subtitulo={`Te enviamos un enlace de confirmación a ${formulario.email}. Vence en 24 horas.`}
+        subtitulo={`Te enviamos un código de confirmación a ${formulario.email}. Vence en 15 minutos.`}
         resultado
         icono={{ nombre: "correo", tono: "exito" }}
       >

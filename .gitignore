@@ -39,3 +39,6 @@ dist/
 # Playwright (e2e opt-in)
 test-results/
 playwright-report/
+
+# Estado de sesión de Playwright (tokens de las cuentas de prueba)
+apps/web/e2e/.auth/

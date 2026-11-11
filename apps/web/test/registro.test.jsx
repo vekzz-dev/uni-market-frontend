@@ -1,11 +1,16 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { axe } from "vitest-axe";
 import { ApiError } from "@uni-market/api-client";
 import { Registro } from "../src/pantallas/Registro.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
+
+function Sonda() {
+  const { pathname, state } = useLocation();
+  return <p>{`destino:${pathname}:${state?.email ?? ""}`}</p>;
+}
 
 function montar(registrarUsuario) {
   return render(
@@ -17,7 +22,10 @@ function montar(registrarUsuario) {
           estado: { estado: "anonimo", usuario: null },
         }}
       >
-        <Registro />
+        <Routes>
+          <Route path="/registro" element={<Registro />} />
+          <Route path="*" element={<Sonda />} />
+        </Routes>
       </SesionContexto.Provider>
     </MemoryRouter>,
   );
@@ -55,12 +63,10 @@ describe("pantalla Registro", () => {
     expect(aviso.textContent).toContain(
       "Ya existe un registro con esos datos.",
     );
-    expect(
-      screen.queryByRole("heading", { name: "Revisa tu correo" }),
-    ).toBeNull();
+    expect(screen.queryByText(/destino:/)).toBeNull();
   });
 
-  it("no navega ni abre sesión cuando el registro se completa", async () => {
+  it("lleva a la pantalla del PIN con el correo ya puesto", async () => {
     const usuario = userEvent.setup();
     const registrarUsuario = vi.fn().mockResolvedValue({});
     montar(registrarUsuario);
@@ -70,8 +76,9 @@ describe("pantalla Registro", () => {
     await usuario.type(screen.getByLabelText("Contraseña"), "secreta123");
     await usuario.click(screen.getByRole("button", { name: "Crear cuenta" }));
 
+    // El login no sirve todavía: la cuenta está sin confirmar.
     expect(
-      await screen.findByRole("heading", { name: "Revisa tu correo" }),
+      await screen.findByText("destino:/confirmar-email:ana@uni.edu"),
     ).toBeTruthy();
   });
 

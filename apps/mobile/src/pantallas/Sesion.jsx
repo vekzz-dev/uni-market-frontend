@@ -6,7 +6,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   mapearProblema,
   validarEmail,
@@ -128,7 +128,6 @@ export function Registro() {
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   async function enviar() {
     setError(null);
@@ -143,27 +142,13 @@ export function Registro() {
     setEnviando(true);
     try {
       await cliente.usuarios.registrarUsuario(form);
-      setEnviado(true);
+      // La cuenta queda sin confirmar: el login fallará hasta meter el PIN.
+      router.replace({ pathname: "/confirmar", params: { email: form.email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
-  }
-
-  if (enviado) {
-    return (
-      <Pantalla
-        titulo="Revisa tu correo"
-        subtitulo={`Te enviamos un código de confirmación a ${form.email}. Vence en 15 minutos.`}
-      >
-        <Boton
-          titulo="Ir a entrar"
-          variante="secundario"
-          onPress={() => router.replace("/entrar")}
-        />
-      </Pantalla>
-    );
   }
 
   return (
@@ -211,7 +196,8 @@ export function Registro() {
 export function Confirmar() {
   const { cliente } = useSesion();
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { email: emailDeRuta } = useLocalSearchParams();
+  const [email, setEmail] = useState(emailDeRuta ?? "");
   const [pin, setPin] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
@@ -295,34 +281,19 @@ export function Restablecer() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   async function enviar() {
     setError(null);
     setEnviando(true);
     try {
       await cliente.auth.solicitarRestablecimiento({ email });
-      setEnviado(true);
+      // El código llega por correo; se sigue en el formulario que lo pide.
+      router.replace({ pathname: "/nueva-contrasena", params: { email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
-  }
-
-  if (enviado) {
-    return (
-      <Pantalla
-        titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta con ese correo, te enviamos un código. Vence en 15 minutos."
-      >
-        <Boton
-          titulo="Volver a entrar"
-          variante="secundario"
-          onPress={() => router.replace("/entrar")}
-        />
-      </Pantalla>
-    );
   }
 
   return (
@@ -353,34 +324,18 @@ export function Reenviar() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   async function enviar() {
     setError(null);
     setEnviando(true);
     try {
       await cliente.auth.reenviarConfirmacion({ email });
-      setEnviado(true);
+      router.replace({ pathname: "/confirmar", params: { email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
-  }
-
-  if (enviado) {
-    return (
-      <Pantalla
-        titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta sin confirmar, te enviamos otro código."
-      >
-        <Boton
-          titulo="Volver a entrar"
-          variante="secundario"
-          onPress={() => router.replace("/entrar")}
-        />
-      </Pantalla>
-    );
   }
 
   return (
@@ -408,7 +363,8 @@ export function Reenviar() {
 export function NuevaContrasena() {
   const { cliente } = useSesion();
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const { email: emailDeRuta } = useLocalSearchParams();
+  const [email, setEmail] = useState(emailDeRuta ?? "");
   const [pin, setPin] = useState("");
   const [nueva, setNueva] = useState("");
   const [repetir, setRepetir] = useState("");

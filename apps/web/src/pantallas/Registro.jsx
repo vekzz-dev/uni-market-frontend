@@ -19,7 +19,6 @@ export function Registro() {
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   const cambiar = (campo) => (evento) =>
     setFormulario((actual) => ({ ...actual, [campo]: evento.target.value }));
@@ -40,27 +39,14 @@ export function Registro() {
     setEnviando(true);
     try {
       await cliente.usuarios.registrarUsuario(formulario);
-      setEnviado(true);
+      // La cuenta queda sin confirmar: el login fallará hasta meter el PIN,
+      // así que se lleva al formulario del código con el correo ya puesto.
+      navegar("/confirmar-email", { state: { email: formulario.email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
-  }
-
-  if (enviado) {
-    return (
-      <LayoutAuth
-        titulo="Revisa tu correo"
-        subtitulo={`Te enviamos un código de confirmación a ${formulario.email}. Vence en 15 minutos.`}
-        resultado
-        icono={{ nombre: "correo", tono: "exito" }}
-      >
-        <Boton variante="secundario" onClick={() => navegar("/entrar")}>
-          Ir a entrar
-        </Boton>
-      </LayoutAuth>
-    );
   }
 
   return (

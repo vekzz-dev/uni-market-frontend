@@ -9,8 +9,10 @@ jest.setTimeout(20000);
 
 const mockRouter = { push: jest.fn(), replace: jest.fn() };
 
+let mockParams = {};
 jest.mock("expo-router", () => ({
   useRouter: () => mockRouter,
+  useLocalSearchParams: () => mockParams,
 }));
 
 const CODIGO_INVALIDO = "El código es inválido, expiró o ya fue usado.";
@@ -52,9 +54,12 @@ async function rellenar(vista, valores) {
 describe("Confirmar (móvil)", () => {
   it("envía email y PIN y confirma la cuenta", async () => {
     const confirmarEmail = jest.fn().mockResolvedValue({});
+    mockParams = { email: "ana@uni.edu" };
     const vista = await montar(<Confirmar />, { confirmarEmail });
 
     await vista.findByLabelText("Correo");
+    expect(vista.getByLabelText("Correo").props.value).toBe("ana@uni.edu");
+    mockParams = {};
     await rellenar(vista, { Correo: "ana@uni.edu", Código: "123456" });
     await fireEvent.press(
       vista.getByRole("button", { name: "Confirmar cuenta" }),

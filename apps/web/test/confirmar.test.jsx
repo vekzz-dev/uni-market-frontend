@@ -108,6 +108,16 @@ describe("pantalla Confirmar", () => {
     );
   });
 
+  it("precarga el correo que llega desde el registro", async () => {
+    montar(vi.fn(), {
+      pathname: "/confirmar-email",
+      state: { email: "ana@uni.edu" },
+    });
+
+    const correo = await screen.findByLabelText("Correo");
+    expect(correo.value).toBe("ana@uni.edu");
+  });
+
   it("no tiene violaciones de accesibilidad", async () => {
     montar(vi.fn());
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { mapearProblema, validarEmail, validarPin } from "@uni-market/core";
 import { Aviso } from "../componentes/Aviso.jsx";
 import { Boton } from "../componentes/Boton.jsx";
@@ -11,7 +11,11 @@ import estilos from "./auth.module.css";
 export function Confirmar() {
   const { cliente } = useSesion();
   const navegar = useNavigate();
-  const [formulario, setFormulario] = useState({ email: "", pin: "" });
+  const { state } = useLocation();
+  const [formulario, setFormulario] = useState({
+    email: state?.email ?? "",
+    pin: "",
+  });
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);

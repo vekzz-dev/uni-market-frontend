@@ -14,7 +14,6 @@ export function Restablecer() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
 
   async function enviar(evento) {
@@ -23,7 +22,8 @@ export function Restablecer() {
     setEnviando(true);
     try {
       await cliente.auth.solicitarRestablecimiento({ email });
-      setEnviado(true);
+      // El código llega por correo; se sigue en el formulario que lo pide.
+      navegar("/nueva-contrasena", { state: { email } });
     } catch (fallo) {
       const { mensaje, status } = mapearProblema(fallo);
       setError(mensaje);
@@ -31,21 +31,6 @@ export function Restablecer() {
     } finally {
       setEnviando(false);
     }
-  }
-
-  if (enviado) {
-    return (
-      <LayoutAuth
-        titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta con ese correo, te enviamos un código para restablecer la contraseña. Vence en 15 minutos."
-        resultado
-        icono={{ nombre: "correo", tono: "exito" }}
-      >
-        <Boton variante="secundario" onClick={() => navegar("/entrar")}>
-          Volver a entrar
-        </Boton>
-      </LayoutAuth>
-    );
   }
 
   return (

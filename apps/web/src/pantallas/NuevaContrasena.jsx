@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { mapearProblema, validarEmail, validarPin } from "@uni-market/core";
 import { Aviso } from "../componentes/Aviso.jsx";
 import { Boton } from "../componentes/Boton.jsx";
@@ -13,9 +13,10 @@ const MINIMO = 8;
 export function NuevaContrasena() {
   const { cliente } = useSesion();
   const navegar = useNavigate();
+  const { state } = useLocation();
 
   const [formulario, setFormulario] = useState({
-    email: "",
+    email: state?.email ?? "",
     pin: "",
     nueva: "",
     repetir: "",

@@ -11,6 +11,26 @@ const TIPOS_IMAGEN = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 const enBlanco = (valor) => typeof valor !== "string" || valor.trim() === "";
 
+/** @returns {string|null} correo válido o el mensaje que explica qué falta */
+export function validarEmail(email) {
+  if (enBlanco(email)) return "Escribe tu correo.";
+  if (!EMAIL.test(email.trim())) return "Ese correo no parece válido.";
+  return null;
+}
+
+/**
+ * PIN de confirmación y restablecimiento (R11, issue #8). El contrato declara
+ * `pattern: '^\\d{6}$'`, así que no hay trim: los espacios cuentan.
+ * @returns {string|null}
+ */
+export function validarPin(pin) {
+  if (enBlanco(pin)) return "Escribe el código de 6 dígitos.";
+  if (typeof pin !== "string" || !/^\d{6}$/.test(pin)) {
+    return "El código debe tener exactamente 6 dígitos.";
+  }
+  return null;
+}
+
 /** @returns {Array<{campo:string, mensaje:string}>} lista vacía si todo está bien */
 export function validarRegistro({ nombre, email, contrasena } = {}) {
   const errores = [];
@@ -18,11 +38,8 @@ export function validarRegistro({ nombre, email, contrasena } = {}) {
   if (enBlanco(nombre))
     errores.push({ campo: "nombre", mensaje: "Escribe tu nombre." });
 
-  if (enBlanco(email)) {
-    errores.push({ campo: "email", mensaje: "Escribe tu correo." });
-  } else if (!EMAIL.test(email.trim())) {
-    errores.push({ campo: "email", mensaje: "Ese correo no parece válido." });
-  }
+  const problemaEmail = validarEmail(email);
+  if (problemaEmail) errores.push({ campo: "email", mensaje: problemaEmail });
 
   // Mínimo 8, sin reglas de composición (política del contrato).
   if (typeof contrasena !== "string" || contrasena.length < 8) {

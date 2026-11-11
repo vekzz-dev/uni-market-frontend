@@ -10,6 +10,8 @@ import {
   validarAvatar,
   validarMensaje,
   validarMotivo,
+  validarPin,
+  validarEmail,
 } from "../src/index.js";
 
 const archivo = (size, type = "image/png") => ({
@@ -88,4 +90,44 @@ test("el mensaje se recorta y rechaza vacío", () => {
 test("el motivo de moderación es obligatorio", () => {
   assert.equal(validarMotivo("No cumple las normas"), null);
   assert.match(validarMotivo("  "), /Explica el motivo/);
+});
+
+// PIN de confirmación y reset (R11, issue #8): el contrato exige `^\d{6}$`.
+test("un PIN de seis dígitos es válido", () => {
+  assert.equal(validarPin("123456"), null);
+  assert.equal(validarPin("000000"), null);
+});
+
+test("el PIN rechaza cualquier cosa que no sean exactamente 6 dígitos", () => {
+  for (const invalido of [
+    "12345",
+    "1234567",
+    "12345a",
+    "12 456",
+    " 123456 ",
+    "",
+  ]) {
+    assert.equal(
+      typeof validarPin(invalido),
+      "string",
+      `debería rechazar ${JSON.stringify(invalido)}`,
+    );
+  }
+});
+
+test("el PIN ausente o no textual se rechaza", () => {
+  for (const invalido of [undefined, null, 123456]) {
+    assert.equal(
+      typeof validarPin(invalido),
+      "string",
+      `debería rechazar ${String(invalido)}`,
+    );
+  }
+});
+
+test("el email se puede validar por separado y coincide con la regla del registro", () => {
+  assert.equal(validarEmail("ana@uni.edu"), null);
+  assert.equal(typeof validarEmail("nada"), "string");
+  assert.equal(typeof validarEmail(""), "string");
+  assert.equal(typeof validarEmail("ana@uni"), "string");
 });

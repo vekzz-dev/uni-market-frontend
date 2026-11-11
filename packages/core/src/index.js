@@ -21,6 +21,8 @@ export {
   validarAvatar,
   validarMensaje,
   validarMotivo,
+  validarEmail,
+  validarPin,
 } from "./validacion/validar.js";
 export {
   CAPACIDADES,

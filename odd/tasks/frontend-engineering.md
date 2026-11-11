@@ -2,11 +2,11 @@
 
 | Campo | Valor |
 |---|---|
-| Estado | En curso — Inc 0 completo; Inc 1 en curso (núcleo de sesión listo) |
+| Estado | **Completa** — Inc 0–9 entregados (web y paridad móvil), con sus deudas de plataforma y de pruebas cerradas |
 | Creado | 2026-10-19 |
-| Alcance | Ingeniería del frontend de Uni Market: decisiones, arquitectura del monorepo, contrato con la API, sistema de diseño, estrategia de pruebas y plan de slices. **Sin features de UI todavía.** |
-| Presupuesto (heurística ~400 líneas) | ~1100 líneas de documentación; el código llega en los incrementos posteriores (Inc 0 en adelante) |
-| Estrategia de entrega | ask-on-risk (default); sin remoto todavía |
+| Alcance | Ingeniería del frontend de Uni Market: decisiones, arquitectura del monorepo, contrato con la API, sistema de diseño, estrategia de pruebas y plan de slices. |
+| Presupuesto (heurística ~400 líneas) | La entrega se dividió en unidades de trabajo por incremento (Inc 0–9), no en un bloque único |
+| Estrategia de entrega | ask-on-risk (default); repo remoto en `origin`, un PR revisable por incremento |
 | Runner | Documentación: revisión de padre. Código (Inc 0+): Vitest (web y paquetes), Jest (`jest-expo`, móvil), Playwright (e2e web) |
 | Documentos | `docs/frontend-design.md`, `docs/design-system.md`, `docs/api-integration.md`, `docs/testing-strategy.md`, `README.md` |
 | Fuentes externas | API: `uni-market-api/openapi.yaml` (contrato), `docs/prd.md` (R1–R16, §5 obligaciones de clientes, §7 no-objetivos) |
@@ -155,3 +155,4 @@ Dejar la ingeniería del frontend lista para ejecutar: qué se construye, con qu
 - **Evidencia (2026-10-19)**: `node build.mjs` → `build/tokens.css`; `node --test` → **23/23 en verde**: contraste de todos los pares en ambos temas, paridad de roles entre temas, validez de valores, deriva del CSS generado, regla de foco con desplazamiento y las pruebas negativas que fijan los defectos corregidos.
 - **Siguiente**: Inc 0 — scaffold del monorepo (workspaces, contrato vendorizado y su lock, cliente generado con transporte `fetch`, CI con los gates de deriva).
 - **Siguiente (2026-10-20)**: queda el **estado de carga** (esqueleto de la lista en ambas plataformas) y el **flujo del vendedor** empezando por Publicar + Mis anuncios; después el **Inc 0** (scaffold).
+- **Corrección de estado (2026-11-11)**: la cabecera de este documento decía "Inc 0 completo; Inc 1 en curso" y el `README.md` decía "paridad móvil en curso (Inc 9)" con 241 pruebas. Ambas quedaron escritas a mitad de camino y nunca se actualizaron al cerrar. Verificado ahora contra el repo: `main` en `c6f5342` (igual a `origin/main`), sin issues ni PRs abiertos, **242 pruebas en verde** (tokens 23 · api-client 7 · core 44 · web 133 · móvil 35), core al 89,98 % de cobertura, `lint`/`format:check`/`contract:check`/`api:check` limpios, build web en 108,6 KB sobre un presupuesto de 220 KB y 17 páginas con 84 PNG en `design/preview/`. No queda ninguna tarea sin marcar en `odd/tasks/` y el plan de `docs/frontend-design.md` termina en Inc 9. El e2e de Playwright sigue siendo opt-in (`E2E_EMAIL`/`E2E_PASSWORD`), así que no se pudo ejecutar en esta pasada.

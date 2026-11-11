@@ -20,11 +20,11 @@ Cada carpeta corresponde a una **página del `.fig`**; dentro, un PNG por frame.
 | `00-fundamentos/` | fundamentos | 1× |
 | `01-catalogo/` | web, vacío, error (ambas plataformas) | 1× web / 2× móvil |
 | `02-entrar/` | default, credenciales, límite | 1× web / 2× móvil |
-| `03-registro/` | default, conflicto, enviado | 1× web / 2× móvil |
+| `03-registro/` | default, conflicto | 1× web / 2× móvil |
 | `04-confirmar/` | formulario de PIN, error 422, confirmado | 1× web / 2× móvil |
-| `05-restablecer/` | default, enviado, límite | 1× web / 2× móvil |
+| `05-restablecer/` | default, límite | 1× web / 2× móvil |
 | `06-nueva-contrasena/` | formulario de PIN + contraseña, error 422, listo | 1× web / 2× móvil |
-| `07-reenviar/` | default, enviado, límite | 1× web / 2× móvil |
+| `07-reenviar/` | default, límite | 1× web / 2× móvil |
 | `08-detalle/` | default, no disponible, error | 1× web / 2× móvil |
 | `09-publicar/` | default, publicando, error 422 (ambas plataformas) | 1× web / 2× móvil |
 | `10-mis-anuncios/` | datos, vacío, error (ambas plataformas) | 1× web / 2× móvil |

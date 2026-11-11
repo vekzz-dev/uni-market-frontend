@@ -12,6 +12,7 @@
 - **S6 — Mensaje genérico (R13)**: un `422` se muestra con el texto del servidor sin intentar distinguir cuenta inexistente, PIN incorrecto, ajeno, expirado, usado o agotado. La API responde verbatim `"El código es inválido, expiró o ya fue usado."` y un `429` se trata como límite de peticiones.
 - **S7 — Pruebas en ambas plataformas**: web (`confirmar.test.jsx`, `recuperacion.test.jsx`) y móvil (pruebas nuevas de confirmar y nueva contraseña, que **hoy no existen**). Cubren: envío con email+PIN, `422` genérico, `429`, validación espejo y que ya no se usa `token`.
 - **S8 — Documentación**: `docs/api-integration.md` §7 y el flujo de sesión, `README.md` (conteo de pruebas), y las menciones a "enlace"/"24 h"/"60 min" que queden obsoletas. R11–R13 viven en `uni-market-api` y no se duplican.
+- **S10 — Continuidad del flujo**: registrarse, pedir el restablecimiento y reenviar la confirmación **llevan a la pantalla donde se teclea el código**, con el correo ya puesto, en web y móvil. Ninguno de los tres termina en el login, que falla mientras la cuenta no esté confirmada.
 - **S9 — Diseño**: páginas `04-confirmar` y `06-nueva-contrasena` del archivo `design/uni-market.fig` pasan de estados de enlace (`verificando` / `confirmado` / `invalido`) a formulario de código, en web y móvil, con sus PNG en `design/preview/`.
 
 ## Tareas
@@ -22,6 +23,7 @@
 - [x] **T4 — Móvil: paridad** (S4, S6) + pruebas (S7). Ruta: padre. Commit `2bcab83`.
 - [x] **T5 — Documentación** (S8). Ruta: padre.
 - [x] **T6 — Diseño** (S9). Ruta: padre.
+- [x] **T7 — Continuidad del flujo** (S10) + pruebas. Ruta: padre.
 
 ## Log
 
@@ -42,3 +44,7 @@
 - **T6 cerrado (2026-11-11)**: OpenPencil abierto con `design/uni-market.fig`. Se rehicieron las dos páginas completas (12 frames: 3 estados × 2 plataformas) reutilizando el lenguaje visual existente — se copió la estructura de `03 · Registro` y el aviso de error de `02 · Entrar` en vez de inventar estilos. Estados: `formulario`, `error 422`, `confirmado`/`listo`. Lint: **0 errores, 0 advertencias** en ambas páginas (38 y 46 avisos `info`, todos del mismo tipo que ya tiene el archivo: gaps 6/10 fuera de escala y subpíxeles por centrado). Verificado visualmente el formulario web, el estado de error, el formulario de 4 campos y el móvil a 2×.
 - **Hallazgo del export (2026-11-11)**: la nota de `design/preview/README.md` decía que `export_image` por MCP ignora `ids` y saca la página completa. **Es falso con la versión instalada**: acepta `ids` y escribe el frame indicado. Se corrigió la nota. Importa porque el CLI `openpencil` no está instalado en esta máquina, así que el procedimiento documentado no era ejecutable.
 - **PNG (2026-11-11)**: 6 reexportados y 3 nuevos por página; eliminados los 6 de estados que ya no existen (`verificando`, `invalido`). El total se mantiene en **84**.
+
+- **Bug reportado por el usuario (2026-11-11, verbatim)**: "El problema que veo es que al crear cuenta, me regresa al login en vez de llevame a la pantalla del pin". Confirmado: tras registrarse, la única acción era "Ir a entrar". Como la cuenta queda sin confirmar, ese login falla: un callejón sin salida. **El mismo muro existía en los otros dos flujos**: tras pedir el restablecimiento y tras reenviar la confirmación, el botón también llevaba al login. Se arreglaron los tres.
+- **T7 cerrado (2026-11-11)**: registro → `/confirmar-email` (móvil `/confirmar`), restablecer → `/nueva-contrasena`, reenviar → `/confirmar-email`, los tres con el correo en el estado de la ruta y precargado en el formulario destino. La pantalla intermedia "Revisa tu correo" desaparece: lo que decía ya lo dice el formulario del código, y era un paso de más. RED observado antes de implementar en `registro.test.jsx` (la prueba de destino fallaba). 137 pruebas web y 49 móviles.
+- **Deriva de diseño que provocó el arreglo (2026-11-11)**: al quitar esas pantallas, los estados `enviado` de `03 · Registro`, `05 · Restablecer` y `07 · Reenviar` quedaban mostrando pantallas inalcanzables. Se eliminaron los 6 frames y sus 6 PNG, y se actualizó la tabla de `design/preview/README.md`. El total baja de 84 a **78**, y es correcto: hay 6 vistas menos porque el producto tiene 6 pantallas menos.

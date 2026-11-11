@@ -21,9 +21,9 @@ Cada carpeta corresponde a una **página del `.fig`**; dentro, un PNG por frame.
 | `01-catalogo/` | web, vacío, error (ambas plataformas) | 1× web / 2× móvil |
 | `02-entrar/` | default, credenciales, límite | 1× web / 2× móvil |
 | `03-registro/` | default, conflicto, enviado | 1× web / 2× móvil |
-| `04-confirmar/` | verificando, confirmado, inválido | 1× web / 2× móvil |
+| `04-confirmar/` | formulario de PIN, error 422, confirmado | 1× web / 2× móvil |
 | `05-restablecer/` | default, enviado, límite | 1× web / 2× móvil |
-| `06-nueva-contrasena/` | default, inválido, listo | 1× web / 2× móvil |
+| `06-nueva-contrasena/` | formulario de PIN + contraseña, error 422, listo | 1× web / 2× móvil |
 | `07-reenviar/` | default, enviado, límite | 1× web / 2× móvil |
 | `08-detalle/` | default, no disponible, error | 1× web / 2× móvil |
 | `09-publicar/` | default, publicando, error 422 (ambas plataformas) | 1× web / 2× móvil |
@@ -51,7 +51,7 @@ Tres cosas que cuestan tiempo si no se saben:
 
 1. **`--page` y `--node` son excluyentes**: el CLI falla con `--page and --node cannot be used together`.
 2. **Los IDs del archivo son globales**, no por página. Los que muestra `tree --page …` son locales a la página y no sirven para `--node`. Para el ID global: `openpencil find design/uni-market.fig --name "<nombre>" --json` (busca en todas las páginas).
-3. **El export por MCP (`export_image`) ignora `id`/`node`** y saca la página completa: para una vista suelta hay que usar el CLI.
+3. **El export por MCP (`export_image`) sí acepta `ids`** y saca los frames indicados, no la página completa. Es la vía usada cuando el CLI `openpencil` no está instalado: basta pasar `ids` con el ID *global* del frame y `path` con la ruta de destino. (Nota anterior a esta corrección: decía que el MCP ignoraba `ids`; ya no es cierto.)
 
 ## Limitación conocida
 

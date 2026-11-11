@@ -12,7 +12,7 @@
 - **S6 — Mensaje genérico (R13)**: un `422` se muestra con el texto del servidor sin intentar distinguir cuenta inexistente, PIN incorrecto, ajeno, expirado, usado o agotado. La API responde verbatim `"El código es inválido, expiró o ya fue usado."` y un `429` se trata como límite de peticiones.
 - **S7 — Pruebas en ambas plataformas**: web (`confirmar.test.jsx`, `recuperacion.test.jsx`) y móvil (pruebas nuevas de confirmar y nueva contraseña, que **hoy no existen**). Cubren: envío con email+PIN, `422` genérico, `429`, validación espejo y que ya no se usa `token`.
 - **S8 — Documentación**: `docs/api-integration.md` §7 y el flujo de sesión, `README.md` (conteo de pruebas), y las menciones a "enlace"/"24 h"/"60 min" que queden obsoletas. R11–R13 viven en `uni-market-api` y no se duplican.
-- **S9 — Diseño**: páginas `04-confirmar` y `06-nueva-contrasena` del archivo `design/uni-market.fig` pasan de estados de enlace (`verificando` / `confirmado` / `invalido`) a formulario de código, en web y móvil, con sus PNG en `design/preview/`. **Bloqueada: OpenPencil no está corriendo.**
+- **S9 — Diseño**: páginas `04-confirmar` y `06-nueva-contrasena` del archivo `design/uni-market.fig` pasan de estados de enlace (`verificando` / `confirmado` / `invalido`) a formulario de código, en web y móvil, con sus PNG en `design/preview/`.
 
 ## Tareas
 
@@ -21,7 +21,7 @@
 - [x] **T3 — Web: Confirmar y Nueva contraseña** (S2, S3, S6) + pruebas (S7). Ruta: padre. Commit `0a37822`.
 - [x] **T4 — Móvil: paridad** (S4, S6) + pruebas (S7). Ruta: padre. Commit `2bcab83`.
 - [x] **T5 — Documentación** (S8). Ruta: padre.
-- [ ] **T6 — Diseño** (S9). Ruta: padre. **BLOQUEADA por entorno.**
+- [x] **T6 — Diseño** (S9). Ruta: padre.
 
 ## Log
 
@@ -38,3 +38,7 @@
 - **T5 cerrado (2026-11-11)**: `docs/api-integration.md` gana §2.4 con la tabla de endpoints y las reglas del PIN, y §3.3 la fila de validación espejo; `docs/frontend-design.md` corrige el mapa de pantallas; `README.md` a 260 pruebas.
 - **Verificación (2026-11-11)**: `pnpm test` **260** (tokens 23 · api-client 7 · core 48 · web 136 · móvil 46), exit 0; `lint` y `format:check` limpios; `contract:check` y `api:check` OK; `build:web` 429,22 kB → 112,13 kB gzip; `budget:web` 108,5 KB de 220 KB; `export:web` del móvil exporta.
 - **S9/T6 sigue bloqueada**: `design/preview/README.md` todavía describe los estados de las páginas `04-confirmar` (`verificando`, `confirmado`, `inválido`) y `06-nueva-contrasena` (`default`, `inválido`, `listo`), que corresponden a los PNG viejos. **No se tocó a propósito**: cambiarlo sin regenerar los PNG dejaría la documentación mintiendo sobre los assets. Se corrige junto con el diseño.
+
+- **T6 cerrado (2026-11-11)**: OpenPencil abierto con `design/uni-market.fig`. Se rehicieron las dos páginas completas (12 frames: 3 estados × 2 plataformas) reutilizando el lenguaje visual existente — se copió la estructura de `03 · Registro` y el aviso de error de `02 · Entrar` en vez de inventar estilos. Estados: `formulario`, `error 422`, `confirmado`/`listo`. Lint: **0 errores, 0 advertencias** en ambas páginas (38 y 46 avisos `info`, todos del mismo tipo que ya tiene el archivo: gaps 6/10 fuera de escala y subpíxeles por centrado). Verificado visualmente el formulario web, el estado de error, el formulario de 4 campos y el móvil a 2×.
+- **Hallazgo del export (2026-11-11)**: la nota de `design/preview/README.md` decía que `export_image` por MCP ignora `ids` y saca la página completa. **Es falso con la versión instalada**: acepta `ids` y escribe el frame indicado. Se corrigió la nota. Importa porque el CLI `openpencil` no está instalado en esta máquina, así que el procedimiento documentado no era ejecutable.
+- **PNG (2026-11-11)**: 6 reexportados y 3 nuevos por página; eliminados los 6 de estados que ya no existen (`verificando`, `invalido`). El total se mantiene en **84**.

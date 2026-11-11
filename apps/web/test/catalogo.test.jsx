@@ -267,3 +267,67 @@ describe("pantalla Catálogo", () => {
     expect(screen.getByRole("heading", { name: "Libro C" })).toBeTruthy();
   });
 });
+
+function montarConSesion(rol) {
+  const cliente = {
+    catalogo: { buscarCatalogo: vi.fn().mockResolvedValue({ datos: [] }) },
+    categorias: {
+      listarCategorias: vi.fn().mockResolvedValue({ datos: [] }),
+    },
+  };
+  return render(
+    <MemoryRouter initialEntries={["/"]}>
+      <SesionContexto.Provider
+        value={{
+          cliente,
+          sesion: {},
+          estado: {
+            estado: "autenticado",
+            usuario: { id: "u1", nombre: "Ana P.", rol },
+          },
+          restaurado: true,
+        }}
+      >
+        <Catalogo />
+      </SesionContexto.Provider>
+    </MemoryRouter>,
+  );
+}
+
+describe("accesos por rol en la cabecera", () => {
+  it("el admin alcanza usuarios y categorías desde el catálogo", async () => {
+    montarConSesion("admin");
+
+    expect(
+      await screen.findByRole("link", { name: "Moderación" }),
+    ).toBeTruthy();
+    expect(await screen.findByRole("link", { name: "Usuarios" })).toBeTruthy();
+    expect(
+      await screen.findByRole("link", { name: "Categorías" }),
+    ).toBeTruthy();
+  });
+
+  it("el moderador alcanza moderación y categorías, pero no usuarios", async () => {
+    montarConSesion("moderador");
+
+    expect(
+      await screen.findByRole("link", { name: "Moderación" }),
+    ).toBeTruthy();
+    // `categorias.gestionar` es del moderador; `admin.usuarios` solo del admin
+    expect(
+      await screen.findByRole("link", { name: "Categorías" }),
+    ).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Usuarios" })).toBeNull();
+  });
+
+  it("el miembro no ve ningún acceso de moderación ni administración", async () => {
+    montarConSesion("miembro");
+
+    expect(
+      await screen.findByRole("link", { name: "Mis anuncios" }),
+    ).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Moderación" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Usuarios" })).toBeNull();
+    expect(screen.queryByRole("link", { name: "Categorías" })).toBeNull();
+  });
+});

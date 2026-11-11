@@ -24,6 +24,9 @@ test.skip(!email || !contrasena, "define E2E_MIEMBRO_1_EMAIL y E2E_PASSWORD");
 test("rol miembro: publicar, panel, edición, perfil y mensajería", async ({
   page,
 }) => {
+  // Sin estado heredado: si una corrida anterior falló, su anuncio ya no existe
+  fs.rmSync(ESTADO, { force: true });
+
   // --- Entrar ---
   await page.goto("/entrar");
   await page.getByLabel("Correo").fill(email);
@@ -54,6 +57,9 @@ test("rol miembro: publicar, panel, edición, perfil y mensajería", async ({
   await expect(
     page.getByRole("heading", { name: "Anuncio publicado" }),
   ).toBeVisible();
+
+  fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
+  fs.writeFileSync(ESTADO, JSON.stringify({ nombreMiembro: MARCA }));
 
   // --- Panel: aparece como pendiente ---
   await page.goto("/mis-anuncios");
@@ -119,7 +125,7 @@ test("rol miembro: publicar, panel, edición, perfil y mensajería", async ({
   const primera = page.getByRole("link", { name: /Compra|Venta/ }).first();
   if ((await primera.count()) > 0) {
     await primera.click();
-    const campo = page.getByLabel("Mensaje");
+    const campo = page.getByRole("textbox", { name: "Mensaje" });
     await expect(campo).toBeVisible();
     const texto = `Mensaje e2e ${Date.now()}`;
     await campo.fill(texto);
@@ -133,6 +139,5 @@ test("rol miembro: publicar, panel, edición, perfil y mensajería", async ({
   }
 
   // El anuncio queda pendiente a propósito para el spec del moderador
-  fs.mkdirSync(path.dirname(ESTADO), { recursive: true });
   fs.writeFileSync(ESTADO, JSON.stringify({ nombreMiembro: editado }));
 });

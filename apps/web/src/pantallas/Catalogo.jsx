@@ -140,6 +140,16 @@ export function Catalogo() {
                 Moderación
               </Link>
             )}
+            {puede(estado.usuario?.rol, "categorias.gestionar") && (
+              <Link to="/admin/categorias" className={estilos.enlace}>
+                Categorías
+              </Link>
+            )}
+            {puede(estado.usuario?.rol, "admin.usuarios") && (
+              <Link to="/admin/usuarios" className={estilos.enlace}>
+                Usuarios
+              </Link>
+            )}
             <Link to="/publicar" className={estilos.enlaceDestacado}>
               Publicar anuncio
             </Link>

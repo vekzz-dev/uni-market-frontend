@@ -20,11 +20,13 @@ test("rol admin: capacidades, usuarios y categorías", async ({ page }) => {
     page.getByRole("heading", { name: "Anuncios disponibles" }),
   ).toBeVisible();
 
-  // El admin sí ve moderación en la cabecera
+  // La cabecera da acceso a todas las secciones del rol (antes solo Moderación)
   await expect(page.getByRole("link", { name: "Moderación" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Categorías" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Usuarios" })).toBeVisible();
 
-  // --- Usuarios: listado, búsqueda y filtro ---
-  await page.goto("/admin/usuarios");
+  // --- Usuarios: se llega desde el catálogo, sin escribir la URL ---
+  await page.getByRole("link", { name: "Usuarios" }).click();
   await expect(
     page.getByRole("heading", { name: "Usuarios", exact: true }),
   ).toBeVisible();

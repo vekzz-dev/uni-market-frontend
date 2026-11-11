@@ -234,16 +234,17 @@ Reglas:
 
 | Ajuste | Web | Móvil |
 |---|---|---|
-| Variable | `VITE_API_BASE_URL` | `EXPO_PUBLIC_API_BASE_URL` |
-| Valor dev | `http://localhost:8080/v1` | Igual para emulador iOS/simulador; **`http://10.0.2.2:8080/v1`** en emulador Android; **IP de LAN** (`http://192.168.x.x:8080/v1`) en dispositivo físico |
+| Variable | `VITE_API_BASE_URL` | `EXPO_PUBLIC_API_BASE_URL` (opcional) |
+| Valor dev | `http://localhost:8080/v1` | **Se deduce del `hostUri` de Metro** (`http://<host>:8080/v1`), así que sirve en LAN, hotspot, emulador iOS/simulador y dispositivo físico sin tocar nada. La variable explícita gana cuando existe |
 | Origen de medios | Se deriva quitando `/v1` de la base | Igual |
 | Persistencia del refresh | `localStorage` | Almacén seguro del sistema (Expo) |
 
 Consideraciones de entorno:
 
 - **CORS** (web): en dev la API permite `http://localhost:*` y `http://127.0.0.1:*`. En producción el valor por defecto es **vacío**: el origen del sitio debe declararse en el servidor (`CORS_ORIGENES`) o el navegador bloqueará todo. Es un requisito de despliegue, no un bug del frontend (riesgo R-2).
-- **Móvil**: no hay CORS; sí hay que apuntar a una IP alcanzable desde el dispositivo.
-- La configuración se lee en un único módulo por app (`config.js`) y se valida al arrancar: si falta la base, se falla temprano con un mensaje claro en vez de con peticiones contra `undefined`.
+- **Móvil**: no hay CORS; la base debe ser una IP alcanzable desde el dispositivo, y la deducción desde `hostUri` la produce automáticamente porque es la misma por la que el teléfono ya descarga el bundle. `10.0.2.2` (emulador Android) sigue siendo el caso raro: si el emulador no expone el host de Metro como alcanzable, define `EXPO_PUBLIC_API_BASE_URL` explícitamente.
+- **Excepción de `--tunnel`**: con Metro en modo túnel, `hostUri` apunta a un dominio de Expo, no a una IP de la máquina, y solo el 8081 está tunelizado. La API en el 8080 **no** es alcanzable por esa vía: ahí hay que definir `EXPO_PUBLIC_API_BASE_URL` con un origen propio (o un túnel aparte para la API).
+- La configuración se lee en un único módulo por app (`config.js`), con la base resuelta una sola vez al importar: en web desde `VITE_API_BASE_URL`, en móvil desde la variable explícita o el host de Metro.
 
 ---
 

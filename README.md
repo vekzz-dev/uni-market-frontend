@@ -2,7 +2,7 @@
 
 Monorepo del cliente de **Uni Market**, el marketplace universitario. Dos aplicaciones sobre el mismo núcleo: web (React) y móvil (React Native con Expo). El contrato es `openapi.yaml` del repositorio `uni-market-api`, y el cliente HTTP se **genera** desde él.
 
-> **Estado actual**: **Inc 0–9 completos**; el plan de incrementos de [`docs/frontend-design.md`](docs/frontend-design.md) está entregado. Monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo, detalle, vendedor, mensajería, perfil, moderación y administración; la **app móvil** (Expo) cubre la paridad de todos esos flujos. **242 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios, cobertura del núcleo ≥ 80 % y bundle web dentro del presupuesto de 220 KB. El **archivo de diseño** tiene 17 páginas y 84 PNG en `design/preview/`.
+> **Estado actual**: **Inc 0–9 completos**; el plan de incrementos de [`docs/frontend-design.md`](docs/frontend-design.md) está entregado. Monorepo con workspaces de pnpm, contrato vendorizado con lock, **cliente HTTP generado** con transporte `fetch`, tokens Ember y dominio compartido (sesión, errores, paginación, validación, capacidades, formato). La **app web** cubre sesión, catálogo, detalle, vendedor, mensajería, perfil, moderación y administración; la **app móvil** (Expo) cubre la paridad de todos esos flujos. **247 pruebas en verde** (`pnpm test`), `pnpm lint` y `pnpm format:check` limpios, cobertura del núcleo ≥ 80 % y bundle web dentro del presupuesto de 220 KB. El **archivo de diseño** tiene 17 páginas y 84 PNG en `design/preview/`.
 
 ## Estructura
 
@@ -34,6 +34,8 @@ odd/tasks/    ✅ registro de trabajo por feature
 El generador no requiere instalación global: se invoca con `npx` y descarga su CLI la primera vez.
 
 La web lee la base de la API de `VITE_API_BASE_URL` (por defecto `http://localhost:8080/v1`); define esa variable en el entorno o en un `.env.local` de `apps/web/` si necesitas otro origen.
+
+La app móvil **no necesita configurar la IP**: deduce el host desde la dirección con la que Metro sirve el bundle, así que funciona en LAN, en un hotspot o en cualquier otra red. `EXPO_PUBLIC_API_BASE_URL` sigue existiendo como **override** para apuntar a otro origen (por ejemplo un servidor remoto). Hoy no hay que tocar nada al cambiar de red; sí hay que reiniciar Metro con `--clear` si se cambia esa variable.
 
 ## Comandos
 

@@ -20,6 +20,13 @@ test("rol admin: capacidades, usuarios y categorías", async ({ page }) => {
     page.getByRole("heading", { name: "Anuncios disponibles" }),
   ).toBeVisible();
 
+  // `anuncios.gestionar` es una capacidad de miembro: el admin la hereda y
+  // gestiona SUS anuncios como cualquiera. Editar los ajenos no existe (R7).
+  await expect(page.getByRole("link", { name: "Mis anuncios" })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Publicar anuncio" }),
+  ).toBeVisible();
+
   // La cabecera da acceso a todas las secciones del rol (antes solo Moderación)
   await expect(page.getByRole("link", { name: "Moderación" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Categorías" })).toBeVisible();

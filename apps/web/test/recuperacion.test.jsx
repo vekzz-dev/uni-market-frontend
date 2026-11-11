@@ -1,13 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
 import { axe } from "vitest-axe";
 import { ApiError } from "@uni-market/api-client";
 import { Restablecer } from "../src/pantallas/Restablecer.jsx";
 import { Reenviar } from "../src/pantallas/Reenviar.jsx";
 import { NuevaContrasena } from "../src/pantallas/NuevaContrasena.jsx";
 import { SesionContexto } from "../src/sesion/SesionContexto.jsx";
+
+function Sonda() {
+  const { pathname, state } = useLocation();
+  return <p>{`destino:${pathname}:${state?.email ?? ""}`}</p>;
+}
 
 function montar(componente, entrada, auth) {
   return render(
@@ -25,20 +30,42 @@ function montar(componente, entrada, auth) {
   );
 }
 
+function montarConRutas(componente, entrada, auth, desde = "/restablecer") {
+  return render(
+    <MemoryRouter initialEntries={[entrada]}>
+      <SesionContexto.Provider
+        value={{
+          cliente: { auth },
+          sesion: {},
+          estado: { estado: "anonimo", usuario: null },
+        }}
+      >
+        <Routes>
+          <Route path={desde} element={componente} />
+          <Route path="*" element={<Sonda />} />
+        </Routes>
+      </SesionContexto.Provider>
+    </MemoryRouter>,
+  );
+}
+
 describe("pantalla Restablecer", () => {
   it("no revela si la cuenta existe y confirma el envío", async () => {
     const usuario = userEvent.setup();
     const solicitarRestablecimiento = vi.fn().mockResolvedValue({});
-    montar(<Restablecer />, "/restablecer", { solicitarRestablecimiento });
+    montarConRutas(<Restablecer />, "/restablecer", {
+      solicitarRestablecimiento,
+    });
 
     await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
-    await usuario.click(screen.getByRole("button", { name: "Enviar enlace" }));
+    await usuario.click(screen.getByRole("button", { name: "Enviar código" }));
 
     expect(solicitarRestablecimiento).toHaveBeenCalledWith({
       email: "ana@uni.edu",
     });
+    // El código llega por correo: se sigue en el formulario que lo pide.
     expect(
-      await screen.findByRole("heading", { name: "Revisa tu correo" }),
+      await screen.findByText("destino:/nueva-contrasena:ana@uni.edu"),
     ).toBeTruthy();
   });
 
@@ -50,10 +77,10 @@ describe("pantalla Restablecer", () => {
     montar(<Restablecer />, "/restablecer", { solicitarRestablecimiento });
 
     await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
-    await usuario.click(screen.getByRole("button", { name: "Enviar enlace" }));
+    await usuario.click(screen.getByRole("button", { name: "Enviar código" }));
 
     await screen.findByRole("alert");
-    expect(screen.getByRole("button", { name: "Enviar enlace" }).disabled).toBe(
+    expect(screen.getByRole("button", { name: "Enviar código" }).disabled).toBe(
       true,
     );
   });
@@ -63,33 +90,48 @@ describe("pantalla Reenviar", () => {
   it("confirma el reenvío sin revelar la cuenta", async () => {
     const usuario = userEvent.setup();
     const reenviarConfirmacion = vi.fn().mockResolvedValue({});
-    montar(<Reenviar />, "/reenviar", { reenviarConfirmacion });
+    montarConRutas(
+      <Reenviar />,
+      "/reenviar",
+      { reenviarConfirmacion },
+      "/reenviar",
+    );
 
     await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
-    await usuario.click(screen.getByRole("button", { name: "Enviar enlace" }));
+    await usuario.click(screen.getByRole("button", { name: "Enviar código" }));
 
+    // Reenviar también deja el código por teclear: no manda al login.
     expect(
-      await screen.findByRole("heading", { name: "Revisa tu correo" }),
+      await screen.findByText("destino:/confirmar-email:ana@uni.edu"),
     ).toBeTruthy();
   });
 });
 
 describe("pantalla Nueva contraseña", () => {
-  it("exige que las contraseñas coincidan antes de llamar a la API", async () => {
-    const usuario = userEvent.setup();
-    const confirmarRestablecimiento = vi.fn();
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
-      confirmarRestablecimiento,
-    });
-
+  async function rellenar(
+    usuario,
+    { pin = "123456", nueva = "secreta123", repetir } = {},
+  ) {
+    await usuario.type(screen.getByLabelText("Correo"), "ana@uni.edu");
+    await usuario.type(screen.getByLabelText("Código"), pin);
     await usuario.type(
       screen.getByLabelText("Nueva contraseña", { selector: "input" }),
-      "secreta123",
+      nueva,
     );
     await usuario.type(
       screen.getByLabelText("Repetir contraseña", { selector: "input" }),
-      "secreta124",
+      repetir ?? nueva,
     );
+  }
+
+  it("exige que las contraseñas coincidan antes de llamar a la API", async () => {
+    const usuario = userEvent.setup();
+    const confirmarRestablecimiento = vi.fn();
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
+      confirmarRestablecimiento,
+    });
+
+    await rellenar(usuario, { repetir: "secreta124" });
     await usuario.click(
       screen.getByRole("button", { name: "Guardar contraseña" }),
     );
@@ -98,53 +140,60 @@ describe("pantalla Nueva contraseña", () => {
     expect(confirmarRestablecimiento).not.toHaveBeenCalled();
   });
 
-  it("muestra el enlace inválido cuando el token ya no sirve", async () => {
+  it("exige un PIN de 6 dígitos antes de llamar a la API", async () => {
     const usuario = userEvent.setup();
-    const confirmarRestablecimiento = vi
-      .fn()
-      .mockRejectedValue(new ApiError("Token inválido", { status: 422 }));
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+    const confirmarRestablecimiento = vi.fn();
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
       confirmarRestablecimiento,
     });
 
-    await usuario.type(
-      screen.getByLabelText("Nueva contraseña", { selector: "input" }),
-      "secreta123",
-    );
-    await usuario.type(
-      screen.getByLabelText("Repetir contraseña", { selector: "input" }),
-      "secreta123",
-    );
+    await rellenar(usuario, { pin: "1234" });
     await usuario.click(
       screen.getByRole("button", { name: "Guardar contraseña" }),
     );
 
     expect(
-      await screen.findByRole("heading", { name: "El enlace no es válido" }),
+      screen.getByText("El código debe tener exactamente 6 dígitos."),
     ).toBeTruthy();
+    expect(confirmarRestablecimiento).not.toHaveBeenCalled();
+  });
+
+  it("muestra el mensaje genérico cuando el PIN no sirve", async () => {
+    const usuario = userEvent.setup();
+    const detalle = "El código es inválido, expiró o ya fue usado.";
+    const confirmarRestablecimiento = vi
+      .fn()
+      .mockRejectedValue(
+        new ApiError(detalle, { status: 422, problem: { detail: detalle } }),
+      );
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
+      confirmarRestablecimiento,
+    });
+
+    await rellenar(usuario);
+    await usuario.click(
+      screen.getByRole("button", { name: "Guardar contraseña" }),
+    );
+
+    expect((await screen.findByRole("alert")).textContent).toContain(detalle);
+    expect(screen.getByLabelText("Código")).toBeTruthy();
   });
 
   it("guarda la contraseña nueva y ofrece entrar", async () => {
     const usuario = userEvent.setup();
     const confirmarRestablecimiento = vi.fn().mockResolvedValue({});
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
       confirmarRestablecimiento,
     });
 
-    await usuario.type(
-      screen.getByLabelText("Nueva contraseña", { selector: "input" }),
-      "secreta123",
-    );
-    await usuario.type(
-      screen.getByLabelText("Repetir contraseña", { selector: "input" }),
-      "secreta123",
-    );
+    await rellenar(usuario);
     await usuario.click(
       screen.getByRole("button", { name: "Guardar contraseña" }),
     );
 
     expect(confirmarRestablecimiento).toHaveBeenCalledWith({
-      token: "abc",
+      email: "ana@uni.edu",
+      pin: "123456",
       nuevaContrasena: "secreta123",
     });
     expect(
@@ -171,7 +220,7 @@ describe("accesibilidad de la recuperación", () => {
   });
 
   it("Nueva contraseña no tiene violaciones", async () => {
-    montar(<NuevaContrasena />, "/nueva-contrasena?token=abc", {
+    montar(<NuevaContrasena />, "/nueva-contrasena", {
       confirmarRestablecimiento: vi.fn(),
     });
 

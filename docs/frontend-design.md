@@ -158,8 +158,8 @@ Cada decisión nombra el problema, la elección, la alternativa y su costo. Las 
 | `/` | Catálogo: grid, filtro por categoría, orden, búsqueda, cursor infinito | Pública |
 | `/anuncios/:id` | Detalle: galería, precio, descripción, vendedor, acción "contactar" | Pública (la acción exige sesión) |
 | `/entrar`, `/registro` | Login y registro | Pública |
-| `/confirmar-email` | Confirmación por token (lee el token de la URL) | Pública |
-| `/restablecer` | Solicitar y confirmar restablecimiento | Pública |
+| `/confirmar-email` | Confirmación con **email + PIN de 6 dígitos** (sin token en la URL) | Pública |
+| `/restablecer`, `/nueva-contrasena` | Solicitar el código y confirmar el restablecimiento con **email + PIN + contraseña nueva** | Pública |
 | `/mis-anuncios` | Panel offset con filtro por estado de revisión, badge (incl. retraído) y `motivoRechazo` | `miembro`+ |
 | `/publicar`, `/mis-anuncios/:id/editar` | Alta y edición multipart; la edición relee el anuncio por id, así que sobrevive a recargar | `miembro`+ |
 | `/mensajes`, `/mensajes/:id` | Lista de conversaciones e hilo con envío y marcado de lectura explícito | `miembro`+ |

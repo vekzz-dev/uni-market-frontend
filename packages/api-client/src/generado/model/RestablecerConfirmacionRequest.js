@@ -22,12 +22,13 @@ class RestablecerConfirmacionRequest {
     /**
      * Constructs a new <code>RestablecerConfirmacionRequest</code>.
      * @alias module:model/RestablecerConfirmacionRequest
-     * @param token {String} 
+     * @param email {String} Normalizado a minúsculas en registro y login (R2). Cualquier email sintáctico válido; sin allow-list de dominio.
+     * @param pin {String} PIN de 6 dígitos recibido por correo; un solo uso y 5 intentos como máximo.
      * @param nuevaContrasena {String} 
      */
-    constructor(token, nuevaContrasena) { 
+    constructor(email, pin, nuevaContrasena) { 
         
-        RestablecerConfirmacionRequest.initialize(this, token, nuevaContrasena);
+        RestablecerConfirmacionRequest.initialize(this, email, pin, nuevaContrasena);
     }
 
     /**
@@ -35,8 +36,9 @@ class RestablecerConfirmacionRequest {
      * This method is used by the constructors of any subclasses, in order to implement multiple inheritance (mix-ins).
      * Only for internal use.
      */
-    static initialize(obj, token, nuevaContrasena) { 
-        obj['token'] = token;
+    static initialize(obj, email, pin, nuevaContrasena) { 
+        obj['email'] = email;
+        obj['pin'] = pin;
         obj['nuevaContrasena'] = nuevaContrasena;
     }
 
@@ -51,8 +53,11 @@ class RestablecerConfirmacionRequest {
         if (data) {
             obj = obj || new RestablecerConfirmacionRequest();
 
-            if (data.hasOwnProperty('token')) {
-                obj['token'] = ApiClient.convertToType(data['token'], 'String');
+            if (data.hasOwnProperty('email')) {
+                obj['email'] = ApiClient.convertToType(data['email'], 'String');
+            }
+            if (data.hasOwnProperty('pin')) {
+                obj['pin'] = ApiClient.convertToType(data['pin'], 'String');
             }
             if (data.hasOwnProperty('nuevaContrasena')) {
                 obj['nuevaContrasena'] = ApiClient.convertToType(data['nuevaContrasena'], 'String');
@@ -74,8 +79,12 @@ class RestablecerConfirmacionRequest {
             }
         }
         // ensure the json data is a string
-        if (data['token'] && !(typeof data['token'] === 'string' || data['token'] instanceof String)) {
-            throw new Error("Expected the field `token` to be a primitive type in the JSON string but got " + data['token']);
+        if (data['email'] && !(typeof data['email'] === 'string' || data['email'] instanceof String)) {
+            throw new Error("Expected the field `email` to be a primitive type in the JSON string but got " + data['email']);
+        }
+        // ensure the json data is a string
+        if (data['pin'] && !(typeof data['pin'] === 'string' || data['pin'] instanceof String)) {
+            throw new Error("Expected the field `pin` to be a primitive type in the JSON string but got " + data['pin']);
         }
         // ensure the json data is a string
         if (data['nuevaContrasena'] && !(typeof data['nuevaContrasena'] === 'string' || data['nuevaContrasena'] instanceof String)) {
@@ -88,12 +97,19 @@ class RestablecerConfirmacionRequest {
 
 }
 
-RestablecerConfirmacionRequest.RequiredProperties = ["token", "nuevaContrasena"];
+RestablecerConfirmacionRequest.RequiredProperties = ["email", "pin", "nuevaContrasena"];
 
 /**
- * @member {String} token
+ * Normalizado a minúsculas en registro y login (R2). Cualquier email sintáctico válido; sin allow-list de dominio.
+ * @member {String} email
  */
-RestablecerConfirmacionRequest.prototype['token'] = undefined;
+RestablecerConfirmacionRequest.prototype['email'] = undefined;
+
+/**
+ * PIN de 6 dígitos recibido por correo; un solo uso y 5 intentos como máximo.
+ * @member {String} pin
+ */
+RestablecerConfirmacionRequest.prototype['pin'] = undefined;
 
 /**
  * @member {String} nuevaContrasena

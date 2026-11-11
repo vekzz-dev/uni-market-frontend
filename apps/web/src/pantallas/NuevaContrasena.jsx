@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { mapearProblema } from "@uni-market/core";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { mapearProblema, validarEmail, validarPin } from "@uni-market/core";
 import { Aviso } from "../componentes/Aviso.jsx";
 import { Boton } from "../componentes/Boton.jsx";
 import { Campo } from "../componentes/Campo.jsx";
@@ -13,14 +13,18 @@ const MINIMO = 8;
 export function NuevaContrasena() {
   const { cliente } = useSesion();
   const navegar = useNavigate();
-  const [params] = useSearchParams();
-  const token = params.get("token");
+  const { state } = useLocation();
 
-  const [formulario, setFormulario] = useState({ nueva: "", repetir: "" });
+  const [formulario, setFormulario] = useState({
+    email: state?.email ?? "",
+    pin: "",
+    nueva: "",
+    repetir: "",
+  });
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [estado, setEstado] = useState(token ? "formulario" : "invalido");
+  const [listo, setListo] = useState(false);
 
   const cambiar = (campo) => (evento) =>
     setFormulario((actual) => ({ ...actual, [campo]: evento.target.value }));
@@ -30,12 +34,17 @@ export function NuevaContrasena() {
     setError(null);
 
     const problemas = {};
+    const problemaEmail = validarEmail(formulario.email);
+    if (problemaEmail) problemas.email = problemaEmail;
+    const problemaPin = validarPin(formulario.pin);
+    if (problemaPin) problemas.pin = problemaPin;
     if (formulario.nueva.length < MINIMO) {
       problemas.nueva = `La contraseña debe tener al menos ${MINIMO} caracteres.`;
     }
     if (formulario.repetir !== formulario.nueva) {
       problemas.repetir = "Las contraseñas no coinciden.";
     }
+
     if (Object.keys(problemas).length > 0) {
       setErrores(problemas);
       return;
@@ -45,37 +54,20 @@ export function NuevaContrasena() {
     setEnviando(true);
     try {
       await cliente.auth.confirmarRestablecimiento({
-        token,
+        email: formulario.email.trim(),
+        pin: formulario.pin,
         nuevaContrasena: formulario.nueva,
       });
-      setEstado("listo");
+      setListo(true);
     } catch (fallo) {
-      const { mensaje, status } = mapearProblema(fallo);
-      // El enlace es de un solo uso y vence en 60 minutos: un 4xx significa token inválido.
-      if (status >= 400 && status < 500) {
-        setEstado("invalido");
-      } else {
-        setError(mensaje);
-      }
+      // El 422 es deliberadamente indistinguible: no se intenta adivinar la causa.
+      setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
   }
 
-  if (estado === "invalido") {
-    return (
-      <LayoutAuth
-        titulo="El enlace no es válido"
-        subtitulo="Puede que haya expirado o que ya se haya usado. Solicita uno nuevo."
-        resultado
-        icono={{ nombre: "enlaceRoto", tono: "error" }}
-      >
-        <Boton onClick={() => navegar("/restablecer")}>Solicitar enlace</Boton>
-      </LayoutAuth>
-    );
-  }
-
-  if (estado === "listo") {
+  if (listo) {
     return (
       <LayoutAuth
         titulo="Contraseña actualizada"
@@ -91,10 +83,36 @@ export function NuevaContrasena() {
   return (
     <LayoutAuth
       titulo="Nueva contraseña"
-      subtitulo="Elige una contraseña de al menos 8 caracteres."
+      subtitulo="Escribe el código de 6 dígitos que enviamos a tu correo y elige una contraseña nueva."
     >
       <form className={estilos.formulario} onSubmit={enviar} noValidate>
         {error && <Aviso>{error}</Aviso>}
+
+        <Campo
+          id="correo"
+          etiqueta="Correo"
+          type="email"
+          autoComplete="email"
+          placeholder="tu@correo.com"
+          value={formulario.email}
+          onChange={cambiar("email")}
+          error={errores.email}
+          required
+        />
+
+        <Campo
+          id="pin"
+          etiqueta="Código"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          maxLength={6}
+          placeholder="000000"
+          ayuda="Seis dígitos. Vence en 15 minutos y admite 5 intentos."
+          value={formulario.pin}
+          onChange={cambiar("pin")}
+          error={errores.pin}
+          required
+        />
 
         <Campo
           id="nueva"
@@ -125,6 +143,10 @@ export function NuevaContrasena() {
           {enviando ? "Guardando…" : "Guardar contraseña"}
         </Boton>
       </form>
+
+      <p className={estilos.pie}>
+        <Link to="/restablecer">Pedir otro código</Link>
+      </p>
     </LayoutAuth>
   );
 }

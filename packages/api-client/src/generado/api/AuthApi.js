@@ -13,6 +13,7 @@
 
 
 import ApiClient from "../ApiClient.js";
+import ConfirmarEmailRequest from '../model/ConfirmarEmailRequest.js';
 import LoginRequest from '../model/LoginRequest.js';
 import LogoutRequest from '../model/LogoutRequest.js';
 import MensajeConfirmacion from '../model/MensajeConfirmacion.js';
@@ -90,22 +91,21 @@ export default class AuthApi {
 
 
     /**
-     * Confirma el email con el token recibido por correo
-     * Token crudo de un solo uso, ventana 24 horas, buscado por hash (R11). El login se rechaza hasta confirmar (criterio PRD §8). 
-     * @param {String} token 
+     * Confirma el email con el PIN recibido por correo
+     * PIN de **6 dígitos** de un solo uso, ventana **15 minutos**, persistido como hash (R11, issue #8). Máximo **5 intentos**: al agotarlos el código se invalida y hay que pedir otro. El correo no contiene enlaces. Rate limiting → `429`. El login se rechaza hasta confirmar (criterio PRD §8). 
+     * @param {module:model/ConfirmarEmailRequest} confirmarEmailRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MensajeConfirmacion} and HTTP response
      */
-    confirmarEmailWithHttpInfo(token) {
-      let postBody = null;
-      // verify the required parameter 'token' is set
-      if (token === undefined || token === null) {
-        throw new Error("Missing the required parameter 'token' when calling confirmarEmail");
+    confirmarEmailWithHttpInfo(confirmarEmailRequest) {
+      let postBody = confirmarEmailRequest;
+      // verify the required parameter 'confirmarEmailRequest' is set
+      if (confirmarEmailRequest === undefined || confirmarEmailRequest === null) {
+        throw new Error("Missing the required parameter 'confirmarEmailRequest' when calling confirmarEmail");
       }
 
       let pathParams = {
       };
       let queryParams = {
-        'token': token
       };
       let headerParams = {
       };
@@ -113,24 +113,24 @@ export default class AuthApi {
       };
 
       let authNames = [];
-      let contentTypes = [];
+      let contentTypes = ['application/json'];
       let accepts = ['application/json', 'application/problem+json'];
       let returnType = MensajeConfirmacion;
       return this.apiClient.callApi(
-        '/auth/confirmar-email', 'GET',
+        '/auth/confirmar-email', 'POST',
         pathParams, queryParams, headerParams, formParams, postBody,
         authNames, contentTypes, accepts, returnType, null
       );
     }
 
     /**
-     * Confirma el email con el token recibido por correo
-     * Token crudo de un solo uso, ventana 24 horas, buscado por hash (R11). El login se rechaza hasta confirmar (criterio PRD §8). 
-     * @param {String} token 
+     * Confirma el email con el PIN recibido por correo
+     * PIN de **6 dígitos** de un solo uso, ventana **15 minutos**, persistido como hash (R11, issue #8). Máximo **5 intentos**: al agotarlos el código se invalida y hay que pedir otro. El correo no contiene enlaces. Rate limiting → `429`. El login se rechaza hasta confirmar (criterio PRD §8). 
+     * @param {module:model/ConfirmarEmailRequest} confirmarEmailRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MensajeConfirmacion}
      */
-    confirmarEmail(token) {
-      return this.confirmarEmailWithHttpInfo(token)
+    confirmarEmail(confirmarEmailRequest) {
+      return this.confirmarEmailWithHttpInfo(confirmarEmailRequest)
         .then(function(response_and_data) {
           return response_and_data.data;
         });
@@ -138,8 +138,8 @@ export default class AuthApi {
 
 
     /**
-     * Restablece la contraseña con el token
-     * Token de 60 minutos de un solo uso (R11); política uniforme mínimo 8 caracteres.
+     * Restablece la contraseña con el PIN
+     * PIN de 6 dígitos de un solo uso, ventana 15 minutos y máximo 5 intentos (R11); política uniforme mínimo 8 caracteres. Rate limiting → `429`. 
      * @param {module:model/RestablecerConfirmacionRequest} restablecerConfirmacionRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing HTTP response
      */
@@ -171,8 +171,8 @@ export default class AuthApi {
     }
 
     /**
-     * Restablece la contraseña con el token
-     * Token de 60 minutos de un solo uso (R11); política uniforme mínimo 8 caracteres.
+     * Restablece la contraseña con el PIN
+     * PIN de 6 dígitos de un solo uso, ventana 15 minutos y máximo 5 intentos (R11); política uniforme mínimo 8 caracteres. Rate limiting → `429`. 
      * @param {module:model/RestablecerConfirmacionRequest} restablecerConfirmacionRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}
      */
@@ -327,7 +327,7 @@ export default class AuthApi {
 
     /**
      * Solicita el restablecimiento de contraseña
-     * No-enumeración (R13): responde EXACTAMENTE lo mismo exista o no la cuenta; el email solo se envía si la cuenta existe y está activa. Token de ventana 60 minutos, un solo uso, persistido como hash (R11). Rate limiting → `429`. 
+     * No-enumeración (R13): responde EXACTAMENTE lo mismo exista o no la cuenta; el email solo se envía si la cuenta existe y está activa. PIN de **6 dígitos**, ventana **15 minutos**, un solo uso, persistido como hash (R11). Rate limiting → `429`. 
      * @param {module:model/RestablecerSolicitudRequest} restablecerSolicitudRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with an object containing data of type {@link module:model/MensajeConfirmacion} and HTTP response
      */
@@ -360,7 +360,7 @@ export default class AuthApi {
 
     /**
      * Solicita el restablecimiento de contraseña
-     * No-enumeración (R13): responde EXACTAMENTE lo mismo exista o no la cuenta; el email solo se envía si la cuenta existe y está activa. Token de ventana 60 minutos, un solo uso, persistido como hash (R11). Rate limiting → `429`. 
+     * No-enumeración (R13): responde EXACTAMENTE lo mismo exista o no la cuenta; el email solo se envía si la cuenta existe y está activa. PIN de **6 dígitos**, ventana **15 minutos**, un solo uso, persistido como hash (R11). Rate limiting → `429`. 
      * @param {module:model/RestablecerSolicitudRequest} restablecerSolicitudRequest 
      * @return {Promise} a {@link https://www.promisejs.org/|Promise}, with data of type {@link module:model/MensajeConfirmacion}
      */

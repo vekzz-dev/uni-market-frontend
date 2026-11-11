@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -7,7 +7,12 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { mapearProblema, validarRegistro } from "@uni-market/core";
+import {
+  mapearProblema,
+  validarEmail,
+  validarPin,
+  validarRegistro,
+} from "@uni-market/core";
 import { Aviso, Boton, Campo, Cabecera } from "../componentes/ui.jsx";
 import { useSesion } from "../sesion/SesionContexto.jsx";
 import { useTema } from "../tema.js";
@@ -123,7 +128,6 @@ export function Registro() {
   const [errores, setErrores] = useState({});
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   async function enviar() {
     setError(null);
@@ -138,27 +142,13 @@ export function Registro() {
     setEnviando(true);
     try {
       await cliente.usuarios.registrarUsuario(form);
-      setEnviado(true);
+      // La cuenta queda sin confirmar: el login fallará hasta meter el PIN.
+      router.replace({ pathname: "/confirmar", params: { email: form.email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
-  }
-
-  if (enviado) {
-    return (
-      <Pantalla
-        titulo="Revisa tu correo"
-        subtitulo={`Te enviamos un enlace de confirmación a ${form.email}. Vence en 24 horas.`}
-      >
-        <Boton
-          titulo="Ir a entrar"
-          variante="secundario"
-          onPress={() => router.replace("/entrar")}
-        />
-      </Pantalla>
-    );
   }
 
   return (
@@ -203,47 +193,84 @@ export function Registro() {
   );
 }
 
-const RESULTADOS = {
-  verificando: "Confirmando tu cuenta…",
-  confirmado: "Cuenta confirmada",
-  invalido: "El enlace no es válido",
-};
-
 export function Confirmar() {
   const { cliente } = useSesion();
   const router = useRouter();
-  const { token } = useLocalSearchParams();
-  const [estado, setEstado] = useState(token ? "verificando" : "invalido");
-  const { semantic: c } = useTema();
+  const { email: emailDeRuta } = useLocalSearchParams();
+  const [email, setEmail] = useState(emailDeRuta ?? "");
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState(null);
+  const [enviando, setEnviando] = useState(false);
+  const [confirmado, setConfirmado] = useState(false);
 
-  useEffect(() => {
-    if (!token) return;
-    let vigente = true;
-    cliente.auth
-      .confirmarEmail(token)
-      .then(() => vigente && setEstado("confirmado"))
-      .catch(() => vigente && setEstado("invalido"));
-    return () => {
-      vigente = false;
-    };
-  }, [cliente, token]);
+  async function enviar() {
+    setError(null);
+
+    const problemaEmail = validarEmail(email);
+    if (problemaEmail) {
+      setError(problemaEmail);
+      return;
+    }
+    const problemaPin = validarPin(pin);
+    if (problemaPin) {
+      setError(problemaPin);
+      return;
+    }
+
+    setEnviando(true);
+    try {
+      await cliente.auth.confirmarEmail({ email: email.trim(), pin });
+      setConfirmado(true);
+    } catch (fallo) {
+      // El 422 es indistinguible a propósito: se muestra tal cual (R13).
+      setError(mapearProblema(fallo).mensaje);
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  if (confirmado) {
+    return (
+      <Pantalla
+        titulo="Cuenta confirmada"
+        subtitulo="Ya puedes entrar y publicar tus anuncios."
+      >
+        <Boton titulo="Entrar" onPress={() => router.replace("/entrar")} />
+      </Pantalla>
+    );
+  }
 
   return (
-    <Pantalla titulo={RESULTADOS[estado]}>
-      {estado === "confirmado" && (
-        <Boton titulo="Entrar" onPress={() => router.replace("/entrar")} />
-      )}
-      {estado === "invalido" && (
-        <>
-          <Text style={{ color: c.textSecondary }}>
-            Puede que haya expirado o que ya se haya usado.
-          </Text>
-          <Boton
-            titulo="Reenviar confirmación"
-            onPress={() => router.push("/reenviar")}
-          />
-        </>
-      )}
+    <Pantalla
+      titulo="Confirma tu cuenta"
+      subtitulo="Escribe el código de 6 dígitos que enviamos a tu correo."
+    >
+      {error && <Aviso>{error}</Aviso>}
+      <Campo
+        etiqueta="Correo"
+        valor={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <Campo
+        etiqueta="Código"
+        valor={pin}
+        onChangeText={setPin}
+        keyboardType="number-pad"
+        maxLength={6}
+        ayuda="Seis dígitos. Vence en 15 minutos y admite 5 intentos."
+      />
+      <Boton
+        titulo={enviando ? "Confirmando…" : "Confirmar cuenta"}
+        cargando={enviando}
+        onPress={enviar}
+      />
+      <Boton
+        titulo="Reenviar el código"
+        variante="secundario"
+        onPress={() => router.push("/reenviar")}
+      />
     </Pantalla>
   );
 }
@@ -254,14 +281,14 @@ export function Restablecer() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   async function enviar() {
     setError(null);
     setEnviando(true);
     try {
       await cliente.auth.solicitarRestablecimiento({ email });
-      setEnviado(true);
+      // El código llega por correo; se sigue en el formulario que lo pide.
+      router.replace({ pathname: "/nueva-contrasena", params: { email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
@@ -269,25 +296,10 @@ export function Restablecer() {
     }
   }
 
-  if (enviado) {
-    return (
-      <Pantalla
-        titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta con ese correo, te enviamos un enlace. Vence en 60 minutos."
-      >
-        <Boton
-          titulo="Volver a entrar"
-          variante="secundario"
-          onPress={() => router.replace("/entrar")}
-        />
-      </Pantalla>
-    );
-  }
-
   return (
     <Pantalla
       titulo="Restablecer contraseña"
-      subtitulo="Te enviaremos un enlace para crear una nueva."
+      subtitulo="Te enviaremos un código para crear una nueva."
     >
       {error && <Aviso>{error}</Aviso>}
       <Campo
@@ -298,7 +310,7 @@ export function Restablecer() {
         autoCapitalize="none"
       />
       <Boton
-        titulo={enviando ? "Enviando…" : "Enviar enlace"}
+        titulo={enviando ? "Enviando…" : "Enviar código"}
         cargando={enviando}
         onPress={enviar}
       />
@@ -312,14 +324,13 @@ export function Reenviar() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
 
   async function enviar() {
     setError(null);
     setEnviando(true);
     try {
       await cliente.auth.reenviarConfirmacion({ email });
-      setEnviado(true);
+      router.replace({ pathname: "/confirmar", params: { email } });
     } catch (fallo) {
       setError(mapearProblema(fallo).mensaje);
     } finally {
@@ -327,25 +338,10 @@ export function Reenviar() {
     }
   }
 
-  if (enviado) {
-    return (
-      <Pantalla
-        titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta sin confirmar, te enviamos otro enlace."
-      >
-        <Boton
-          titulo="Volver a entrar"
-          variante="secundario"
-          onPress={() => router.replace("/entrar")}
-        />
-      </Pantalla>
-    );
-  }
-
   return (
     <Pantalla
       titulo="Reenviar confirmación"
-      subtitulo="Te enviamos otro enlace para confirmar tu cuenta."
+      subtitulo="Te enviamos otro código para confirmar tu cuenta."
     >
       {error && <Aviso>{error}</Aviso>}
       <Campo
@@ -356,7 +352,7 @@ export function Reenviar() {
         autoCapitalize="none"
       />
       <Boton
-        titulo={enviando ? "Enviando…" : "Enviar enlace"}
+        titulo={enviando ? "Enviando…" : "Enviar código"}
         cargando={enviando}
         onPress={enviar}
       />
@@ -367,15 +363,28 @@ export function Reenviar() {
 export function NuevaContrasena() {
   const { cliente } = useSesion();
   const router = useRouter();
-  const { token } = useLocalSearchParams();
+  const { email: emailDeRuta } = useLocalSearchParams();
+  const [email, setEmail] = useState(emailDeRuta ?? "");
+  const [pin, setPin] = useState("");
   const [nueva, setNueva] = useState("");
   const [repetir, setRepetir] = useState("");
   const [error, setError] = useState(null);
-  const [estado, setEstado] = useState(token ? "formulario" : "invalido");
   const [enviando, setEnviando] = useState(false);
+  const [listo, setListo] = useState(false);
 
   async function enviar() {
     setError(null);
+
+    const problemaEmail = validarEmail(email);
+    if (problemaEmail) {
+      setError(problemaEmail);
+      return;
+    }
+    const problemaPin = validarPin(pin);
+    if (problemaPin) {
+      setError(problemaPin);
+      return;
+    }
     if (nueva.length < 8) {
       setError("La contraseña debe tener al menos 8 caracteres.");
       return;
@@ -384,37 +393,23 @@ export function NuevaContrasena() {
       setError("Las contraseñas no coinciden.");
       return;
     }
+
     setEnviando(true);
     try {
       await cliente.auth.confirmarRestablecimiento({
-        token,
+        email: email.trim(),
+        pin,
         nuevaContrasena: nueva,
       });
-      setEstado("listo");
+      setListo(true);
     } catch (fallo) {
-      const { status } = mapearProblema(fallo);
-      if (status >= 400 && status < 500) setEstado("invalido");
-      else setError(mapearProblema(fallo).mensaje);
+      setError(mapearProblema(fallo).mensaje);
     } finally {
       setEnviando(false);
     }
   }
 
-  if (estado === "invalido") {
-    return (
-      <Pantalla
-        titulo="El enlace no es válido"
-        subtitulo="Solicita uno nuevo para continuar."
-      >
-        <Boton
-          titulo="Solicitar enlace"
-          onPress={() => router.replace("/restablecer")}
-        />
-      </Pantalla>
-    );
-  }
-
-  if (estado === "listo") {
+  if (listo) {
     return (
       <Pantalla
         titulo="Contraseña actualizada"
@@ -428,19 +423,34 @@ export function NuevaContrasena() {
   return (
     <Pantalla
       titulo="Nueva contraseña"
-      subtitulo="Elige una contraseña de al menos 8 caracteres."
+      subtitulo="Escribe el código de 6 dígitos que enviamos a tu correo y elige una contraseña nueva."
     >
       {error && <Aviso>{error}</Aviso>}
       <Campo
+        etiqueta="Correo"
+        valor={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <Campo
+        etiqueta="Código"
+        valor={pin}
+        onChangeText={setPin}
+        keyboardType="number-pad"
+        maxLength={6}
+        ayuda="Seis dígitos. Vence en 15 minutos y admite 5 intentos."
+      />
+      <Campo
         etiqueta="Nueva contraseña"
-        value={nueva}
+        valor={nueva}
         onChangeText={setNueva}
         secureTextEntry
         ayuda="Mínimo 8 caracteres."
       />
       <Campo
         etiqueta="Repetir contraseña"
-        value={repetir}
+        valor={repetir}
         onChangeText={setRepetir}
         secureTextEntry
       />
@@ -448,6 +458,11 @@ export function NuevaContrasena() {
         titulo={enviando ? "Guardando…" : "Guardar contraseña"}
         cargando={enviando}
         onPress={enviar}
+      />
+      <Boton
+        titulo="Pedir otro código"
+        variante="secundario"
+        onPress={() => router.push("/restablecer")}
       />
     </Pantalla>
   );

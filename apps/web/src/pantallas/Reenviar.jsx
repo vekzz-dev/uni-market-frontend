@@ -14,7 +14,6 @@ export function Reenviar() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState(null);
   const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
 
   async function enviar(evento) {
@@ -23,7 +22,8 @@ export function Reenviar() {
     setEnviando(true);
     try {
       await cliente.auth.reenviarConfirmacion({ email });
-      setEnviado(true);
+      // El código se teclea en la pantalla de confirmación, no en el login.
+      navegar("/confirmar-email", { state: { email } });
     } catch (fallo) {
       const { mensaje, status } = mapearProblema(fallo);
       setError(mensaje);
@@ -33,25 +33,10 @@ export function Reenviar() {
     }
   }
 
-  if (enviado) {
-    return (
-      <LayoutAuth
-        titulo="Revisa tu correo"
-        subtitulo="Si existe una cuenta sin confirmar con ese correo, te enviamos un enlace. Podrás pedir otro en unos minutos."
-        resultado
-        icono={{ nombre: "correo", tono: "exito" }}
-      >
-        <Boton variante="secundario" onClick={() => navegar("/entrar")}>
-          Volver a entrar
-        </Boton>
-      </LayoutAuth>
-    );
-  }
-
   return (
     <LayoutAuth
       titulo="Reenviar confirmación"
-      subtitulo="Te enviamos otro enlace para confirmar tu cuenta."
+      subtitulo="Te enviamos otro código para confirmar tu cuenta."
     >
       <form className={estilos.formulario} onSubmit={enviar} noValidate>
         {error && <Aviso>{error}</Aviso>}
@@ -68,7 +53,7 @@ export function Reenviar() {
         />
 
         <Boton type="submit" cargando={enviando} disabled={bloqueado}>
-          {enviando ? "Enviando…" : "Enviar enlace"}
+          {enviando ? "Enviando…" : "Enviar código"}
         </Boton>
       </form>
 

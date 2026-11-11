@@ -192,6 +192,16 @@ export function Moderacion() {
         <Link to="/" className={estilos.enlace}>
           Catálogo
         </Link>
+        {puede(estado.usuario?.rol, "categorias.gestionar") && (
+          <Link to="/admin/categorias" className={estilos.enlace}>
+            Categorías
+          </Link>
+        )}
+        {puede(estado.usuario?.rol, "admin.usuarios") && (
+          <Link to="/admin/usuarios" className={estilos.enlace}>
+            Usuarios
+          </Link>
+        )}
       </CabeceraPublica>
 
       <main className={estilos.principal}>

@@ -225,3 +225,23 @@ describe("pantalla Moderación", () => {
     expect((await axe(document.body)).violations).toEqual([]);
   });
 });
+
+describe("navegación entre secciones desde moderación", () => {
+  it("el admin llega a usuarios y categorías", async () => {
+    montar({ rol: "admin" });
+
+    expect(
+      await screen.findByRole("link", { name: "Categorías" }),
+    ).toBeTruthy();
+    expect(await screen.findByRole("link", { name: "Usuarios" })).toBeTruthy();
+  });
+
+  it("el moderador llega a categorías pero no a usuarios", async () => {
+    montar({ rol: "moderador" });
+
+    expect(
+      await screen.findByRole("link", { name: "Categorías" }),
+    ).toBeTruthy();
+    expect(screen.queryByRole("link", { name: "Usuarios" })).toBeNull();
+  });
+});

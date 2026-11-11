@@ -194,3 +194,14 @@ describe("pantalla Admin categorías", () => {
     expect((await axe(document.body)).violations).toEqual([]);
   });
 });
+
+describe("navegación entre secciones desde categorías", () => {
+  it("llega a usuarios y moderación", async () => {
+    montar({ rol: "admin" });
+
+    expect(await screen.findByRole("link", { name: "Usuarios" })).toBeTruthy();
+    expect(
+      await screen.findByRole("link", { name: "Moderación" }),
+    ).toBeTruthy();
+  });
+});

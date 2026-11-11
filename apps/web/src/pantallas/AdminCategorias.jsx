@@ -173,6 +173,11 @@ export function AdminCategorias() {
       <CabeceraPublica
         onBuscar={(q) => navegar(q ? `/?q=${encodeURIComponent(q)}` : "/")}
       >
+        {puede(estado.usuario?.rol, "admin.usuarios") && (
+          <Link to="/admin/usuarios" className={estilos.enlace}>
+            Usuarios
+          </Link>
+        )}
         <Link to="/moderacion" className={estilos.enlace}>
           Moderación
         </Link>

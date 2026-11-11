@@ -304,3 +304,16 @@ describe("pantalla Admin usuarios", () => {
     expect((await axe(document.body)).violations).toEqual([]);
   });
 });
+
+describe("navegación entre secciones desde usuarios", () => {
+  it("llega a categorías y moderación", async () => {
+    montar({ rol: "admin" });
+
+    expect(
+      await screen.findByRole("link", { name: "Categorías" }),
+    ).toBeTruthy();
+    expect(
+      await screen.findByRole("link", { name: "Moderación" }),
+    ).toBeTruthy();
+  });
+});

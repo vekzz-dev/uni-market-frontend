@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SesionProvider } from "../src/sesion/SesionContexto.jsx";
 import { TemaProvider, useTema } from "../src/tema.js";
 
@@ -20,10 +21,12 @@ function Navegacion() {
 
 export default function Layout() {
   return (
-    <TemaProvider>
-      <SesionProvider>
-        <Navegacion />
-      </SesionProvider>
-    </TemaProvider>
+    <SafeAreaProvider>
+      <TemaProvider>
+        <SesionProvider>
+          <Navegacion />
+        </SesionProvider>
+      </TemaProvider>
+    </SafeAreaProvider>
   );
 }

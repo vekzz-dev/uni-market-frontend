@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SelectorTema, useTema } from "../tema.js";
 
 export function Boton({
@@ -110,11 +111,18 @@ export function Aviso({ tono = "error", children }) {
 
 export function Cabecera({ children }) {
   const { semantic: c } = useTema();
+  // El fondo de la cabecera se extiende bajo la barra de estado; el contenido
+  // se desplaza hacia abajo lo que mida esa barra.
+  const insets = useSafeAreaInsets();
   return (
     <View
       style={[
         estilos.cabecera,
-        { backgroundColor: c.surface, borderBottomColor: c.border },
+        {
+          backgroundColor: c.surface,
+          borderBottomColor: c.border,
+          paddingTop: insets.top,
+        },
       ]}
     >
       <View style={[estilos.logo, { backgroundColor: c.primary }]} />

@@ -39,6 +39,9 @@
   },
   "jest": {
     "preset": "jest-expo",
-    "transformIgnorePatterns": []
+    "transformIgnorePatterns": [],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/setupSafeArea.js"
+    ]
   }
 }

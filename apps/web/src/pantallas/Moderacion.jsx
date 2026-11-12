@@ -40,6 +40,9 @@ export function Moderacion() {
 
   const [decidiendo, setDecidiendo] = useState(null);
   const [detalle, setDetalle] = useState(null);
+  const [ampliada, setAmpliada] = useState(null);
+  const [categorias, setCategorias] = useState({});
+  const [categoriaAvanzada, setCategoriaAvanzada] = useState(false);
   const [motivo, setMotivo] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [errorDecision, setErrorDecision] = useState(null);
@@ -48,6 +51,34 @@ export function Moderacion() {
   useEffect(() => {
     if (restaurado && !autenticado) navegar("/entrar", { replace: true });
   }, [autenticado, navegar, restaurado]);
+
+  // El visor se cierra con Escape además del botón: un div clicable no es
+  // accesible por teclado y el lint lo rechaza con razón.
+  useEffect(() => {
+    if (!ampliada) return undefined;
+    const alPulsar = (evento) => {
+      if (evento.key === "Escape") setAmpliada(null);
+    };
+    document.addEventListener("keydown", alPulsar);
+    return () => document.removeEventListener("keydown", alPulsar);
+  }, [ampliada]);
+
+  // El contrato devuelve `categoriaId`, no el nombre: se traduce con el catálogo
+  useEffect(() => {
+    if (!autenticado || categoriaAvanzada) return undefined;
+    setCategoriaAvanzada(true);
+    cliente.categorias
+      .listarCategorias()
+      .then((respuesta) => {
+        const mapa = {};
+        for (const categoria of respuesta?.datos ?? []) {
+          mapa[categoria.id] = categoria.nombre;
+        }
+        setCategorias(mapa);
+      })
+      .catch(() => setCategorias({}));
+    return undefined;
+  }, [cliente, autenticado, categoriaAvanzada]);
 
   useEffect(() => {
     if (!autenticado || !esModerador) return undefined;
@@ -349,32 +380,78 @@ export function Moderacion() {
                       </div>
 
                       {detalle === anuncio.id && (
-                        <div className={estilos.detalle}>
-                          {anuncio.imagenUrls?.length > 0 && (
+                        <section
+                          className={estilos.detalle}
+                          aria-label="Detalle del anuncio"
+                        >
+                          {anuncio.imagenUrls?.length > 0 ? (
                             <ul
                               className={estilos.galeria}
                               aria-label="Imágenes del anuncio"
                             >
-                              {anuncio.imagenUrls.map((url) => (
+                              {anuncio.imagenUrls.map((url, indice) => (
                                 <li key={url}>
-                                  <img
-                                    src={resolverUrlMedia(url, origenApi)}
-                                    alt={`Imagen de ${anuncio.nombre}`}
-                                  />
+                                  <button
+                                    type="button"
+                                    className={estilos.miniaturaAmpliable}
+                                    aria-label={`Ampliar imagen ${indice + 1} de ${anuncio.imagenUrls.length}`}
+                                    onClick={() =>
+                                      setAmpliada({
+                                        anuncioId: anuncio.id,
+                                        indice,
+                                      })
+                                    }
+                                  >
+                                    <img
+                                      src={resolverUrlMedia(url, origenApi)}
+                                      alt=""
+                                    />
+                                  </button>
                                 </li>
                               ))}
                             </ul>
+                          ) : (
+                            <p className={estilos.descripcion}>
+                              Este anuncio no tiene imágenes.
+                            </p>
                           )}
+
+                          <dl className={estilos.ficha}>
+                            <div>
+                              <dt>Categoría</dt>
+                              <dd>
+                                {categorias[anuncio.categoriaId] ??
+                                  "Sin categoría"}
+                              </dd>
+                            </div>
+                            <div>
+                              <dt>Autor</dt>
+                              <dd>{anuncio.vendedorNombre ?? "—"}</dd>
+                            </div>
+                            <div>
+                              <dt>Publicado</dt>
+                              <dd>{formatearFecha(anuncio.fechaCreacion)}</dd>
+                            </div>
+                            <div>
+                              <dt>Actualizado</dt>
+                              <dd>
+                                {formatearFecha(anuncio.fechaActualizacion)}
+                              </dd>
+                            </div>
+                          </dl>
+
                           <p className={estilos.descripcion}>
                             {anuncio.descripcion?.trim() ||
                               "El vendedor no escribió descripción."}
                           </p>
-                          {anuncio.categoriaId && (
-                            <p className={estilos.meta}>
-                              Categoría: {anuncio.categoriaId}
+
+                          {anuncio.motivoRechazo && (
+                            <p className={estilos.motivoPrevio}>
+                              Motivo de la última revisión:{" "}
+                              {anuncio.motivoRechazo}
                             </p>
                           )}
-                        </div>
+                        </section>
                       )}
 
                       {abierto && (
@@ -450,6 +527,60 @@ export function Moderacion() {
           </>
         )}
       </main>
+      {ampliada && (
+        <div
+          className={estilos.velo}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Imagen ampliada"
+        >
+          {(() => {
+            const anuncio = anuncios.find((a) => a.id === ampliada.anuncioId);
+            const urls = anuncio?.imagenUrls ?? [];
+            const url = urls[ampliada.indice];
+            if (!url) return null;
+            return (
+              <div className={estilos.visor}>
+                <img
+                  className={estilos.ampliada}
+                  src={resolverUrlMedia(url, origenApi)}
+                  alt={`Imagen ${ampliada.indice + 1} de ${urls.length} de ${anuncio.nombre}`}
+                />
+                <div className={estilos.controles}>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setAmpliada({
+                        ...ampliada,
+                        indice: ampliada.indice - 1,
+                      })
+                    }
+                    disabled={ampliada.indice === 0}
+                  >
+                    Imagen anterior
+                  </button>
+                  <button type="button" onClick={() => setAmpliada(null)}>
+                    Cerrar
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Imagen siguiente"
+                    onClick={() =>
+                      setAmpliada({
+                        ...ampliada,
+                        indice: ampliada.indice + 1,
+                      })
+                    }
+                    disabled={ampliada.indice === urls.length - 1}
+                  >
+                    Imagen siguiente
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+      )}
     </div>
   );
 }

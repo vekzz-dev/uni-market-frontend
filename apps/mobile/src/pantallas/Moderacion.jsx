@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Image, ScrollView, Text, TextInput, View } from "react-native";
+import {
+  Image,
+  Modal,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { useRouter } from "expo-router";
 import {
   formatearFecha,
@@ -38,10 +46,29 @@ export function Moderacion() {
   const [recarga, setRecarga] = useState(0);
   const [decidiendo, setDecidiendo] = useState(null);
   const [detalle, setDetalle] = useState(null);
+  const [ampliada, setAmpliada] = useState(null);
+  const [categorias, setCategorias] = useState({});
+  const [categoriaCargada, setCategoriaCargada] = useState(false);
   const [motivo, setMotivo] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [errorDecision, setErrorDecision] = useState(null);
   const [aviso, setAviso] = useState(null);
+
+  // El contrato devuelve `categoriaId`, no el nombre
+  useEffect(() => {
+    if (!autenticado || categoriaCargada) return;
+    setCategoriaCargada(true);
+    cliente.categorias
+      .listarCategorias()
+      .then((respuesta) => {
+        const mapa = {};
+        for (const categoria of respuesta?.datos ?? []) {
+          mapa[categoria.id] = categoria.nombre;
+        }
+        setCategorias(mapa);
+      })
+      .catch(() => setCategorias({}));
+  }, [cliente, autenticado, categoriaCargada]);
 
   useEffect(() => {
     if (restaurado && !autenticado) router.replace("/entrar");
@@ -266,35 +293,88 @@ export function Moderacion() {
                 />
 
                 {detalle === anuncio.id && (
-                  <View style={{ gap: 10 }}>
-                    {anuncio.imagenUrls?.length > 0 && (
+                  <View
+                    style={{ gap: 10 }}
+                    accessibilityLabel="Detalle del anuncio"
+                  >
+                    {anuncio.imagenUrls?.length > 0 ? (
                       <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         accessibilityLabel="Imágenes del anuncio"
                       >
                         <View style={{ flexDirection: "row", gap: 8 }}>
-                          {anuncio.imagenUrls.map((url) => (
-                            <Image
+                          {anuncio.imagenUrls.map((url, indice) => (
+                            <Pressable
                               key={url}
-                              source={{ uri: resolverUrlMedia(url, origenApi) }}
-                              style={{
-                                width: 96,
-                                height: 96,
-                                borderRadius: 8,
-                                borderWidth: 1,
-                                borderColor: c.border,
-                              }}
-                              accessibilityLabel={`Imagen de ${anuncio.nombre}`}
-                            />
+                              accessibilityRole="button"
+                              accessibilityLabel={`Ampliar imagen ${indice + 1} de ${anuncio.imagenUrls.length}`}
+                              onPress={() =>
+                                setAmpliada({
+                                  anuncioId: anuncio.id,
+                                  indice,
+                                })
+                              }
+                            >
+                              <Image
+                                source={{
+                                  uri: resolverUrlMedia(url, origenApi),
+                                }}
+                                style={{
+                                  width: 96,
+                                  height: 96,
+                                  borderRadius: 8,
+                                  borderWidth: 1,
+                                  borderColor: c.border,
+                                }}
+                              />
+                            </Pressable>
                           ))}
                         </View>
                       </ScrollView>
+                    ) : (
+                      <Text style={{ color: c.textSecondary }}>
+                        Este anuncio no tiene imágenes.
+                      </Text>
                     )}
+
+                    <View style={{ gap: 6 }}>
+                      <Text style={{ color: c.textSecondary, fontSize: 12 }}>
+                        CATEGORÍA
+                      </Text>
+                      <Text style={{ color: c.text }}>
+                        {categorias[anuncio.categoriaId] ?? "Sin categoría"}
+                      </Text>
+                      <Text style={{ color: c.textSecondary, fontSize: 12 }}>
+                        AUTOR
+                      </Text>
+                      <Text style={{ color: c.text }}>
+                        {anuncio.vendedorNombre ?? "—"}
+                      </Text>
+                      <Text style={{ color: c.textSecondary, fontSize: 12 }}>
+                        PUBLICADO
+                      </Text>
+                      <Text style={{ color: c.text }}>
+                        {formatearFecha(anuncio.fechaCreacion)}
+                      </Text>
+                      <Text style={{ color: c.textSecondary, fontSize: 12 }}>
+                        ACTUALIZADO
+                      </Text>
+                      <Text style={{ color: c.text }}>
+                        {formatearFecha(anuncio.fechaActualizacion)}
+                      </Text>
+                    </View>
+
                     <Text style={{ color: c.textSecondary, lineHeight: 20 }}>
                       {anuncio.descripcion?.trim() ||
                         "El vendedor no escribió descripción."}
                     </Text>
+
+                    {anuncio.motivoRechazo && (
+                      <Text style={{ color: c.errorText, fontSize: 13 }}>
+                        Motivo de la última revisión: {anuncio.motivoRechazo}
+                      </Text>
+                    )}
                   </View>
                 )}
 
@@ -410,6 +490,75 @@ export function Moderacion() {
           </View>
         )}
       </ScrollView>
+
+      <Modal
+        visible={ampliada !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setAmpliada(null)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(17,24,39,0.92)",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 16,
+            gap: 16,
+          }}
+          accessibilityLabel="Imagen ampliada"
+        >
+          {(() => {
+            if (!ampliada) return null;
+            const anuncio = anuncios.find((a) => a.id === ampliada.anuncioId);
+            const urls = anuncio?.imagenUrls ?? [];
+            const url = urls[ampliada.indice];
+            if (!url) return null;
+            return (
+              <>
+                <Image
+                  source={{ uri: resolverUrlMedia(url, origenApi) }}
+                  accessibilityLabel={`Imagen ${ampliada.indice + 1} de ${urls.length}`}
+                  style={{ width: "100%", height: "70%", borderRadius: 12 }}
+                  resizeMode="contain"
+                />
+                <View style={{ flexDirection: "row", gap: 8 }}>
+                  <Boton
+                    titulo="Imagen anterior"
+                    variante="secundario"
+                    disabled={ampliada.indice === 0}
+                    onPress={() =>
+                      setAmpliada({
+                        ...ampliada,
+                        indice: ampliada.indice - 1,
+                      })
+                    }
+                    style={{ minHeight: 36 }}
+                  />
+                  <Boton
+                    titulo="Cerrar"
+                    variante="secundario"
+                    onPress={() => setAmpliada(null)}
+                    style={{ minHeight: 36 }}
+                  />
+                  <Boton
+                    titulo="Imagen siguiente"
+                    variante="secundario"
+                    disabled={ampliada.indice === urls.length - 1}
+                    onPress={() =>
+                      setAmpliada({
+                        ...ampliada,
+                        indice: ampliada.indice + 1,
+                      })
+                    }
+                    style={{ minHeight: 36 }}
+                  />
+                </View>
+              </>
+            );
+          })()}
+        </View>
+      </Modal>
     </View>
   );
 }

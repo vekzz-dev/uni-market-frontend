@@ -39,7 +39,14 @@ async function montar({
     }),
     decidirRevision,
   };
-  const cliente = { moderacion };
+  const cliente = {
+    moderacion,
+    categorias: {
+      listarCategorias: jest.fn().mockResolvedValue({
+        datos: [{ id: 3, nombre: "Electrónica" }],
+      }),
+    },
+  };
   const sesion = {
     ejecutar: (operacion) => operacion(),
     cerrarSesion: jest.fn(),
@@ -113,8 +120,9 @@ describe("detalle del anuncio en la cola (móvil)", () => {
   it("abre la descripción antes de decidir", async () => {
     const conDetalle = {
       ...pendiente,
+      categoriaId: 3,
       descripcion: "Calculadora en buen estado, incluye estuche.",
-      imagenUrls: ["/media/uno.png"],
+      imagenUrls: ["/media/uno.png", "/media/dos.png"],
     };
     const { vista } = await montar({ datos: [conDetalle] });
 
@@ -124,6 +132,18 @@ describe("detalle del anuncio en la cola (móvil)", () => {
     await fireEvent.press(vista.getByRole("button", { name: "Ver detalle" }));
 
     await vista.findByText(/incluye estuche/);
+    // La categoría se muestra por nombre, no por id
+    expect(vista.getByText("Electrónica")).toBeTruthy();
+    expect(vista.getByText("AUTOR")).toBeTruthy();
+    expect(vista.getByText("PUBLICADO")).toBeTruthy();
+
+    // Cada imagen se abre por separado
+    await fireEvent.press(
+      vista.getByRole("button", { name: "Ampliar imagen 1 de 2" }),
+    );
+    await vista.findByText("Cerrar");
+    await fireEvent.press(vista.getByText("Cerrar"));
+
     await fireEvent.press(
       vista.getByRole("button", { name: "Ocultar detalle" }),
     );

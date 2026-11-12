@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { axe } from "vitest-axe";
@@ -47,7 +47,14 @@ function montar({
       }),
     decidirRevision,
   };
-  const cliente = { moderacion };
+  const cliente = {
+    moderacion,
+    categorias: {
+      listarCategorias: vi.fn().mockResolvedValue({
+        datos: [{ id: 3, nombre: "Electrónica" }],
+      }),
+    },
+  };
   const sesion = {
     ejecutar: (operacion) => operacion(),
     cerrarSesion: vi.fn(),
@@ -257,6 +264,83 @@ describe("detalle del anuncio en la cola", () => {
       screen.getByRole("button", { name: "Ocultar detalle" }),
     );
     expect(screen.queryByText(/incluye estuche/)).toBeNull();
+  });
+});
+
+describe("detalle completo del anuncio", () => {
+  const completo = {
+    ...pendiente,
+    categoriaId: 3,
+    descripcion: "Calculadora en buen estado, incluye estuche.",
+    imagenUrls: ["/media/uno.png", "/media/dos.png"],
+    fechaActualizacion: "2026-11-02T09:30:00Z",
+  };
+
+  async function abrir(usuario) {
+    await usuario.click(
+      await screen.findByRole("button", { name: "Ver detalle" }),
+    );
+  }
+
+  it("traduce la categoría a su nombre, no muestra el id", async () => {
+    const usuario = userEvent.setup();
+    montar({ datos: [completo] });
+    await abrir(usuario);
+
+    expect(await screen.findByText(/Electrónica/)).toBeTruthy();
+    expect(screen.queryByText(/Categoría: 3\b/)).toBeNull();
+  });
+
+  it("muestra autor, fecha de publicación y de actualización", async () => {
+    const usuario = userEvent.setup();
+    montar({ datos: [completo] });
+    await abrir(usuario);
+
+    // Se mira dentro del detalle: el autor también aparece en la fila
+    const ficha = within(screen.getByLabelText("Detalle del anuncio"));
+    expect(ficha.getByText("Ana P.")).toBeTruthy();
+    expect(ficha.getByText("Publicado")).toBeTruthy();
+    expect(ficha.getByText("Actualizado")).toBeTruthy();
+  });
+
+  it("abre cada imagen por separado y se puede cerrar", async () => {
+    const usuario = userEvent.setup();
+    montar({ datos: [completo] });
+    await abrir(usuario);
+
+    await usuario.click(
+      screen.getByRole("button", { name: "Ampliar imagen 1 de 2" }),
+    );
+
+    const dialogo = await screen.findByRole("dialog", {
+      name: "Imagen ampliada",
+    });
+    expect(dialogo.querySelector("img").getAttribute("src")).toContain(
+      "/media/uno.png",
+    );
+
+    await usuario.click(screen.getByRole("button", { name: "Cerrar" }));
+    expect(
+      screen.queryByRole("dialog", { name: "Imagen ampliada" }),
+    ).toBeNull();
+  });
+
+  it("pasa a la imagen siguiente sin cerrar", async () => {
+    const usuario = userEvent.setup();
+    montar({ datos: [completo] });
+    await abrir(usuario);
+
+    await usuario.click(
+      screen.getByRole("button", { name: "Ampliar imagen 1 de 2" }),
+    );
+    await usuario.click(
+      screen.getByRole("button", { name: "Imagen siguiente" }),
+    );
+
+    const dialogo = screen.getByRole("dialog", { name: "Imagen ampliada" });
+    expect(dialogo.querySelector("img").getAttribute("src")).toContain(
+      "/media/dos.png",
+    );
   });
 });
 

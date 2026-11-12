@@ -306,3 +306,90 @@
   line-height: 1.5;
   white-space: pre-line;
 }
+
+.miniaturaAmpliable {
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.miniaturaAmpliable:focus-visible {
+  outline: 2px solid var(--um-primary, #f97316);
+  outline-offset: 2px;
+}
+
+.ficha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 0;
+}
+
+.ficha dt {
+  color: var(--um-text-secondary, #4b5563);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ficha dd {
+  margin: 0;
+  color: var(--um-text, #111827);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.motivoPrevio {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--um-error-soft, #fef2f2);
+  color: var(--um-error-text, #991b1b);
+  font-size: 13px;
+}
+
+.velo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(17 24 39 / 72%);
+}
+
+.visor {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.ampliada {
+  max-width: min(90vw, 900px);
+  max-height: 76vh;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.controles {
+  display: flex;
+  gap: 8px;
+}
+
+.controles button {
+  padding: 8px 14px;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 12%);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.controles button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

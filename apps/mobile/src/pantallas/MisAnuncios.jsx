@@ -266,7 +266,7 @@ export function MisAnuncios() {
                       router.push(`/mis-anuncios/${anuncio.id}/editar`)
                     }
                     disabled={ocupado}
-                    style={{ flex: 1, minHeight: 36 }}
+                    style={{ flexBasis: 140, flexGrow: 1, minHeight: 36 }}
                   />
                   {aprobado && anuncio.estado !== "vendido" && (
                     <Boton
@@ -280,7 +280,7 @@ export function MisAnuncios() {
                         )
                       }
                       disabled={ocupado}
-                      style={{ flex: 1, minHeight: 36 }}
+                      style={{ flexBasis: 140, flexGrow: 1, minHeight: 36 }}
                     />
                   )}
                   {aprobado && disponible && (
@@ -293,7 +293,7 @@ export function MisAnuncios() {
                         )
                       }
                       disabled={ocupado}
-                      style={{ flex: 1, minHeight: 36 }}
+                      style={{ flexBasis: 140, flexGrow: 1, minHeight: 36 }}
                     />
                   )}
                   <Boton
@@ -301,7 +301,7 @@ export function MisAnuncios() {
                     variante="secundario"
                     onPress={() => setConfirmando(anuncio.id)}
                     disabled={ocupado}
-                    style={{ flex: 1, minHeight: 36 }}
+                    style={{ flexBasis: 140, flexGrow: 1, minHeight: 36 }}
                   />
                 </View>
 

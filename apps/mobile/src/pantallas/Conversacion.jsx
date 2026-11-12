@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Text,
   TextInput,
@@ -194,10 +193,7 @@ export function Conversacion() {
   return (
     <View style={{ flex: 1, backgroundColor: c.primarySoft }}>
       <Cabecera />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View
           style={{
             margin: 16,

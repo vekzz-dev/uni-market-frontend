@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+import { KeyboardAvoidingView, ScrollView, Text, View } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   mapearProblema,
@@ -22,10 +16,7 @@ function Pantalla({ titulo, subtitulo, children }) {
   return (
     <View style={{ flex: 1, backgroundColor: c.primarySoft }}>
       <Cabecera />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
           <View
             style={{

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import {
   Image,
   KeyboardAvoidingView,
-  Platform,
   Pressable,
   ScrollView,
   Text,
@@ -147,10 +146,7 @@ export function Publicar() {
   return (
     <View style={{ flex: 1, backgroundColor: c.primarySoft }}>
       <Cabecera />
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
+      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }}>
           <View style={{ gap: 16 }}>
             <View style={{ gap: 6 }}>

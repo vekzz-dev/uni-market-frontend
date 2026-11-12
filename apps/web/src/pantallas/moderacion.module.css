@@ -270,3 +270,39 @@
     flex: 1;
   }
 }
+
+/* Detalle del anuncio en la cola: se despliega sin salir de la pantalla,
+   porque el detalle público responde 404 mientras el anuncio no es visible. */
+.detalle {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--um-surface-sunken, #f9fafb);
+}
+
+.galeria {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.galeria img {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--um-border, #e5e7eb);
+  background: var(--um-surface, #fff);
+}
+
+.descripcion {
+  margin: 0;
+  color: var(--um-text-secondary, #4b5563);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-line;
+}

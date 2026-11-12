@@ -226,6 +226,40 @@ describe("pantalla Moderación", () => {
   });
 });
 
+describe("detalle del anuncio en la cola", () => {
+  const conDetalle = {
+    ...pendiente,
+    descripcion: "Calculadora en buen estado, incluye estuche.",
+    imagenUrls: ["/media/uno.png", "/media/dos.png"],
+  };
+
+  it("abre la descripción y las imágenes antes de decidir", async () => {
+    const usuario = userEvent.setup();
+    montar({ datos: [conDetalle] });
+
+    // Cerrado por defecto: la cola no obliga a leer todo
+    expect(screen.queryByText(/incluye estuche/)).toBeNull();
+
+    await usuario.click(
+      await screen.findByRole("button", { name: "Ver detalle" }),
+    );
+
+    expect(await screen.findByText(/incluye estuche/)).toBeTruthy();
+    const galeria = screen.getByLabelText("Imágenes del anuncio");
+    // `resolverUrlMedia` antepone el origen de la API a las rutas relativas
+    const rutas = [...galeria.querySelectorAll("img")].map((i) =>
+      i.getAttribute("src").replace(/^https?:\/\/[^/]+/, ""),
+    );
+    expect(rutas).toEqual(["/media/uno.png", "/media/dos.png"]);
+
+    // Y se puede volver a cerrar
+    await usuario.click(
+      screen.getByRole("button", { name: "Ocultar detalle" }),
+    );
+    expect(screen.queryByText(/incluye estuche/)).toBeNull();
+  });
+});
+
 describe("navegación entre secciones desde moderación", () => {
   it("el admin llega a usuarios y categorías", async () => {
     montar({ rol: "admin" });

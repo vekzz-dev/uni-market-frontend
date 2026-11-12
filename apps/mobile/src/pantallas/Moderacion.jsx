@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { ScrollView, Text, TextInput, View } from "react-native";
+import { Image, ScrollView, Text, TextInput, View } from "react-native";
 import { useRouter } from "expo-router";
 import {
   formatearFecha,
   formatearPrecio,
   mapearProblema,
   puede,
+  resolverUrlMedia,
   validarMotivo,
 } from "@uni-market/core";
+import { origenApi } from "../config.js";
 import { Aviso, Boton, Cabecera, Estado } from "../componentes/ui.jsx";
 import { useSesion } from "../sesion/SesionContexto.jsx";
 import { useTema } from "../tema.js";
@@ -35,6 +37,7 @@ export function Moderacion() {
   const [error, setError] = useState(null);
   const [recarga, setRecarga] = useState(0);
   const [decidiendo, setDecidiendo] = useState(null);
+  const [detalle, setDetalle] = useState(null);
   const [motivo, setMotivo] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [errorDecision, setErrorDecision] = useState(null);
@@ -249,6 +252,51 @@ export function Moderacion() {
                   Vendedor: {anuncio.vendedorNombre ?? "—"} ·{" "}
                   {formatearFecha(anuncio.fechaCreacion)}
                 </Text>
+
+                <Boton
+                  titulo={
+                    detalle === anuncio.id ? "Ocultar detalle" : "Ver detalle"
+                  }
+                  variante="secundario"
+                  onPress={() =>
+                    setDetalle(detalle === anuncio.id ? null : anuncio.id)
+                  }
+                  accessibilityState={{ expanded: detalle === anuncio.id }}
+                  style={{ minHeight: 36 }}
+                />
+
+                {detalle === anuncio.id && (
+                  <View style={{ gap: 10 }}>
+                    {anuncio.imagenUrls?.length > 0 && (
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        accessibilityLabel="Imágenes del anuncio"
+                      >
+                        <View style={{ flexDirection: "row", gap: 8 }}>
+                          {anuncio.imagenUrls.map((url) => (
+                            <Image
+                              key={url}
+                              source={{ uri: resolverUrlMedia(url, origenApi) }}
+                              style={{
+                                width: 96,
+                                height: 96,
+                                borderRadius: 8,
+                                borderWidth: 1,
+                                borderColor: c.border,
+                              }}
+                              accessibilityLabel={`Imagen de ${anuncio.nombre}`}
+                            />
+                          ))}
+                        </View>
+                      </ScrollView>
+                    )}
+                    <Text style={{ color: c.textSecondary, lineHeight: 20 }}>
+                      {anuncio.descripcion?.trim() ||
+                        "El vendedor no escribió descripción."}
+                    </Text>
+                  </View>
+                )}
 
                 <View style={{ flexDirection: "row", gap: 8 }}>
                   {filtro === "pendiente" && (

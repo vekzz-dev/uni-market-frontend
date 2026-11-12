@@ -108,3 +108,25 @@ describe("pantalla Moderación (móvil)", () => {
     expect(await vista.findByText("Anuncio aprobado.")).toBeTruthy();
   });
 });
+
+describe("detalle del anuncio en la cola (móvil)", () => {
+  it("abre la descripción antes de decidir", async () => {
+    const conDetalle = {
+      ...pendiente,
+      descripcion: "Calculadora en buen estado, incluye estuche.",
+      imagenUrls: ["/media/uno.png"],
+    };
+    const { vista } = await montar({ datos: [conDetalle] });
+
+    await vista.findByText("Calculadora Casio");
+    expect(vista.queryByText(/incluye estuche/)).toBeNull();
+
+    await fireEvent.press(vista.getByRole("button", { name: "Ver detalle" }));
+
+    await vista.findByText(/incluye estuche/);
+    await fireEvent.press(
+      vista.getByRole("button", { name: "Ocultar detalle" }),
+    );
+    expect(vista.queryByText(/incluye estuche/)).toBeNull();
+  });
+});

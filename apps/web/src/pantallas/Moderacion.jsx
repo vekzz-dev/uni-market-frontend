@@ -39,6 +39,7 @@ export function Moderacion() {
   const [recarga, setRecarga] = useState(0);
 
   const [decidiendo, setDecidiendo] = useState(null);
+  const [detalle, setDetalle] = useState(null);
   const [motivo, setMotivo] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [errorDecision, setErrorDecision] = useState(null);
@@ -302,6 +303,20 @@ export function Moderacion() {
                         </p>
                       </div>
                       <div className={estilos.acciones}>
+                        <Boton
+                          variante="secundario"
+                          className={estilos.accion}
+                          aria-expanded={detalle === anuncio.id}
+                          onClick={() =>
+                            setDetalle(
+                              detalle === anuncio.id ? null : anuncio.id,
+                            )
+                          }
+                        >
+                          {detalle === anuncio.id
+                            ? "Ocultar detalle"
+                            : "Ver detalle"}
+                        </Boton>
                         {filtro === "pendiente" && (
                           <>
                             <Boton
@@ -332,6 +347,35 @@ export function Moderacion() {
                           </Boton>
                         )}
                       </div>
+
+                      {detalle === anuncio.id && (
+                        <div className={estilos.detalle}>
+                          {anuncio.imagenUrls?.length > 0 && (
+                            <ul
+                              className={estilos.galeria}
+                              aria-label="Imágenes del anuncio"
+                            >
+                              {anuncio.imagenUrls.map((url) => (
+                                <li key={url}>
+                                  <img
+                                    src={resolverUrlMedia(url, origenApi)}
+                                    alt={`Imagen de ${anuncio.nombre}`}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                          <p className={estilos.descripcion}>
+                            {anuncio.descripcion?.trim() ||
+                              "El vendedor no escribió descripción."}
+                          </p>
+                          {anuncio.categoriaId && (
+                            <p className={estilos.meta}>
+                              Categoría: {anuncio.categoriaId}
+                            </p>
+                          )}
+                        </div>
+                      )}
 
                       {abierto && (
                         <div className={estilos.decision}>

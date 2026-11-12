@@ -31,7 +31,7 @@ Cada carpeta corresponde a una **página del `.fig`**; dentro, un PNG por frame.
 | `11-mensajes/` | datos, vacío, error (web) · datos (móvil) | 1× web / 2× móvil |
 | `12-conversacion/` | default, enviando, vacío (web) · default (móvil) | 1× web / 2× móvil |
 | `13-perfil/` | datos, guardado, error (web) · datos (móvil) | 1× web / 2× móvil |
-| `14-moderacion/` | cola, rechazo con motivo, vacío (web) · cola (móvil) | 1× web / 2× móvil |
+| `14-moderacion/` | cola, detalle abierto, rechazo con motivo, vacío (web) · cola y detalle (móvil) | 1× web / 2× móvil |
 | `15-admin-usuarios/` | lista, vacío (web) · lista (móvil) | 1× web / 2× móvil |
 | `16-admin-categorias/` | lista y formulario de alta (web) · lista (móvil) | 1× web / 2× móvil |
 
